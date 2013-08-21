@@ -306,8 +306,8 @@ module orpsoc_top
    wire [7:0] 		  wb_bbus_dat;
    wire [3:0] 		  wb_bbus_sel;
    wire 		  wb_bbus_we;
-   wire [ibus_slaves-1:0] wb_bbus_cyc;
-   wire [ibus_slaves-1:0] wb_bbus_stb;
+   wire [bbus_slaves-1:0] wb_bbus_cyc;
+   wire [bbus_slaves-1:0] wb_bbus_stb;
    wire [2:0] 		  wb_bbus_cti;
    wire [1:0] 		  wb_bbus_bte;
 
