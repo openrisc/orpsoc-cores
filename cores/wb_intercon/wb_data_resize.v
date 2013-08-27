@@ -28,7 +28,10 @@ module wb_data_resize
     input 	     wbs_err_i,
     input 	     wbs_rty_i);
 
-   assign wbs_adr_o = wbm_adr_i;
+   assign wbs_adr_o[aw-1:2] = wbm_adr_i[aw-1:2];
+   assign wbs_adr_o[1:0] = wbm_sel_i[3] ? 2'd3 :
+			   wbm_sel_i[2] ? 2'd2 :
+			   wbm_sel_i[1] ? 2'd1 : 2'd0;
    assign wbs_dat_o = wbm_sel_i[3] ? wbm_dat_i[31:24] :
 		      wbm_sel_i[2] ? wbm_dat_i[23:16] :
 		      wbm_sel_i[1] ? wbm_dat_i[15:8]  :
