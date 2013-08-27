@@ -1,4 +1,4 @@
-module orpsoc_tb;
+module wb_bfm_tb;   
 
    vlog_tb_utils vlog_tb_utils0();
    
@@ -56,4 +56,4 @@ module orpsoc_tb;
       .wb_ack_o (wb_ack),
       .wb_err_o (wb_err),
       .wb_rty_o (wb_rty));
-endmodule // orpsoc_tb
+endmodule
