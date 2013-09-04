@@ -4,7 +4,7 @@ description = "SDRAM controller with multiple wishbone slave ports"
 
 [verilog]
 src_files =
- rtl/verilog/arbiter.v
+ rtl/verilog/wb_port_arbiter.v
  rtl/verilog/bufram.v
  rtl/verilog/dpram_altera.v
  rtl/verilog/dpram_generic.v
