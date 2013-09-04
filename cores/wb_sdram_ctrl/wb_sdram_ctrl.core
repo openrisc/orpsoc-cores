@@ -1,0 +1,20 @@
+CAPI=1
+[main]
+description = "SDRAM controller with multiple wishbone slave ports"
+
+[verilog]
+src_files =
+ rtl/verilog/arbiter.v
+ rtl/verilog/bufram.v
+ rtl/verilog/dpram_altera.v
+ rtl/verilog/dpram_generic.v
+ rtl/verilog/dual_clock_fifo.v
+ rtl/verilog/sdram_ctrl.v
+ rtl/verilog/wb_port.v
+ rtl/verilog/wb_sdram_ctrl.v
+ 
+[provider]
+name = github
+user = skristiansson
+repo = wb_sdram_ctrl
+branch = master
