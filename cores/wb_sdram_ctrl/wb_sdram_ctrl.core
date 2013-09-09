@@ -1,6 +1,8 @@
 CAPI=1
 [main]
 description = "SDRAM controller with multiple wishbone slave ports"
+depend = mt48lc16m16a2 vlog_tb_utils wb_bfm
+simulators = icarus
 
 [verilog]
 src_files =
@@ -12,6 +14,17 @@ src_files =
  rtl/verilog/sdram_ctrl.v
  rtl/verilog/wb_port.v
  rtl/verilog/wb_sdram_ctrl.v
+
+tb_private_src_files =
+ bench/wb_sdram_ctrl_tb.v
+
+[plusargs]
+transactions = int "Number of wishbone transactions"
+[simulator]
+toplevel = wb_sdram_ctrl_tb
+
+[modelsim]
+vsim_options = -t 1ps
  
 [provider]
 name = github
