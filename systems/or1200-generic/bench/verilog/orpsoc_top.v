@@ -55,6 +55,31 @@ module orpsoc_top
    wire 		      wb_mem_err;
    wire 		      wb_mem_rty;   
    
+   // UART wires
+   wire [31:0]                wb_uart_adr;
+   wire [31:0] 		      wb_uart_dat;
+   wire [3:0] 		      wb_uart_sel;
+   wire 		      wb_uart_we;
+   wire 		      wb_uart_cyc;
+   wire 		      wb_uart_stb;
+   wire [2:0] 		      wb_uart_cti;
+   wire [1:0] 		      wb_uart_bte;
+   wire [31:0] 		      wb_uart_rdt;   
+   wire 		      wb_uart_ack;
+   wire 		      wb_uart_err;
+   wire 		      wb_uart_rty;   
+
+   wire [31:0]                wb_uart8_adr;
+   wire [7:0] 		      wb_uart8_dat;
+   wire 		      wb_uart8_we;
+   wire 		      wb_uart8_cyc;
+   wire 		      wb_uart8_stb;
+   wire [2:0] 		      wb_uart8_cti;
+   wire [1:0] 		      wb_uart8_bte;
+   wire [7:0] 		      wb_uart8_rdt;   
+   wire 		      wb_uart8_ack;
+   wire 		      wb_uart8_err;
+   wire 		      wb_uart8_rty;   
 
    ////////////////////////////////////////////////////////////////////////
    //
@@ -179,7 +204,19 @@ module orpsoc_top
       .wb_mem_rdt_i      (wb_mem_rdt),
       .wb_mem_ack_i      (wb_mem_ack),
       .wb_mem_err_i      (wb_mem_err),
-      .wb_mem_rty_i      (wb_mem_rty));
+      .wb_mem_rty_i      (wb_mem_rty),
+      .wb_uart_adr_o     (wb_uart_adr),
+      .wb_uart_dat_o     (wb_uart_dat),
+      .wb_uart_sel_o     (wb_uart_sel),
+      .wb_uart_we_o      (wb_uart_we),
+      .wb_uart_cyc_o     (wb_uart_cyc),
+      .wb_uart_stb_o     (wb_uart_stb),
+      .wb_uart_cti_o     (wb_uart_cti),
+      .wb_uart_bte_o     (wb_uart_bte),
+      .wb_uart_rdt_i     (wb_uart_rdt),
+      .wb_uart_ack_i     (wb_uart_ack),
+      .wb_uart_err_i     (wb_uart_err),
+      .wb_uart_rty_i     (wb_uart_rty));
      
    ////////////////////////////////////////////////////////////////////////
    //
@@ -209,6 +246,55 @@ module orpsoc_top
       .wb_err_o (wb_mem_err),
       .wb_rty_o (wb_mem_rty));
    
+   ////////////////////////////////////////////////////////////////////////
+   //
+   // UART
+   // 
+   ////////////////////////////////////////////////////////////////////////
+   wb_data_resize wb_data_resize_uart0
+   (//Wishbone Master interface
+    .wbm_adr_i (wb_uart_adr),
+    .wbm_dat_i (wb_uart_dat),
+    .wbm_sel_i (wb_uart_sel),
+    .wbm_we_i  (wb_uart_we ),
+    .wbm_cyc_i (wb_uart_cyc),
+    .wbm_stb_i (wb_uart_stb),
+    .wbm_cti_i (wb_uart_cti),
+    .wbm_bte_i (wb_uart_bte),
+    .wbm_sdt_o (wb_uart_rdt),
+    .wbm_ack_o (wb_uart_ack),
+    .wbm_err_o (wb_uart_err),
+    .wbm_rty_o (wb_uart_rty), 
+    // Wishbone Slave interface
+    .wbs_adr_o (wb_uart8_adr),
+    .wbs_dat_o (wb_uart8_dat),
+    .wbs_we_o  (wb_uart8_we ),
+    .wbs_cyc_o (wb_uart8_cyc),
+    .wbs_stb_o (wb_uart8_stb),
+    .wbs_cti_o (wb_uart8_cti),
+    .wbs_bte_o (wb_uart8_bte),
+    .wbs_sdt_i (wb_uart8_rdt),
+    .wbs_ack_i (wb_uart8_ack),
+    .wbs_err_i (wb_uart8_err),
+    .wbs_rty_i (wb_uart8_rty));
+
+   wb_uart_wrapper #(.DEBUG (0))
+   wb_uart_wrapper0
+     (
+      //Wishbone Master interface
+      .wb_clk_i (wb_clk_i),
+      .wb_rst_i (wb_rst_i),
+      .wb_adr_i	(wb_uart8_adr),
+      .wb_dat_i	(wb_uart8_dat),
+      .wb_we_i	(wb_uart8_we),
+      .wb_cyc_i	(wb_uart8_cyc),
+      .wb_stb_i	(wb_uart8_stb),
+      .wb_cti_i	(wb_uart8_cti),
+      .wb_bte_i	(wb_uart8_bte),
+      .wb_dat_o	(wb_uart8_rdt),
+      .wb_ack_o	(wb_uart8_ack),
+      .wb_err_o (wb_uart8_err),
+      .wb_rty_o (wb_uart8_rty));
 
    ////////////////////////////////////////////////////////////////////////
    //
