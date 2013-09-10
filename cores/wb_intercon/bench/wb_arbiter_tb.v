@@ -95,7 +95,7 @@ module wb_arbiter_tb
       .wbm_stb_i (wbm_stb),
       .wbm_cti_i (wbm_cti),
       .wbm_bte_i (wbm_bte),
-      .wbm_dat_o (wbm_sdt),
+      .wbm_rdt_o (wbm_sdt),
       .wbm_ack_o (wbm_ack),
       .wbm_err_o (wbm_err),
       .wbm_rty_o (wbm_rty), 
@@ -108,7 +108,7 @@ module wb_arbiter_tb
       .wbs_stb_o (wbs_stb),
       .wbs_cti_o (wbs_cti),
       .wbs_bte_o (wbs_bte),
-      .wbs_dat_i (wbs_sdt),
+      .wbs_rdt_i (wbs_sdt),
       .wbs_ack_i (wbs_ack),
       .wbs_err_i (wbs_err),
       .wbs_rty_i (wbs_rty));
