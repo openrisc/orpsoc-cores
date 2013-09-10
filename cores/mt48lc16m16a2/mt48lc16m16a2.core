@@ -1,0 +1,10 @@
+CAPI=1
+[main]
+description = Micron 256Mb SDRAM Verilog model 
+
+[verilog]
+src_files =
+ verilog/mt48lc16m16a2.v
+
+tb_src_files = 
+ verilog/mt48lc16m16a2_loader.v
