@@ -51,9 +51,9 @@ module wb_mux_tb
    
    genvar 	 i;
 
-   wb_master
-     #(.MEMORY_SIZE_BITS(MEMORY_SIZE_BITS+$clog2(NUM_SLAVES)))
-   wb_master0
+   wb_bfm_transactor
+     #(.MEM_HIGH (MEMORY_SIZE_WORDS*NUM_SLAVES-1))
+   wb_bfm_transactor0
      (.wb_clk_i (wb_clk_i),
       .wb_rst_i (wb_rst_i),
       .wb_adr_o (wb_adr),
@@ -64,7 +64,7 @@ module wb_mux_tb
       .wb_stb_o (wb_stb),
       .wb_cti_o (wb_cti),
       .wb_bte_o (wb_bte),
-      .wb_sdt_i (wb_rdt),
+      .wb_rdt_i (wb_rdt),
       .wb_ack_i (wb_ack),
       .wb_err_i (wb_err),
       .wb_rty_i (wb_rty),

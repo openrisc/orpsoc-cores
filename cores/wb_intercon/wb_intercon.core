@@ -13,7 +13,6 @@ src_files =
  wb_data_resize.v
  wb_mux.v
 tb_private_src_files =
- bench/wb_master.v
  bench/wb_mux_tb.v
  bench/wb_arbiter_tb.v
  bench/orpsoc_tb.v

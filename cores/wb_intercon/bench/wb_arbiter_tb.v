@@ -18,7 +18,7 @@ module wb_arbiter_tb
    wire 	 wbs_stb;
    wire [2:0] 	 wbs_cti;
    wire [1:0] 	 wbs_bte;
-   wire [dw-1:0] wbs_sdt;
+   wire [dw-1:0] wbs_rdt;
    wire 	 wbs_ack;
    wire 	 wbs_err;
    wire 	 wbs_rty;
@@ -31,7 +31,7 @@ module wb_arbiter_tb
    wire [NUM_MASTERS-1:0]	 wbm_stb;
    wire [NUM_MASTERS*3-1:0] 	 wbm_cti;
    wire [NUM_MASTERS*2-1:0] 	 wbm_bte;
-   wire [NUM_MASTERS*dw-1:0] 	 wbm_sdt;
+   wire [NUM_MASTERS*dw-1:0] 	 wbm_rdt;
    wire [NUM_MASTERS-1:0]	 wbm_ack;
    wire [NUM_MASTERS-1:0] 	 wbm_err;
    wire [NUM_MASTERS-1:0] 	 wbm_rty;
@@ -44,10 +44,10 @@ module wb_arbiter_tb
    
    generate
       for(i=0;i<NUM_MASTERS;i=i+1) begin : masters
-	 wb_master
-	    #(.MEMORY_SIZE_BITS(MEMORY_SIZE_BITS),
-	      .MEM_RANGE_START (i*MEMORY_SIZE_WORDS))
-	 wb_master0
+	 wb_bfm_transactor
+	    #(.MEM_HIGH((i+1)*MEMORY_SIZE_WORDS-1),
+	      .MEM_LOW (i*MEMORY_SIZE_WORDS))
+	 wb_bfm_transactor0
 	    (.wb_clk_i (wb_clk_i),
 	     .wb_rst_i (wb_rst_i),
 	     .wb_adr_o (wbm_adr[i*aw+:aw]),
@@ -58,7 +58,7 @@ module wb_arbiter_tb
 	     .wb_stb_o (wbm_stb[i]),
 	     .wb_cti_o (wbm_cti[i*3+:3]),
 	     .wb_bte_o (wbm_bte[i*2+:2]),
-	     .wb_sdt_i (wbm_sdt[i*dw+:dw]),
+	     .wb_rdt_i (wbm_rdt[i*dw+:dw]),
 	     .wb_ack_i (wbm_ack[i]),
 	     .wb_err_i (wbm_err[i]),
 	     .wb_rty_i (wbm_rty[i]),
@@ -95,7 +95,7 @@ module wb_arbiter_tb
       .wbm_stb_i (wbm_stb),
       .wbm_cti_i (wbm_cti),
       .wbm_bte_i (wbm_bte),
-      .wbm_rdt_o (wbm_sdt),
+      .wbm_rdt_o (wbm_rdt),
       .wbm_ack_o (wbm_ack),
       .wbm_err_o (wbm_err),
       .wbm_rty_o (wbm_rty), 
@@ -108,7 +108,7 @@ module wb_arbiter_tb
       .wbs_stb_o (wbs_stb),
       .wbs_cti_o (wbs_cti),
       .wbs_bte_o (wbs_bte),
-      .wbs_rdt_i (wbs_sdt),
+      .wbs_rdt_i (wbs_rdt),
       .wbs_ack_i (wbs_ack),
       .wbs_err_i (wbs_err),
       .wbs_rty_i (wbs_rty));
@@ -149,7 +149,7 @@ module wb_arbiter_tb
       .wb_stb_i (wbs_stb),
       .wb_cti_i (wbs_cti),
       .wb_bte_i (wbs_bte),
-      .wb_sdt_o (wbs_sdt),
+      .wb_sdt_o (wbs_rdt),
       .wb_ack_o (wbs_ack),
       .wb_err_o (wbs_err),
       .wb_rty_o (wbs_rty));
