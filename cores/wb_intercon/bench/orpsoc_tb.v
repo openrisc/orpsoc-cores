@@ -1,6 +1,5 @@
 module orpsoc_tb;
 
-   localparam WB_MUX_NUM_SLAVES = 4;
    localparam WB_ARB_NUM_MASTERS = 5;
    
    reg	   wb_clk = 1'b1;
@@ -14,7 +13,6 @@ module orpsoc_tb;
    vlog_tb_utils vlog_tb_utils0();
 
    wb_mux_tb
-     #(.NUM_SLAVES (WB_MUX_NUM_SLAVES))
    wb_mux_tb0
      (.wb_clk_i (wb_clk),
       .wb_rst_i (wb_mux_rst),

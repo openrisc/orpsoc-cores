@@ -4,11 +4,18 @@
 ///                                                               ////
 /// Simple mux with an arbitrary number of slaves.                ////
 ///                                                               ////
-/// The active slave is selected by asserting the corresponding   ////
-/// slave_sel_i bit. If several slave_sel signals are asserted,   ////
-/// the slave with the highest number will be selected. If no bits////
-/// are asserted, the last slave is selected to enable chaining   ////
-///  with other arbiters                                          ////
+/// The parameters MATCH_ADDR and MATCH_MASK are flattened arrays ////
+/// aw*NUM_SLAVES sized arrays that are used to calculate the     ////
+/// active slave. slave i is selected when                        ////
+/// (wb_adr_i & MATCH_MASK[(i+1)*aw-1:i*aw] is equal to           ////
+/// MATCH_ADDR[(i+1)*aw-1:i*aw]                                   ////
+/// If several regions are overlapping, the slave with the lowest ////
+/// index is selected. This can be used to have fallback          ////
+/// functionality in the last slave, in case no other slave was   ////
+/// selected.                                                     ////
+///                                                               ////
+/// If no match is found, the wishbone transaction will stall and ////
+/// an external watchdog is required to abort the transaction     ////
 ///                                                               ////
 /// Olof Kindgren, olof@opencores.org                             ////
 ///                                                               ////
@@ -45,69 +52,79 @@
 module wb_mux
   #(parameter dw = 32,        // Data width
     parameter aw = 32,        // Address width
-    parameter num_slaves = 2) // Number of slaves
+    parameter num_slaves = 2, // Number of slaves
+    parameter [num_slaves*aw-1:0] MATCH_ADDR = 0,
+    parameter [num_slaves*aw-1:0] MATCH_MASK = 0)
+   
+   (input                      wb_clk_i,
+    input 		       wb_rst_i,
 
-   (input                      wb_clk,
-    input 		      wb_rst,
-
-    input [num_slaves-1:0]    slave_sel_i,
     // Master Interface
-    input [aw-1:0] 	      wbm_adr_i,
-    input [dw-1:0] 	      wbm_dat_i,
-    input [3:0] 	      wbm_sel_i,
-    input 		      wbm_we_i,
-    input 		      wbm_cyc_i,
-    input 		      wbm_stb_i,
-    input [2:0] 	      wbm_cti_i,
-    input [1:0] 	      wbm_bte_i,
-    output [dw-1:0] 	      wbm_sdt_o,
-    output 		      wbm_ack_o,
-    output 		      wbm_err_o,
-    output 		      wbm_rty_o, 
+    input [aw-1:0] 	       wbm_adr_i,
+    input [dw-1:0] 	       wbm_dat_i,
+    input [3:0] 	       wbm_sel_i,
+    input 		       wbm_we_i,
+    input 		       wbm_cyc_i,
+    input 		       wbm_stb_i,
+    input [2:0] 	       wbm_cti_i,
+    input [1:0] 	       wbm_bte_i,
+    output [dw-1:0] 	       wbm_rdt_o,
+    output 		       wbm_ack_o,
+    output 		       wbm_err_o,
+    output 		       wbm_rty_o, 
     // Wishbone Slave interface
-    output [aw-1:0] 	      wbs_adr_o,
-    output [dw-1:0] 	      wbs_dat_o,
-    output [3:0] 	      wbs_sel_o, 
-    output 		      wbs_we_o,
-    output [num_slaves-1:0]   wbs_cyc_o,
-    output 		      wbs_stb_o,
-    output [2:0] 	      wbs_cti_o,
-    output [1:0] 	      wbs_bte_o,
-    input [num_slaves*dw-1:0] wbs_sdt_i,
-    input [num_slaves-1:0]    wbs_ack_i,
-    input [num_slaves-1:0]    wbs_err_i,
-    input [num_slaves-1:0]    wbs_rty_i);
+    output [num_slaves*aw-1:0] wbs_adr_o,
+    output [num_slaves*dw-1:0] wbs_dat_o,
+    output [num_slaves*4-1:0]  wbs_sel_o, 
+    output [num_slaves-1:0]    wbs_we_o,
+    output [num_slaves-1:0]    wbs_cyc_o,
+    output [num_slaves-1:0]    wbs_stb_o,
+    output [num_slaves*3-1:0]  wbs_cti_o,
+    output [num_slaves*2-1:0]  wbs_bte_o,
+    input [num_slaves*dw-1:0]  wbs_rdt_i,
+    input [num_slaves-1:0]     wbs_ack_i,
+    input [num_slaves-1:0]     wbs_err_i,
+    input [num_slaves-1:0]     wbs_rty_i);
       
 ///////////////////////////////////////////////////////////////////////////////
 // Master/slave connection
 ///////////////////////////////////////////////////////////////////////////////
 
-   reg [num_slaves-1:0] slave_sel; //FIXME: Should be clog2(num_slaves)
+   wire [$clog2(num_slaves)-1:0] slave_sel;
+   wire [$clog2(num_slaves)-1:0] slave_sel_int [0:num_slaves-1];
 
-   assign wbs_adr_o = wbm_adr_i;
-   assign wbs_dat_o = wbm_dat_i;
-   assign wbs_sel_o = wbm_sel_i;
-   assign wbs_we_o  = wbm_we_i;
+   wire [num_slaves-1:0] 	 match;
 
-   assign wbs_cyc_o = {num_slaves{(|slave_sel_i)}} & (wbm_cyc_i << slave_sel);
-   assign wbs_stb_o = wbm_stb_i;
-   
-   assign wbs_cti_o = wbm_cti_i;
-   assign wbs_bte_o = wbm_bte_i;
+   genvar 			 idx;
 
-   integer i;
-   
-   always @(slave_sel_i) begin
-      slave_sel = 0;
-      
-      for(i=0;i<num_slaves;i=i+1) begin : slave_sel_loop
-	 if(slave_sel_i[i] == 1) slave_sel = i;
+   generate
+      for(idx=0; idx<num_slaves ; idx=idx+1) begin : addr_match
+	 assign match[idx] = (wbm_adr_i & MATCH_MASK[idx*aw+:aw]) == MATCH_ADDR[idx*aw+:aw];
       end
-   end
+   endgenerate
+
+   assign slave_sel_int[0] = 0;
+   generate
+      for(idx=1; idx<num_slaves ; idx=idx+1) begin : select_mux
+	 assign slave_sel_int[idx] = match[idx] ? idx : slave_sel_int[idx-1];
+      end
+   endgenerate
+   assign slave_sel = slave_sel_int[num_slaves-1];
    
-   assign wbm_sdt_o = wbs_sdt_i[slave_sel*dw+:dw];
+   assign wbs_adr_o = {num_slaves{wbm_adr_i}};
+   assign wbs_dat_o = {num_slaves{wbm_dat_i}};
+   assign wbs_sel_o = {num_slaves{wbm_sel_i}};
+   assign wbs_we_o  = {num_slaves{wbm_we_i}};
+
+   assign wbs_cyc_o = {num_slaves{(|match)}} & (wbm_cyc_i << slave_sel);
+   assign wbs_stb_o = {num_slaves{wbm_stb_i}};
+   
+   assign wbs_cti_o = {num_slaves{wbm_cti_i}};
+   assign wbs_bte_o = {num_slaves{wbm_bte_i}};
+
+   assign wbm_rdt_o = wbs_rdt_i[slave_sel*dw+:dw];
    assign wbm_ack_o = wbs_ack_i[slave_sel];
    assign wbm_err_o = wbs_err_i[slave_sel];
    assign wbm_rty_o = wbs_rty_i[slave_sel];
 
-endmodule // wb_mux
+endmodule
