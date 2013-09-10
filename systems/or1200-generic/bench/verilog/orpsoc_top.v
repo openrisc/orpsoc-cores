@@ -22,7 +22,7 @@ module orpsoc_top
    wire 		      wb_or1200_i_stb;
    wire [2:0] 		      wb_or1200_i_cti;
    wire [1:0] 		      wb_or1200_i_bte;
-   wire [wb_dw-1:0] 	      wb_or1200_i_sdt;   
+   wire [wb_dw-1:0] 	      wb_or1200_i_rdt;   
    wire 		      wb_or1200_i_ack;
    wire 		      wb_or1200_i_err;
    wire 		      wb_or1200_i_rty;
@@ -36,7 +36,7 @@ module orpsoc_top
    wire 		      wb_or1200_d_stb;
    wire [2:0] 		      wb_or1200_d_cti;
    wire [1:0] 		      wb_or1200_d_bte;
-   wire [wb_dw-1:0] 	      wb_or1200_d_sdt;   
+   wire [wb_dw-1:0] 	      wb_or1200_d_rdt;   
    wire 		      wb_or1200_d_ack;
    wire 		      wb_or1200_d_err;
    wire 		      wb_or1200_d_rty;   
@@ -50,7 +50,7 @@ module orpsoc_top
    wire 		      wb_mem_stb;
    wire [2:0] 		      wb_mem_cti;
    wire [1:0] 		      wb_mem_bte;
-   wire [31:0] 		      wb_mem_sdt;   
+   wire [31:0] 		      wb_mem_rdt;   
    wire 		      wb_mem_ack;
    wire 		      wb_mem_err;
    wire 		      wb_mem_rty;   
@@ -77,7 +77,7 @@ module orpsoc_top
 	.iwb_stb_o			(wb_or1200_i_stb),
 	.iwb_cti_o			(wb_or1200_i_cti),
 	.iwb_bte_o			(wb_or1200_i_bte),
-	.iwb_dat_i			(wb_or1200_i_sdt),
+	.iwb_dat_i			(wb_or1200_i_rdt),
 	.iwb_ack_i			(wb_or1200_i_ack),
 	.iwb_err_i			(wb_or1200_i_err),
 	.iwb_rty_i			(wb_or1200_i_rty),
@@ -92,7 +92,7 @@ module orpsoc_top
 	.dwb_stb_o			(wb_or1200_d_stb),
 	.dwb_cti_o			(wb_or1200_d_cti),
 	.dwb_bte_o			(wb_or1200_d_bte),
-	.dwb_dat_i			(wb_or1200_d_sdt),
+	.dwb_dat_i			(wb_or1200_d_rdt),
 	.dwb_ack_i			(wb_or1200_d_ack),
 	.dwb_err_i			(wb_or1200_d_err),
 	.dwb_rty_i			(wb_or1200_d_rty),
@@ -150,7 +150,7 @@ module orpsoc_top
       .wb_or1200_i_stb_i (wb_or1200_i_stb),
       .wb_or1200_i_cti_i (wb_or1200_i_cti),
       .wb_or1200_i_bte_i (wb_or1200_i_bte),
-      .wb_or1200_i_dat_o (wb_or1200_i_sdt),
+      .wb_or1200_i_rdt_o (wb_or1200_i_rdt),
       .wb_or1200_i_ack_o (wb_or1200_i_ack),
       .wb_or1200_i_err_o (wb_or1200_i_err),
       .wb_or1200_i_rty_o (wb_or1200_i_rty),
@@ -163,7 +163,7 @@ module orpsoc_top
       .wb_or1200_d_stb_i (wb_or1200_d_stb),
       .wb_or1200_d_cti_i (wb_or1200_d_cti),
       .wb_or1200_d_bte_i (wb_or1200_d_bte),
-      .wb_or1200_d_dat_o (wb_or1200_d_sdt),
+      .wb_or1200_d_rdt_o (wb_or1200_d_rdt),
       .wb_or1200_d_ack_o (wb_or1200_d_ack),
       .wb_or1200_d_err_o (wb_or1200_d_err),
       .wb_or1200_d_rty_o (wb_or1200_d_rty),
@@ -176,7 +176,7 @@ module orpsoc_top
       .wb_mem_stb_o      (wb_mem_stb),
       .wb_mem_cti_o      (wb_mem_cti),
       .wb_mem_bte_o      (wb_mem_bte),
-      .wb_mem_dat_i      (wb_mem_sdt),
+      .wb_mem_rdt_i      (wb_mem_rdt),
       .wb_mem_ack_i      (wb_mem_ack),
       .wb_mem_err_i      (wb_mem_err),
       .wb_mem_rty_i      (wb_mem_rty));
@@ -203,8 +203,8 @@ module orpsoc_top
       .wb_stb_i	(wb_mem_stb),
       .wb_cti_i	(wb_mem_cti),
       .wb_bte_i	(wb_mem_bte),
-      .wb_dat_o	(wb_mem_sdt),
-      //.wb_sdt_o	(wb_mem_sdt),
+      .wb_dat_o	(wb_mem_rdt),
+      //.wb_sdt_o	(wb_mem_rdt),
       .wb_ack_o	(wb_mem_ack),
       .wb_err_o (wb_mem_err),
       .wb_rty_o (wb_mem_rty));
