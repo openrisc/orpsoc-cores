@@ -50,7 +50,7 @@ module wb_arbiter
    input [num_masters-1:0]     wbm_stb_i,
    input [num_masters*3-1:0]   wbm_cti_i,
    input [num_masters*2-1:0]   wbm_bte_i,
-   output [num_masters*dw-1:0] wbm_rdt_o,
+   output [num_masters*dw-1:0] wbm_dat_o,
    output [num_masters-1:0]    wbm_ack_o,
    output [num_masters-1:0]    wbm_err_o,
    output [num_masters-1:0]    wbm_rty_o, 
@@ -64,7 +64,7 @@ module wb_arbiter
    output 		       wbs_stb_o,
    output [2:0] 	       wbs_cti_o,
    output [1:0] 	       wbs_bte_o,
-   input [dw-1:0] 	       wbs_rdt_i,
+   input [dw-1:0] 	       wbs_dat_i,
    input 		       wbs_ack_i,
    input 		       wbs_err_i,
    input 		       wbs_rty_i);
@@ -111,7 +111,7 @@ module wb_arbiter
    assign wbs_cti_o = wbm_cti_i[master_sel*3+:3];
    assign wbs_bte_o = wbm_bte_i[master_sel*2+:2];
 
-   assign wbm_rdt_o = {num_masters{wbs_rdt_i}};
+   assign wbm_dat_o = {num_masters{wbs_dat_i}};
    assign wbm_ack_o = ((wbs_ack_i & active) << master_sel);
    assign wbm_err_o = ((wbs_err_i & active) << master_sel);
    assign wbm_rty_o = ((wbs_rty_i & active) << master_sel);

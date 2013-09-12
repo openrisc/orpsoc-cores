@@ -12,7 +12,7 @@ module wb_bfm_slave
     input 		wb_stb_i,
     input [2:0] 	wb_cti_i,
     input [1:0] 	wb_bte_i,
-    output reg [dw-1:0] wb_sdt_o,
+    output reg [dw-1:0] wb_dat_o,
     output reg 		wb_ack_o,
     output reg 		wb_err_o,
     output reg 		wb_rty_o);
@@ -35,7 +35,7 @@ module wb_bfm_slave
    task init;
       begin
 	 wb_ack_o <= #Tp 1'b0;
-	 wb_sdt_o <= #Tp {dw{1'b0}};
+	 wb_dat_o <= #Tp {dw{1'b0}};
 	 wb_err_o <= #Tp 1'b0;
 	 wb_rty_o <= #Tp 1'b0;
 
@@ -99,7 +99,7 @@ module wb_bfm_slave
       begin
 	 if(DEBUG) $display("%0d : next address=0x%h, data=0x%h, op=%b", $time, address, data, op);
 
-	 wb_sdt_o <= #Tp {dw{1'b0}};
+	 wb_dat_o <= #Tp {dw{1'b0}};
 	 wb_ack_o <= #Tp 1'b0;
 	 wb_err_o <= #Tp 1'b0;
 	 wb_rty_o <= #Tp 1'b0; //TODO : rty not supported
@@ -110,7 +110,7 @@ module wb_bfm_slave
 	    has_next = 1'b0;
 	 end else begin
 	    if(op === READ)
-	      wb_sdt_o <= #Tp data;
+	      wb_dat_o <= #Tp data;
 	    wb_ack_o <= #Tp 1'b1;
 	 end
 

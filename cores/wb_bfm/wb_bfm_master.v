@@ -13,7 +13,7 @@ module wb_bfm_master
     output reg 		wb_stb_o,
     output reg [2:0] 	wb_cti_o,
     output reg [1:0] 	wb_bte_o,
-    input [dw-1:0] 	wb_sdt_i,
+    input [dw-1:0] 	wb_dat_i,
     input 		wb_ack_i,
     input 		wb_err_i,
     input 		wb_rty_i);
@@ -189,7 +189,7 @@ module wb_bfm_master
 	 if(cycle_type == CLASSIC_CYCLE) begin
 	    while (wb_ack_i !== 1'b1)
 	      @(posedge wb_clk_i);
-	    data = wb_sdt_i;
+	    data = wb_dat_i;
 	    wb_stb_o <= #Tp 1'b0;
 	    @(negedge wb_ack_i);
 	 end else begin
@@ -200,7 +200,7 @@ module wb_bfm_master
 	    @(posedge wb_clk_i);
 	    while(wb_ack_i !== 1'b1)
 	      @(posedge wb_clk_i);
-	    data = wb_sdt_i;
+	    data = wb_dat_i;
 	 end
       end
    endtask // while

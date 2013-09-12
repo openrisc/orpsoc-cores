@@ -33,7 +33,7 @@ module wb_uart16550_model
       .wb_stb_i (wb_stb_i),
       .wb_cti_i (wb_cti_i),
       .wb_bte_i (wb_bte_i),
-      .wb_sdt_o (wb_dat_o),
+      .wb_dat_o (wb_dat_o),
       .wb_ack_o (wb_ack_o),
       .wb_err_o (wb_err_o),
       .wb_rty_o (wb_rty_o));
