@@ -20,31 +20,31 @@ module wb_mux_tb
 						32'h00000000};
    localparam [dw*NUM_SLAVES-1:0] MATCH_MASK = {NUM_SLAVES{32'hffffff00}};
    
-   wire [NUM_SLAVES*aw-1:0] wbs_adr;
-   wire [NUM_SLAVES*dw-1:0] wbs_dat;
-   wire [NUM_SLAVES*4-1:0]  wbs_sel;
-   wire [NUM_SLAVES-1:0]    wbs_we ;
-   wire [NUM_SLAVES-1:0]    wbs_cyc;
-   wire [NUM_SLAVES-1:0]    wbs_stb;
-   wire [NUM_SLAVES*3-1:0]  wbs_cti;
-   wire [NUM_SLAVES*2-1:0]  wbs_bte;
-   wire [NUM_SLAVES*dw-1:0] wbs_rdt;
-   wire [NUM_SLAVES-1:0]    wbs_ack;
-   wire [NUM_SLAVES-1:0]    wbs_err;
-   wire [NUM_SLAVES-1:0]    wbs_rty;
+   wire [NUM_SLAVES*aw-1:0] wbs_m2s_adr;
+   wire [NUM_SLAVES*dw-1:0] wbs_m2s_dat;
+   wire [NUM_SLAVES*4-1:0]  wbs_m2s_sel;
+   wire [NUM_SLAVES-1:0]    wbs_m2s_we ;
+   wire [NUM_SLAVES-1:0]    wbs_m2s_cyc;
+   wire [NUM_SLAVES-1:0]    wbs_m2s_stb;
+   wire [NUM_SLAVES*3-1:0]  wbs_m2s_cti;
+   wire [NUM_SLAVES*2-1:0]  wbs_m2s_bte;
+   wire [NUM_SLAVES*dw-1:0] wbs_s2m_dat;
+   wire [NUM_SLAVES-1:0]    wbs_s2m_ack;
+   wire [NUM_SLAVES-1:0]    wbs_s2m_err;
+   wire [NUM_SLAVES-1:0]    wbs_s2m_rty;
 
-   wire [aw-1:0] wb_adr;
-   wire [dw-1:0] wb_dat;
-   wire [3:0] 	 wb_sel;
-   wire 	 wb_we ;
-   wire 	 wb_cyc;
-   wire 	 wb_stb;
-   wire [2:0] 	 wb_cti;
-   wire [1:0] 	 wb_bte;
-   wire [dw-1:0] wb_rdt;
-   wire 	 wb_ack;
-   wire 	 wb_err;
-   wire 	 wb_rty;
+   wire [aw-1:0] wb_m2s_adr;
+   wire [dw-1:0] wb_m2s_dat;
+   wire [3:0] 	 wb_m2s_sel;
+   wire 	 wb_m2s_we ;
+   wire 	 wb_m2s_cyc;
+   wire 	 wb_m2s_stb;
+   wire [2:0] 	 wb_m2s_cti;
+   wire [1:0] 	 wb_m2s_bte;
+   wire [dw-1:0] wb_s2m_dat;
+   wire 	 wb_s2m_ack;
+   wire 	 wb_s2m_err;
+   wire 	 wb_s2m_rty;
 
    wire [31:0] 	 slave_writes [0:NUM_SLAVES-1];
    wire [31:0] 	 slave_reads  [0:NUM_SLAVES-1];
@@ -56,18 +56,18 @@ module wb_mux_tb
    wb_bfm_transactor0
      (.wb_clk_i (wb_clk_i),
       .wb_rst_i (wb_rst_i),
-      .wb_adr_o (wb_adr),
-      .wb_dat_o (wb_dat),
-      .wb_sel_o (wb_sel),
-      .wb_we_o  (wb_we ), 
-      .wb_cyc_o (wb_cyc),
-      .wb_stb_o (wb_stb),
-      .wb_cti_o (wb_cti),
-      .wb_bte_o (wb_bte),
-      .wb_rdt_i (wb_rdt),
-      .wb_ack_i (wb_ack),
-      .wb_err_i (wb_err),
-      .wb_rty_i (wb_rty),
+      .wb_adr_o (wb_m2s_adr),
+      .wb_dat_o (wb_m2s_dat),
+      .wb_sel_o (wb_m2s_sel),
+      .wb_we_o  (wb_m2s_we ),
+      .wb_cyc_o (wb_m2s_cyc),
+      .wb_stb_o (wb_m2s_stb),
+      .wb_cti_o (wb_m2s_cti),
+      .wb_bte_o (wb_m2s_bte),
+      .wb_dat_i (wb_s2m_dat),
+      .wb_ack_i (wb_s2m_ack),
+      .wb_err_i (wb_s2m_err),
+      .wb_rty_i (wb_s2m_rty),
       //Test Control
       .done(done));
    
@@ -91,31 +91,31 @@ module wb_mux_tb
     .wb_rst_i     (wb_rst_i),
 
     // Master Interface
-    .wbm_adr_i (wb_adr),
-    .wbm_dat_i (wb_dat),
-    .wbm_sel_i (wb_sel),
-    .wbm_we_i  (wb_we ),
-    .wbm_cyc_i (wb_cyc),
-    .wbm_stb_i (wb_stb),
-    .wbm_cti_i (wb_cti),
-    .wbm_bte_i (wb_bte),
-    .wbm_rdt_o (wb_rdt),
-    .wbm_ack_o (wb_ack),
-    .wbm_err_o (wb_err),
-    .wbm_rty_o (wb_rty), 
+    .wbm_adr_i (wb_m2s_adr),
+    .wbm_dat_i (wb_m2s_dat),
+    .wbm_sel_i (wb_m2s_sel),
+    .wbm_we_i  (wb_m2s_we ),
+    .wbm_cyc_i (wb_m2s_cyc),
+    .wbm_stb_i (wb_m2s_stb),
+    .wbm_cti_i (wb_m2s_cti),
+    .wbm_bte_i (wb_m2s_bte),
+    .wbm_dat_o (wb_s2m_dat),
+    .wbm_ack_o (wb_s2m_ack),
+    .wbm_err_o (wb_s2m_err),
+    .wbm_rty_o (wb_s2m_rty),
     // Wishbone Slave interface
-    .wbs_adr_o (wbs_adr),
-    .wbs_dat_o (wbs_dat),
-    .wbs_sel_o (wbs_sel), 
-    .wbs_we_o  (wbs_we),
-    .wbs_cyc_o (wbs_cyc),
-    .wbs_stb_o (wbs_stb),
-    .wbs_cti_o (wbs_cti),
-    .wbs_bte_o (wbs_bte),
-    .wbs_rdt_i (wbs_rdt),
-    .wbs_ack_i (wbs_ack),
-    .wbs_err_i (wbs_err),
-    .wbs_rty_i (wbs_rty));
+    .wbs_adr_o (wbs_m2s_adr),
+    .wbs_dat_o (wbs_m2s_dat),
+    .wbs_sel_o (wbs_m2s_sel), 
+    .wbs_we_o  (wbs_m2s_we),
+    .wbs_cyc_o (wbs_m2s_cyc),
+    .wbs_stb_o (wbs_m2s_stb),
+    .wbs_cti_o (wbs_m2s_cti),
+    .wbs_bte_o (wbs_m2s_bte),
+    .wbs_dat_i (wbs_s2m_dat),
+    .wbs_ack_i (wbs_s2m_ack),
+    .wbs_err_i (wbs_s2m_err),
+    .wbs_rty_i (wbs_s2m_rty));
    
    generate
       for(i=0;i<NUM_SLAVES;i=i+1) begin : slaves
@@ -127,18 +127,18 @@ module wb_mux_tb
 	 wb_mem_model0
 	    (.wb_clk_i (wb_clk_i),
 	     .wb_rst_i (wb_rst_i),
-	     .wb_adr_i (wbs_adr[i*aw+:aw] & (2**MEMORY_SIZE_BITS-1)),
-	     .wb_dat_i (wbs_dat[i*dw+:dw]),
-	     .wb_sel_i (wbs_sel[i*4+:4]),
-	     .wb_we_i  (wbs_we[i]),
-	     .wb_cyc_i (wbs_cyc[i]),
-	     .wb_stb_i (wbs_stb[i]),
-	     .wb_cti_i (wbs_cti[i*3+:3]),
-	     .wb_bte_i (wbs_bte[i*2+:2]),
-	     .wb_sdt_o (wbs_rdt[i*dw+:dw]),
-	     .wb_ack_o (wbs_ack[i]),
-	     .wb_err_o (wbs_err[i]),
-	     .wb_rty_o (wbs_rty[i]));
+	     .wb_adr_i (wbs_m2s_adr[i*aw+:aw] & (2**MEMORY_SIZE_BITS-1)),
+	     .wb_dat_i (wbs_m2s_dat[i*dw+:dw]),
+	     .wb_sel_i (wbs_m2s_sel[i*4+:4]),
+	     .wb_we_i  (wbs_m2s_we[i]),
+	     .wb_cyc_i (wbs_m2s_cyc[i]),
+	     .wb_stb_i (wbs_m2s_stb[i]),
+	     .wb_cti_i (wbs_m2s_cti[i*3+:3]),
+	     .wb_bte_i (wbs_m2s_bte[i*2+:2]),
+	     .wb_dat_o (wbs_s2m_dat[i*dw+:dw]),
+	     .wb_ack_o (wbs_s2m_ack[i]),
+	     .wb_err_o (wbs_s2m_err[i]),
+	     .wb_rty_o (wbs_s2m_rty[i]));
       end // block: slaves
    endgenerate
    

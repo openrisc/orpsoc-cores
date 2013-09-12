@@ -11,7 +11,7 @@ module wb_data_resize
     input 	     wbm_stb_i,
     input  [2:0]     wbm_cti_i,
     input  [1:0]     wbm_bte_i,
-    output [mdw-1:0] wbm_sdt_o,
+    output [mdw-1:0] wbm_dat_o,
     output 	     wbm_ack_o,
     output 	     wbm_err_o,
     output 	     wbm_rty_o, 
@@ -23,7 +23,7 @@ module wb_data_resize
     output 	     wbs_stb_o,
     output [2:0]     wbs_cti_o,
     output [1:0]     wbs_bte_o,
-    input  [sdw-1:0] wbs_sdt_i,
+    input  [sdw-1:0] wbs_dat_i,
     input 	     wbs_ack_i,
     input 	     wbs_err_i,
     input 	     wbs_rty_i);
@@ -45,10 +45,10 @@ module wb_data_resize
    assign wbs_cti_o = wbm_cti_i;
    assign wbs_bte_o = wbm_bte_i;
    
-   assign wbm_sdt_o = (wbm_sel_i[3]) ? {wbs_sdt_i, 24'd0} :
-		      (wbm_sel_i[2]) ? {8'd0 , wbs_sdt_i, 16'd0} :
-		      (wbm_sel_i[1]) ? {16'd0, wbs_sdt_i, 8'd0} :
-	              {24'd0, wbs_sdt_i};
+   assign wbm_dat_o = (wbm_sel_i[3]) ? {wbs_dat_i, 24'd0} :
+		      (wbm_sel_i[2]) ? {8'd0 , wbs_dat_i, 16'd0} :
+		      (wbm_sel_i[1]) ? {16'd0, wbs_dat_i, 8'd0} :
+	              {24'd0, wbs_dat_i};
    assign wbm_ack_o = wbs_ack_i;
    assign wbm_err_o = wbs_err_i;
    assign wbm_rty_o = wbs_rty_i;

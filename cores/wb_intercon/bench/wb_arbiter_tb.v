@@ -10,31 +10,31 @@ module wb_arbiter_tb
    localparam MEMORY_SIZE_BITS  = 8;
    localparam MEMORY_SIZE_WORDS = 2**MEMORY_SIZE_BITS;
    
-   wire [aw-1:0] wbs_adr;
-   wire [dw-1:0] wbs_dat;
-   wire [3:0] 	 wbs_sel;
-   wire 	 wbs_we ;
-   wire 	 wbs_cyc;
-   wire 	 wbs_stb;
-   wire [2:0] 	 wbs_cti;
-   wire [1:0] 	 wbs_bte;
-   wire [dw-1:0] wbs_rdt;
-   wire 	 wbs_ack;
-   wire 	 wbs_err;
-   wire 	 wbs_rty;
+   wire [aw-1:0] wbs_m2s_adr;
+   wire [dw-1:0] wbs_m2s_dat;
+   wire [3:0] 	 wbs_m2s_sel;
+   wire 	 wbs_m2s_we ;
+   wire 	 wbs_m2s_cyc;
+   wire 	 wbs_m2s_stb;
+   wire [2:0] 	 wbs_m2s_cti;
+   wire [1:0] 	 wbs_m2s_bte;
+   wire [dw-1:0] wbs_s2m_dat;
+   wire 	 wbs_s2m_ack;
+   wire 	 wbs_s2m_err;
+   wire 	 wbs_s2m_rty;
 
-   wire [NUM_MASTERS*aw-1:0] 	 wbm_adr;
-   wire [NUM_MASTERS*dw-1:0] 	 wbm_dat;
-   wire [NUM_MASTERS*4-1:0] 	 wbm_sel;
-   wire [NUM_MASTERS-1:0] 	 wbm_we ;
-   wire [NUM_MASTERS-1:0]	 wbm_cyc;
-   wire [NUM_MASTERS-1:0]	 wbm_stb;
-   wire [NUM_MASTERS*3-1:0] 	 wbm_cti;
-   wire [NUM_MASTERS*2-1:0] 	 wbm_bte;
-   wire [NUM_MASTERS*dw-1:0] 	 wbm_rdt;
-   wire [NUM_MASTERS-1:0]	 wbm_ack;
-   wire [NUM_MASTERS-1:0] 	 wbm_err;
-   wire [NUM_MASTERS-1:0] 	 wbm_rty;
+   wire [NUM_MASTERS*aw-1:0] 	 wbm_m2s_adr;
+   wire [NUM_MASTERS*dw-1:0] 	 wbm_m2s_dat;
+   wire [NUM_MASTERS*4-1:0] 	 wbm_m2s_sel;
+   wire [NUM_MASTERS-1:0] 	 wbm_m2s_we ;
+   wire [NUM_MASTERS-1:0]	 wbm_m2s_cyc;
+   wire [NUM_MASTERS-1:0]	 wbm_m2s_stb;
+   wire [NUM_MASTERS*3-1:0] 	 wbm_m2s_cti;
+   wire [NUM_MASTERS*2-1:0] 	 wbm_m2s_bte;
+   wire [NUM_MASTERS*dw-1:0] 	 wbm_s2m_dat;
+   wire [NUM_MASTERS-1:0]	 wbm_s2m_ack;
+   wire [NUM_MASTERS-1:0] 	 wbm_s2m_err;
+   wire [NUM_MASTERS-1:0] 	 wbm_s2m_rty;
 
    wire [31:0] 	 slave_writes;
    wire [31:0] 	 slave_reads;
@@ -50,18 +50,18 @@ module wb_arbiter_tb
 	 wb_bfm_transactor0
 	    (.wb_clk_i (wb_clk_i),
 	     .wb_rst_i (wb_rst_i),
-	     .wb_adr_o (wbm_adr[i*aw+:aw]),
-	     .wb_dat_o (wbm_dat[i*dw+:dw]),
-	     .wb_sel_o (wbm_sel[i*4+:4]),
-	     .wb_we_o  (wbm_we[i] ), 
-	     .wb_cyc_o (wbm_cyc[i]),
-	     .wb_stb_o (wbm_stb[i]),
-	     .wb_cti_o (wbm_cti[i*3+:3]),
-	     .wb_bte_o (wbm_bte[i*2+:2]),
-	     .wb_rdt_i (wbm_rdt[i*dw+:dw]),
-	     .wb_ack_i (wbm_ack[i]),
-	     .wb_err_i (wbm_err[i]),
-	     .wb_rty_i (wbm_rty[i]),
+	     .wb_adr_o (wbm_m2s_adr[i*aw+:aw]),
+	     .wb_dat_o (wbm_m2s_dat[i*dw+:dw]),
+	     .wb_sel_o (wbm_m2s_sel[i*4+:4]),
+	     .wb_we_o  (wbm_m2s_we[i] ),
+	     .wb_cyc_o (wbm_m2s_cyc[i]),
+	     .wb_stb_o (wbm_m2s_stb[i]),
+	     .wb_cti_o (wbm_m2s_cti[i*3+:3]),
+	     .wb_bte_o (wbm_m2s_bte[i*2+:2]),
+	     .wb_dat_i (wbm_s2m_dat[i*dw+:dw]),
+	     .wb_ack_i (wbm_s2m_ack[i]),
+	     .wb_err_i (wbm_s2m_err[i]),
+	     .wb_rty_i (wbm_s2m_rty[i]),
 	     //Test Control
 	     .done(done_int[i]));
       end // block: slaves
@@ -87,31 +87,31 @@ module wb_arbiter_tb
       .wb_rst_i     (wb_rst_i),
       
       // Master Interface
-      .wbm_adr_i (wbm_adr),
-      .wbm_dat_i (wbm_dat),
-      .wbm_sel_i (wbm_sel),
-      .wbm_we_i  (wbm_we ),
-      .wbm_cyc_i (wbm_cyc),
-      .wbm_stb_i (wbm_stb),
-      .wbm_cti_i (wbm_cti),
-      .wbm_bte_i (wbm_bte),
-      .wbm_rdt_o (wbm_rdt),
-      .wbm_ack_o (wbm_ack),
-      .wbm_err_o (wbm_err),
-      .wbm_rty_o (wbm_rty), 
+      .wbm_adr_i (wbm_m2s_adr),
+      .wbm_dat_i (wbm_m2s_dat),
+      .wbm_sel_i (wbm_m2s_sel),
+      .wbm_we_i  (wbm_m2s_we ),
+      .wbm_cyc_i (wbm_m2s_cyc),
+      .wbm_stb_i (wbm_m2s_stb),
+      .wbm_cti_i (wbm_m2s_cti),
+      .wbm_bte_i (wbm_m2s_bte),
+      .wbm_dat_o (wbm_s2m_dat),
+      .wbm_ack_o (wbm_s2m_ack),
+      .wbm_err_o (wbm_s2m_err),
+      .wbm_rty_o (wbm_s2m_rty),
       // Wishbone Slave interface
-      .wbs_adr_o (wbs_adr),
-      .wbs_dat_o (wbs_dat),
-      .wbs_sel_o (wbs_sel), 
-      .wbs_we_o  (wbs_we),
-      .wbs_cyc_o (wbs_cyc),
-      .wbs_stb_o (wbs_stb),
-      .wbs_cti_o (wbs_cti),
-      .wbs_bte_o (wbs_bte),
-      .wbs_rdt_i (wbs_rdt),
-      .wbs_ack_i (wbs_ack),
-      .wbs_err_i (wbs_err),
-      .wbs_rty_i (wbs_rty));
+      .wbs_adr_o (wbs_m2s_adr),
+      .wbs_dat_o (wbs_m2s_dat),
+      .wbs_sel_o (wbs_m2s_sel),
+      .wbs_we_o  (wbs_m2s_we),
+      .wbs_cyc_o (wbs_m2s_cyc),
+      .wbs_stb_o (wbs_m2s_stb),
+      .wbs_cti_o (wbs_m2s_cti),
+      .wbs_bte_o (wbs_m2s_bte),
+      .wbs_dat_i (wbs_s2m_dat),
+      .wbs_ack_i (wbs_s2m_ack),
+      .wbs_err_i (wbs_s2m_err),
+      .wbs_rty_i (wbs_s2m_rty));
    
    assign slave_writes = wb_mem_model0.writes;
    assign slave_reads  = wb_mem_model0.reads;
@@ -126,9 +126,9 @@ module wb_arbiter_tb
 	    ack_delay[i] = 0;
 	    num_transactions[i] = 0;
 	    while(1) begin
-	       @(posedge wbm_cyc[i]);
+	       @(posedge wbm_m2s_cyc[i]);
 	       start_time[i] = $time;
-	       @(posedge wbm_ack[i]);
+	       @(posedge wbm_s2m_ack[i]);
 	       ack_delay[i] = ack_delay[i] + $time-start_time[i];
 	       num_transactions[i] = num_transactions[i]+1;
 	    end
@@ -141,16 +141,16 @@ module wb_arbiter_tb
    wb_mem_model0
      (.wb_clk_i (wb_clk_i),
       .wb_rst_i (wb_rst_i),
-      .wb_adr_i (wbs_adr),
-      .wb_dat_i (wbs_dat),
-      .wb_sel_i (wbs_sel),
-      .wb_we_i  (wbs_we),
-      .wb_cyc_i (wbs_cyc),
-      .wb_stb_i (wbs_stb),
-      .wb_cti_i (wbs_cti),
-      .wb_bte_i (wbs_bte),
-      .wb_sdt_o (wbs_rdt),
-      .wb_ack_o (wbs_ack),
-      .wb_err_o (wbs_err),
-      .wb_rty_o (wbs_rty));
+      .wb_adr_i (wbs_m2s_adr),
+      .wb_dat_i (wbs_m2s_dat),
+      .wb_sel_i (wbs_m2s_sel),
+      .wb_we_i  (wbs_m2s_we),
+      .wb_cyc_i (wbs_m2s_cyc),
+      .wb_stb_i (wbs_m2s_stb),
+      .wb_cti_i (wbs_m2s_cti),
+      .wb_bte_i (wbs_m2s_bte),
+      .wb_dat_o (wbs_s2m_dat),
+      .wb_ack_o (wbs_s2m_ack),
+      .wb_err_o (wbs_s2m_err),
+      .wb_rty_o (wbs_s2m_rty));
 endmodule
