@@ -21,7 +21,7 @@ module wb_bfm_memory
    output 	   wb_ack_o,
    output 	   wb_err_o,
    output 	   wb_rty_o,
-   output [dw-1:0] wb_sdt_o);
+   output [dw-1:0] wb_dat_o);
 
 `include "wb_bfm_params.v"
    
@@ -48,7 +48,7 @@ module wb_bfm_memory
       .wb_stb_i (wb_stb_i),
       .wb_cti_i (wb_cti_i),
       .wb_bte_i (wb_bte_i),
-      .wb_sdt_o (wb_sdt_o),
+      .wb_dat_o (wb_dat_o),
       .wb_ack_o (wb_ack_o),
       .wb_err_o (wb_err_o),
       .wb_rty_o (wb_rty_o));

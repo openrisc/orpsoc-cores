@@ -14,72 +14,72 @@ module orpsoc_top
    ////////////////////////////////////////////////////////////////////////
    
    // OR1200 instruction bus wires
-   wire [wb_aw-1:0] 	      wb_or1200_i_adr;
-   wire [wb_dw-1:0] 	      wb_or1200_i_dat;
-   wire [3:0] 		      wb_or1200_i_sel;
-   wire 		      wb_or1200_i_we;
-   wire 		      wb_or1200_i_cyc;
-   wire 		      wb_or1200_i_stb;
-   wire [2:0] 		      wb_or1200_i_cti;
-   wire [1:0] 		      wb_or1200_i_bte;
-   wire [wb_dw-1:0] 	      wb_or1200_i_rdt;   
-   wire 		      wb_or1200_i_ack;
-   wire 		      wb_or1200_i_err;
-   wire 		      wb_or1200_i_rty;
+   wire [wb_aw-1:0] 	      wb_m2s_or1200_i_adr;
+   wire [wb_dw-1:0] 	      wb_m2s_or1200_i_dat;
+   wire [3:0] 		      wb_m2s_or1200_i_sel;
+   wire 		      wb_m2s_or1200_i_we;
+   wire 		      wb_m2s_or1200_i_cyc;
+   wire 		      wb_m2s_or1200_i_stb;
+   wire [2:0] 		      wb_m2s_or1200_i_cti;
+   wire [1:0] 		      wb_m2s_or1200_i_bte;
+   wire [wb_dw-1:0] 	      wb_s2m_or1200_i_dat;
+   wire 		      wb_s2m_or1200_i_ack;
+   wire 		      wb_s2m_or1200_i_err;
+   wire 		      wb_s2m_or1200_i_rty;
 
    // OR1200 data bus wires   
-   wire [wb_aw-1:0] 	      wb_or1200_d_adr;
-   wire [wb_dw-1:0] 	      wb_or1200_d_dat;
-   wire [3:0] 		      wb_or1200_d_sel;
-   wire 		      wb_or1200_d_we;
-   wire 		      wb_or1200_d_cyc;
-   wire 		      wb_or1200_d_stb;
-   wire [2:0] 		      wb_or1200_d_cti;
-   wire [1:0] 		      wb_or1200_d_bte;
-   wire [wb_dw-1:0] 	      wb_or1200_d_rdt;   
-   wire 		      wb_or1200_d_ack;
-   wire 		      wb_or1200_d_err;
-   wire 		      wb_or1200_d_rty;   
+   wire [wb_aw-1:0] 	      wb_m2s_or1200_d_adr;
+   wire [wb_dw-1:0] 	      wb_m2s_or1200_d_dat;
+   wire [3:0] 		      wb_m2s_or1200_d_sel;
+   wire 		      wb_m2s_or1200_d_we;
+   wire 		      wb_m2s_or1200_d_cyc;
+   wire 		      wb_m2s_or1200_d_stb;
+   wire [2:0] 		      wb_m2s_or1200_d_cti;
+   wire [1:0] 		      wb_m2s_or1200_d_bte;
+   wire [wb_dw-1:0] 	      wb_s2m_or1200_d_dat;
+   wire 		      wb_s2m_or1200_d_ack;
+   wire 		      wb_s2m_or1200_d_err;
+   wire 		      wb_s2m_or1200_d_rty;
 
    // memory wires
-   wire [31:0]                wb_mem_adr;
-   wire [31:0] 		      wb_mem_dat;
-   wire [3:0] 		      wb_mem_sel;
-   wire 		      wb_mem_we;
-   wire 		      wb_mem_cyc;
-   wire 		      wb_mem_stb;
-   wire [2:0] 		      wb_mem_cti;
-   wire [1:0] 		      wb_mem_bte;
-   wire [31:0] 		      wb_mem_rdt;   
-   wire 		      wb_mem_ack;
-   wire 		      wb_mem_err;
-   wire 		      wb_mem_rty;   
+   wire [31:0]                wb_m2s_mem_adr;
+   wire [31:0] 		      wb_m2s_mem_dat;
+   wire [3:0] 		      wb_m2s_mem_sel;
+   wire 		      wb_m2s_mem_we;
+   wire 		      wb_m2s_mem_cyc;
+   wire 		      wb_m2s_mem_stb;
+   wire [2:0] 		      wb_m2s_mem_cti;
+   wire [1:0] 		      wb_m2s_mem_bte;
+   wire [31:0] 		      wb_s2m_mem_dat;
+   wire 		      wb_s2m_mem_ack;
+   wire 		      wb_s2m_mem_err;
+   wire 		      wb_s2m_mem_rty;
    
    // UART wires
-   wire [31:0]                wb_uart_adr;
-   wire [31:0] 		      wb_uart_dat;
-   wire [3:0] 		      wb_uart_sel;
-   wire 		      wb_uart_we;
-   wire 		      wb_uart_cyc;
-   wire 		      wb_uart_stb;
-   wire [2:0] 		      wb_uart_cti;
-   wire [1:0] 		      wb_uart_bte;
-   wire [31:0] 		      wb_uart_rdt;   
-   wire 		      wb_uart_ack;
-   wire 		      wb_uart_err;
-   wire 		      wb_uart_rty;   
+   wire [31:0]                wb_m2s_uart_adr;
+   wire [31:0] 		      wb_m2s_uart_dat;
+   wire [3:0] 		      wb_m2s_uart_sel;
+   wire 		      wb_m2s_uart_we;
+   wire 		      wb_m2s_uart_cyc;
+   wire 		      wb_m2s_uart_stb;
+   wire [2:0] 		      wb_m2s_uart_cti;
+   wire [1:0] 		      wb_m2s_uart_bte;
+   wire [31:0] 		      wb_s2m_uart_dat;
+   wire 		      wb_s2m_uart_ack;
+   wire 		      wb_s2m_uart_err;
+   wire 		      wb_s2m_uart_rty;
 
-   wire [31:0]                wb_uart8_adr;
-   wire [7:0] 		      wb_uart8_dat;
-   wire 		      wb_uart8_we;
-   wire 		      wb_uart8_cyc;
-   wire 		      wb_uart8_stb;
-   wire [2:0] 		      wb_uart8_cti;
-   wire [1:0] 		      wb_uart8_bte;
-   wire [7:0] 		      wb_uart8_rdt;   
-   wire 		      wb_uart8_ack;
-   wire 		      wb_uart8_err;
-   wire 		      wb_uart8_rty;   
+   wire [31:0]                wb_m2s_uart8_adr;
+   wire [7:0] 		      wb_m2s_uart8_dat;
+   wire 		      wb_m2s_uart8_we;
+   wire 		      wb_m2s_uart8_cyc;
+   wire 		      wb_m2s_uart8_stb;
+   wire [2:0] 		      wb_m2s_uart8_cti;
+   wire [1:0] 		      wb_m2s_uart8_bte;
+   wire [7:0] 		      wb_s2m_uart8_dat;
+   wire 		      wb_s2m_uart8_ack;
+   wire 		      wb_s2m_uart8_err;
+   wire 		      wb_s2m_uart8_rty;
 
    ////////////////////////////////////////////////////////////////////////
    //
@@ -94,33 +94,33 @@ module orpsoc_top
 	// Instruction bus, clocks, reset
 	.iwb_clk_i			(wb_clk_i),
 	.iwb_rst_i			(wb_rst_i),
-	.iwb_adr_o			(wb_or1200_i_adr),
-	.iwb_dat_o			(wb_or1200_i_dat),
-	.iwb_sel_o			(wb_or1200_i_sel),
-	.iwb_we_o			(wb_or1200_i_we ),
-	.iwb_cyc_o			(wb_or1200_i_cyc),
-	.iwb_stb_o			(wb_or1200_i_stb),
-	.iwb_cti_o			(wb_or1200_i_cti),
-	.iwb_bte_o			(wb_or1200_i_bte),
-	.iwb_dat_i			(wb_or1200_i_rdt),
-	.iwb_ack_i			(wb_or1200_i_ack),
-	.iwb_err_i			(wb_or1200_i_err),
-	.iwb_rty_i			(wb_or1200_i_rty),
+	.iwb_adr_o			(wb_m2s_or1200_i_adr),
+	.iwb_dat_o			(wb_m2s_or1200_i_dat),
+	.iwb_sel_o			(wb_m2s_or1200_i_sel),
+	.iwb_we_o			(wb_m2s_or1200_i_we ),
+	.iwb_cyc_o			(wb_m2s_or1200_i_cyc),
+	.iwb_stb_o			(wb_m2s_or1200_i_stb),
+	.iwb_cti_o			(wb_m2s_or1200_i_cti),
+	.iwb_bte_o			(wb_m2s_or1200_i_bte),
+	.iwb_dat_i			(wb_s2m_or1200_i_dat),
+	.iwb_ack_i			(wb_s2m_or1200_i_ack),
+	.iwb_err_i			(wb_s2m_or1200_i_err),
+	.iwb_rty_i			(wb_s2m_or1200_i_rty),
 	// Data bus, clocks, reset            
 	.dwb_clk_i			(wb_clk_i),
 	.dwb_rst_i			(wb_rst_i),
-	.dwb_adr_o			(wb_or1200_d_adr),
-	.dwb_dat_o			(wb_or1200_d_dat),
-	.dwb_sel_o			(wb_or1200_d_sel),
-	.dwb_we_o			(wb_or1200_d_we),
-	.dwb_cyc_o			(wb_or1200_d_cyc),
-	.dwb_stb_o			(wb_or1200_d_stb),
-	.dwb_cti_o			(wb_or1200_d_cti),
-	.dwb_bte_o			(wb_or1200_d_bte),
-	.dwb_dat_i			(wb_or1200_d_rdt),
-	.dwb_ack_i			(wb_or1200_d_ack),
-	.dwb_err_i			(wb_or1200_d_err),
-	.dwb_rty_i			(wb_or1200_d_rty),
+	.dwb_adr_o			(wb_m2s_or1200_d_adr),
+	.dwb_dat_o			(wb_m2s_or1200_d_dat),
+	.dwb_sel_o			(wb_m2s_or1200_d_sel),
+	.dwb_we_o			(wb_m2s_or1200_d_we),
+	.dwb_cyc_o			(wb_m2s_or1200_d_cyc),
+	.dwb_stb_o			(wb_m2s_or1200_d_stb),
+	.dwb_cti_o			(wb_m2s_or1200_d_cti),
+	.dwb_bte_o			(wb_m2s_or1200_d_bte),
+	.dwb_dat_i			(wb_s2m_or1200_d_dat),
+	.dwb_ack_i			(wb_s2m_or1200_d_ack),
+	.dwb_err_i			(wb_s2m_or1200_d_err),
+	.dwb_rty_i			(wb_s2m_or1200_d_rty),
 
 	// Debug interface ports
 	.dbg_stall_i			(1'b0),
@@ -167,56 +167,56 @@ module orpsoc_top
      (.wb_clk_i         (wb_clk_i),
       .wb_rst_i         (wb_rst_i),
       // OR1200 Instruction bus (To Master)
-      .wb_or1200_i_adr_i (wb_or1200_i_adr),
-      .wb_or1200_i_dat_i (wb_or1200_i_dat),
-      .wb_or1200_i_sel_i (wb_or1200_i_sel),
-      .wb_or1200_i_we_i  (wb_or1200_i_we ),
-      .wb_or1200_i_cyc_i (wb_or1200_i_cyc),
-      .wb_or1200_i_stb_i (wb_or1200_i_stb),
-      .wb_or1200_i_cti_i (wb_or1200_i_cti),
-      .wb_or1200_i_bte_i (wb_or1200_i_bte),
-      .wb_or1200_i_rdt_o (wb_or1200_i_rdt),
-      .wb_or1200_i_ack_o (wb_or1200_i_ack),
-      .wb_or1200_i_err_o (wb_or1200_i_err),
-      .wb_or1200_i_rty_o (wb_or1200_i_rty),
+      .wb_m2s_or1200_i_adr (wb_m2s_or1200_i_adr),
+      .wb_m2s_or1200_i_dat (wb_m2s_or1200_i_dat),
+      .wb_m2s_or1200_i_sel (wb_m2s_or1200_i_sel),
+      .wb_m2s_or1200_i_we  (wb_m2s_or1200_i_we ),
+      .wb_m2s_or1200_i_cyc (wb_m2s_or1200_i_cyc),
+      .wb_m2s_or1200_i_stb (wb_m2s_or1200_i_stb),
+      .wb_m2s_or1200_i_cti (wb_m2s_or1200_i_cti),
+      .wb_m2s_or1200_i_bte (wb_m2s_or1200_i_bte),
+      .wb_s2m_or1200_i_dat (wb_s2m_or1200_i_dat),
+      .wb_s2m_or1200_i_ack (wb_s2m_or1200_i_ack),
+      .wb_s2m_or1200_i_err (wb_s2m_or1200_i_err),
+      .wb_s2m_or1200_i_rty (wb_s2m_or1200_i_rty),
       // OR1200 Data bus (To Master)
-      .wb_or1200_d_adr_i (wb_or1200_d_adr),
-      .wb_or1200_d_dat_i (wb_or1200_d_dat),
-      .wb_or1200_d_sel_i (wb_or1200_d_sel),
-      .wb_or1200_d_we_i  (wb_or1200_d_we ),
-      .wb_or1200_d_cyc_i (wb_or1200_d_cyc),
-      .wb_or1200_d_stb_i (wb_or1200_d_stb),
-      .wb_or1200_d_cti_i (wb_or1200_d_cti),
-      .wb_or1200_d_bte_i (wb_or1200_d_bte),
-      .wb_or1200_d_rdt_o (wb_or1200_d_rdt),
-      .wb_or1200_d_ack_o (wb_or1200_d_ack),
-      .wb_or1200_d_err_o (wb_or1200_d_err),
-      .wb_or1200_d_rty_o (wb_or1200_d_rty),
+      .wb_m2s_or1200_d_adr (wb_m2s_or1200_d_adr),
+      .wb_m2s_or1200_d_dat (wb_m2s_or1200_d_dat),
+      .wb_m2s_or1200_d_sel (wb_m2s_or1200_d_sel),
+      .wb_m2s_or1200_d_we  (wb_m2s_or1200_d_we ),
+      .wb_m2s_or1200_d_cyc (wb_m2s_or1200_d_cyc),
+      .wb_m2s_or1200_d_stb (wb_m2s_or1200_d_stb),
+      .wb_m2s_or1200_d_cti (wb_m2s_or1200_d_cti),
+      .wb_m2s_or1200_d_bte (wb_m2s_or1200_d_bte),
+      .wb_s2m_or1200_d_dat (wb_s2m_or1200_d_dat),
+      .wb_s2m_or1200_d_ack (wb_s2m_or1200_d_ack),
+      .wb_s2m_or1200_d_err (wb_s2m_or1200_d_err),
+      .wb_s2m_or1200_d_rty (wb_s2m_or1200_d_rty),
       // Memory Interface (To Slave)
-      .wb_mem_adr_o      (wb_mem_adr),
-      .wb_mem_dat_o      (wb_mem_dat),
-      .wb_mem_sel_o      (wb_mem_sel),
-      .wb_mem_we_o       (wb_mem_we),
-      .wb_mem_cyc_o      (wb_mem_cyc),
-      .wb_mem_stb_o      (wb_mem_stb),
-      .wb_mem_cti_o      (wb_mem_cti),
-      .wb_mem_bte_o      (wb_mem_bte),
-      .wb_mem_rdt_i      (wb_mem_rdt),
-      .wb_mem_ack_i      (wb_mem_ack),
-      .wb_mem_err_i      (wb_mem_err),
-      .wb_mem_rty_i      (wb_mem_rty),
-      .wb_uart_adr_o     (wb_uart_adr),
-      .wb_uart_dat_o     (wb_uart_dat),
-      .wb_uart_sel_o     (wb_uart_sel),
-      .wb_uart_we_o      (wb_uart_we),
-      .wb_uart_cyc_o     (wb_uart_cyc),
-      .wb_uart_stb_o     (wb_uart_stb),
-      .wb_uart_cti_o     (wb_uart_cti),
-      .wb_uart_bte_o     (wb_uart_bte),
-      .wb_uart_rdt_i     (wb_uart_rdt),
-      .wb_uart_ack_i     (wb_uart_ack),
-      .wb_uart_err_i     (wb_uart_err),
-      .wb_uart_rty_i     (wb_uart_rty));
+      .wb_m2s_mem_adr      (wb_m2s_mem_adr),
+      .wb_m2s_mem_dat      (wb_m2s_mem_dat),
+      .wb_m2s_mem_sel      (wb_m2s_mem_sel),
+      .wb_m2s_mem_we       (wb_m2s_mem_we),
+      .wb_m2s_mem_cyc      (wb_m2s_mem_cyc),
+      .wb_m2s_mem_stb      (wb_m2s_mem_stb),
+      .wb_m2s_mem_cti      (wb_m2s_mem_cti),
+      .wb_m2s_mem_bte      (wb_m2s_mem_bte),
+      .wb_s2m_mem_dat      (wb_s2m_mem_dat),
+      .wb_s2m_mem_ack      (wb_s2m_mem_ack),
+      .wb_s2m_mem_err      (wb_s2m_mem_err),
+      .wb_s2m_mem_rty      (wb_s2m_mem_rty),
+      .wb_m2s_uart_adr     (wb_m2s_uart_adr),
+      .wb_m2s_uart_dat     (wb_m2s_uart_dat),
+      .wb_m2s_uart_sel     (wb_m2s_uart_sel),
+      .wb_m2s_uart_we      (wb_m2s_uart_we),
+      .wb_m2s_uart_cyc     (wb_m2s_uart_cyc),
+      .wb_m2s_uart_stb     (wb_m2s_uart_stb),
+      .wb_m2s_uart_cti     (wb_m2s_uart_cti),
+      .wb_m2s_uart_bte     (wb_m2s_uart_bte),
+      .wb_s2m_uart_dat     (wb_s2m_uart_dat),
+      .wb_s2m_uart_ack     (wb_s2m_uart_ack),
+      .wb_s2m_uart_err     (wb_s2m_uart_err),
+      .wb_s2m_uart_rty     (wb_s2m_uart_rty));
      
    ////////////////////////////////////////////////////////////////////////
    //
@@ -232,19 +232,18 @@ module orpsoc_top
       //Wishbone Master interface
       .wb_clk_i (wb_clk_i),
       .wb_rst_i (wb_rst_i),
-      .wb_adr_i	(wb_mem_adr & (2**MEM_SIZE_BITS-1)),
-      .wb_dat_i	(wb_mem_dat),
-      .wb_sel_i	(wb_mem_sel),
-      .wb_we_i	(wb_mem_we),
-      .wb_cyc_i	(wb_mem_cyc),
-      .wb_stb_i	(wb_mem_stb),
-      .wb_cti_i	(wb_mem_cti),
-      .wb_bte_i	(wb_mem_bte),
-      .wb_dat_o	(wb_mem_rdt),
-      //.wb_sdt_o	(wb_mem_rdt),
-      .wb_ack_o	(wb_mem_ack),
-      .wb_err_o (wb_mem_err),
-      .wb_rty_o (wb_mem_rty));
+      .wb_adr_i	(wb_m2s_mem_adr & (2**MEM_SIZE_BITS-1)),
+      .wb_dat_i	(wb_m2s_mem_dat),
+      .wb_sel_i	(wb_m2s_mem_sel),
+      .wb_we_i	(wb_m2s_mem_we),
+      .wb_cyc_i	(wb_m2s_mem_cyc),
+      .wb_stb_i	(wb_m2s_mem_stb),
+      .wb_cti_i	(wb_m2s_mem_cti),
+      .wb_bte_i	(wb_m2s_mem_bte),
+      .wb_dat_o	(wb_s2m_mem_dat),
+      .wb_ack_o	(wb_s2m_mem_ack),
+      .wb_err_o (wb_s2m_mem_err),
+      .wb_rty_o (wb_s2m_mem_rty));
    
    ////////////////////////////////////////////////////////////////////////
    //
@@ -253,30 +252,30 @@ module orpsoc_top
    ////////////////////////////////////////////////////////////////////////
    wb_data_resize wb_data_resize_uart0
    (//Wishbone Master interface
-    .wbm_adr_i (wb_uart_adr),
-    .wbm_dat_i (wb_uart_dat),
-    .wbm_sel_i (wb_uart_sel),
-    .wbm_we_i  (wb_uart_we ),
-    .wbm_cyc_i (wb_uart_cyc),
-    .wbm_stb_i (wb_uart_stb),
-    .wbm_cti_i (wb_uart_cti),
-    .wbm_bte_i (wb_uart_bte),
-    .wbm_sdt_o (wb_uart_rdt),
-    .wbm_ack_o (wb_uart_ack),
-    .wbm_err_o (wb_uart_err),
-    .wbm_rty_o (wb_uart_rty), 
+    .wbm_adr_i (wb_m2s_uart_adr),
+    .wbm_dat_i (wb_m2s_uart_dat),
+    .wbm_sel_i (wb_m2s_uart_sel),
+    .wbm_we_i  (wb_m2s_uart_we ),
+    .wbm_cyc_i (wb_m2s_uart_cyc),
+    .wbm_stb_i (wb_m2s_uart_stb),
+    .wbm_cti_i (wb_m2s_uart_cti),
+    .wbm_bte_i (wb_m2s_uart_bte),
+    .wbm_dat_o (wb_s2m_uart_dat),
+    .wbm_ack_o (wb_s2m_uart_ack),
+    .wbm_err_o (wb_s2m_uart_err),
+    .wbm_rty_o (wb_s2m_uart_rty),
     // Wishbone Slave interface
-    .wbs_adr_o (wb_uart8_adr),
-    .wbs_dat_o (wb_uart8_dat),
-    .wbs_we_o  (wb_uart8_we ),
-    .wbs_cyc_o (wb_uart8_cyc),
-    .wbs_stb_o (wb_uart8_stb),
-    .wbs_cti_o (wb_uart8_cti),
-    .wbs_bte_o (wb_uart8_bte),
-    .wbs_sdt_i (wb_uart8_rdt),
-    .wbs_ack_i (wb_uart8_ack),
-    .wbs_err_i (wb_uart8_err),
-    .wbs_rty_i (wb_uart8_rty));
+    .wbs_adr_o (wb_m2s_uart8_adr),
+    .wbs_dat_o (wb_m2s_uart8_dat),
+    .wbs_we_o  (wb_m2s_uart8_we ),
+    .wbs_cyc_o (wb_m2s_uart8_cyc),
+    .wbs_stb_o (wb_m2s_uart8_stb),
+    .wbs_cti_o (wb_m2s_uart8_cti),
+    .wbs_bte_o (wb_m2s_uart8_bte),
+    .wbs_dat_i (wb_s2m_uart8_dat),
+    .wbs_ack_i (wb_s2m_uart8_ack),
+    .wbs_err_i (wb_s2m_uart8_err),
+    .wbs_rty_i (wb_s2m_uart8_rty));
 
    wb_uart_wrapper #(.DEBUG (0))
    wb_uart_wrapper0
@@ -284,17 +283,17 @@ module orpsoc_top
       //Wishbone Master interface
       .wb_clk_i (wb_clk_i),
       .wb_rst_i (wb_rst_i),
-      .wb_adr_i	(wb_uart8_adr),
-      .wb_dat_i	(wb_uart8_dat),
-      .wb_we_i	(wb_uart8_we),
-      .wb_cyc_i	(wb_uart8_cyc),
-      .wb_stb_i	(wb_uart8_stb),
-      .wb_cti_i	(wb_uart8_cti),
-      .wb_bte_i	(wb_uart8_bte),
-      .wb_dat_o	(wb_uart8_rdt),
-      .wb_ack_o	(wb_uart8_ack),
-      .wb_err_o (wb_uart8_err),
-      .wb_rty_o (wb_uart8_rty));
+      .wb_adr_i	(wb_m2s_uart8_adr),
+      .wb_dat_i	(wb_m2s_uart8_dat),
+      .wb_we_i	(wb_m2s_uart8_we),
+      .wb_cyc_i	(wb_m2s_uart8_cyc),
+      .wb_stb_i	(wb_m2s_uart8_stb),
+      .wb_cti_i	(wb_m2s_uart8_cti),
+      .wb_bte_i	(wb_m2s_uart8_bte),
+      .wb_dat_o	(wb_s2m_uart8_dat),
+      .wb_ack_o	(wb_s2m_uart8_ack),
+      .wb_err_o (wb_s2m_uart8_err),
+      .wb_rty_o (wb_s2m_uart8_rty));
 
    ////////////////////////////////////////////////////////////////////////
    //

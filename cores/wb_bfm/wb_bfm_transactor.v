@@ -20,7 +20,7 @@ module wb_bfm_transactor
     output 	    wb_stb_o,
     output [2:0]    wb_cti_o,
     output [1:0]    wb_bte_o,
-    input [dw-1:0]  wb_rdt_i,
+    input [dw-1:0]  wb_dat_i,
     input 	    wb_ack_i,
     input 	    wb_err_i,
     input 	    wb_rty_i,
@@ -48,7 +48,7 @@ module wb_bfm_transactor
       .wb_stb_o (wb_stb_o),
       .wb_cti_o (wb_cti_o),
       .wb_bte_o (wb_bte_o),
-      .wb_sdt_i (wb_rdt_i),
+      .wb_dat_i (wb_dat_i),
       .wb_ack_i (wb_ack_i),
       .wb_err_i (wb_err_i),
       .wb_rty_i (wb_rty_i));
