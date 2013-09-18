@@ -1,0 +1,211 @@
+#!/usr/bin/env python
+import sys
+
+if sys.version_info[0] >= 3:
+    import configparser
+else:
+    import ConfigParser as configparser
+from verilogwriter import Signal, Wire, Instance, ModulePort, VerilogWriter
+
+
+WB_MASTER_PORTS = [Signal('adr', 32),
+                   Signal('dat', 32),
+                   Signal('sel',  4),
+                   Signal('we'),
+                   Signal('cyc'),
+                   Signal('stb'),
+                   Signal('cti',  3),
+                   Signal('bte',  2)]
+
+WB_SLAVE_PORTS  = [Signal('dat', 32),
+                   Signal('ack'),
+                   Signal('err'),
+                   Signal('rty')]
+
+def parse_number(s):
+    if s.startswith('0x'):
+        return int(s, 16)
+    else:
+        return int(s)
+
+class Master:
+    def __init__(self, name):
+        self.name = name
+        self.slaves = []
+
+class Slave:
+    def __init__(self, name, d=None):
+        self.name = name
+        self.masters = []
+        self.datawidth = 32
+        self.offset = 0
+        self.size = 0
+        self.mask = 0
+        if d:
+            self.load_dict(d)
+
+    def load_dict(self, d):
+        for key, value in d.items():
+            if key == 'datawidth':
+                self.datawidth = value
+            elif key == 'offset':
+                self.offset = parse_number(value)
+            elif key == 'size':
+                self.size = parse_number(value)
+                self.mask = ~(self.size-1) & 0xffffffff
+            else:
+                raise Exception("Unknown property " + key + " in slave section " + self.name)
+            
+
+class Parameter:
+    def __init__(self, name, value):
+        self.name  = name
+        self.value = value
+
+class Port:
+    def __init__(self, name, value):
+        self.name = name
+        self.value = value
+
+
+class WbIntercon:
+    def __init__(self, name, config_file):
+        self.verilog_writer = VerilogWriter(name)
+        self.name = 'wb_intercon'
+        d = {}
+        self.slaves = {}
+        self.masters = {}
+        config = configparser.SafeConfigParser()
+        config.read(config_file)
+        for section in config.sections():
+            type=section.split()[0]
+            try:
+                name=section.split()[1]
+            except IndexError:
+                print("Malformed section header. Format is master|slave <name>")
+                exit(1)
+            if type == "master":
+                print("Found master " + name)
+                self.masters[name] = Master(name)
+                d[name] = config.get(section, 'slaves').split()
+            elif type == "slave":
+                print("Found slave " + name)
+                self.slaves[name] = Slave(name, dict(config.items(section)))
+            else:
+                print("Invalid section type " + type)
+                exit(1)
+        #Create master/slave connections
+        for master, slaves in d.items():
+            for slave in slaves:
+                self.masters[master].slaves += [self.slaves[slave]]
+                self.slaves[slave].masters += [self.masters[master]]
+
+    def _dump(self):
+        print("*Masters*")
+        for master in self.masters.values():
+            print(master.name)
+            for slave in master.slaves:
+                print(' ' + slave.name)
+
+        print("*Slaves*")
+        for slave in self.slaves.values():
+            print(slave.name)
+            for master in slave.masters:
+                print(' ' + master.name)
+                            
+
+    def _gen_mux(self, master):
+        parameters = [Parameter('num_slaves', len(master.slaves))]
+        match_addr = '{' + ', '.join(["32'h{addr:08x}".format(addr=s.offset) for s in master.slaves]) + '}'
+        parameters += [Parameter('MATCH_ADDR', match_addr)]
+
+        match_mask = '{' + ', '.join(["32'h{mask:08x}".format(mask=s.mask) for s in master.slaves]) + '}'
+        parameters += [Parameter('MATCH_MASK', match_mask)]
+        ports = [Port('wb_clk_i', 'wb_clk_i'),
+                 Port('wb_rst_i', 'wb_rst_i')]
+        m = master.name
+
+        #Create mux master side connections
+        for p in WB_MASTER_PORTS:
+            ports += [Port('wbm_' + p.name + '_i', 'wb_'+m+'_'+p.name+'_i')]
+        for p in WB_SLAVE_PORTS:
+            ports += [Port('wbm_' + p.name + '_o', 'wb_'+m+'_'+p.name+'_o')]
+
+        #Create mux slave side connections
+        name_list = []
+        for s in master.slaves:
+            if len(s.masters) == 1:
+                name_list += ['wb_' + s.name + '_{0}_{1}']
+            else:
+                name_list += ['wb_{dir}'+ m + '_' + s.name + '_{0}']
+        for p in WB_MASTER_PORTS:
+            ports += [Port('wbs_'+p.name+'_o', '{' + ', '.join(name_list).format(p.name, 'o', dir='m2s_')+'}')]
+        for p in WB_SLAVE_PORTS:
+            ports += [Port('wbs_'+p.name+'_i', '{' + ', '.join(name_list).format(p.name, 'i', dir='s2m_')+'}')]
+
+        self.verilog_writer.add(Instance('wb_mux', 'wb_mux_'+m,parameters, ports))
+
+    def _gen_arbiter(self, slave):
+        parameters = [Parameter('num_masters', len(slave.masters))]
+        ports = [Port('wb_clk_i', 'wb_clk_i'),
+                 Port('wb_rst_i', 'wb_rst_i')]
+        s = slave.name
+
+        name_list = []
+        for m in slave.masters:
+            if len(m.slaves) == 1:
+                name_list += ['wb_' + m.name + '_{0}_{1}']
+            else:
+                name_list += ['wb_{dir}'+ m.name + '_' + s + '_{0}']
+        for p in WB_MASTER_PORTS:
+            ports += [Port('wbm_'+p.name+'_i', '{' + ', '.join(name_list).format(p.name, 'i', dir='m2s_')+'}')]
+        for p in WB_SLAVE_PORTS:
+            ports += [Port('wbm_'+p.name+'_o', '{' + ', '.join(name_list).format(p.name, 'o', dir='s2m_')+'}')]
+
+        #Create slave connections
+        for p in WB_MASTER_PORTS:
+            ports += [Port('wbs_' + p.name + '_o', 'wb_'+s+'_'+p.name+'_o')]
+        for p in WB_SLAVE_PORTS:
+            ports += [Port('wbs_' + p.name + '_i', 'wb_'+s+'_'+p.name+'_i')]
+
+        self.verilog_writer.add(Instance('wb_arbiter', 'wb_arbiter_'+s,parameters, ports))
+
+    def write(self, file):
+        #Declare wires. Only conections between muxes and arbiters need explicit wires
+        for key, value in self.masters.items():
+            if len(value.slaves)>1:
+                for slave in value.slaves:
+                    if len(slave.masters)>1:
+                        for p in WB_MASTER_PORTS:
+                            self.verilog_writer.add(Wire('wb_m2s_{0}_{1}_{2}'.format(key, slave.name, p.name), p.width))
+                        for p in WB_SLAVE_PORTS:
+                            self.verilog_writer.add(Wire('wb_s2m_{0}_{1}_{2}'.format(key, slave.name, p.name), p.width))
+
+        self.verilog_writer.add(ModulePort('wb_clk_i', 'input'))
+        self.verilog_writer.add(ModulePort('wb_rst_i', 'input'))
+
+        for master in self.masters.values():
+            for p in WB_MASTER_PORTS:
+                self.verilog_writer.add(ModulePort('wb_{master}_{port}_i'.format(master=master.name, port=p.name), 'input', p.width))
+            for p in WB_SLAVE_PORTS:
+                self.verilog_writer.add(ModulePort('wb_{master}_{port}_o'.format(master=master.name, port=p.name), 'output', p.width))
+
+            if len(master.slaves) > 1:
+                self._gen_mux(master)
+            
+        for slave in self.slaves.values():
+            for p in WB_MASTER_PORTS:
+                self.verilog_writer.add(ModulePort('wb_{master}_{port}_o'.format(master=slave.name, port=p.name), 'output', p.width))
+            for p in WB_SLAVE_PORTS:
+                self.verilog_writer.add(ModulePort('wb_{master}_{port}_i'.format(master=slave.name, port=p.name), 'input', p.width))
+
+            if len(slave.masters) > 1:
+                self._gen_arbiter(slave)
+
+        self.verilog_writer.write(file)
+
+if __name__ == "__main__":
+    g = WbIntercon('wb_intercon', sys.argv[1])
+
+    print("="*80)
+    g.write(sys.argv[2])
