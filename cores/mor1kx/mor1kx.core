@@ -50,4 +50,4 @@ include_files =
 name = github
 user = openrisc
 repo = mor1kx
-branch = master
+version = master
