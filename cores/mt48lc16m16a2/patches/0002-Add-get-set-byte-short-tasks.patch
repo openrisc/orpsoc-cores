@@ -1,0 +1,110 @@
+From 705168bc1cd0335cb4a32a9825cf3e08f12c692c Mon Sep 17 00:00:00 2001
+From: Franck Jullien <franck.jullien@gmail.com>
+Date: Sat, 21 Sep 2013 09:38:19 +0200
+Subject: [PATCH 2/4] Add get/set byte/short tasks
+
+---
+ mt48lc16m16a2.v |   89 +++++++++++++++++++++++++++++++++++
+ 1 files changed, 89 insertions(+), 0 deletions(-)
+
+diff --git a/mt48lc16m16a2.v b/mt48lc16m16a2.v
+index b76ed2c..883b55b 100644
+--- a/mt48lc16m16a2.v
++++ b/mt48lc16m16a2.v
+@@ -1069,4 +1069,93 @@ module mt48lc16m16a2 (Dq, Addr, Ba, Clk, Cke, Cs_n, Ras_n, Cas_n, We_n, Dqm);
+         $setuphold(posedge Dq_chk, Dq,    tDS,  tDH);
+     endspecify
+ 
++    task get_byte;
++        input  [31:0] addr;
++        output [7:0]  data;
++        reg    [1:0]  bank;
++        reg    [15:0] short;
++
++        begin
++            bank = addr[24:23];
++            case (bank)
++                2'b00: short = Bank0[addr[22:1]];
++                2'b01: short = Bank1[addr[22:1]];
++                2'b10: short = Bank2[addr[22:1]];
++                2'b11: short = Bank3[addr[22:1]];
++            endcase
++
++            // Get the byte from the short
++            if (!addr[0])
++                data = short[15:8];
++            else
++                data = short[7:0];
++        end
++    endtask
++
++    task set_byte;
++        input  [31:0] addr;
++        output [7:0]  data;
++        reg    [1:0]  bank;
++        reg    [15:0] short;
++
++        begin
++            bank = addr[24:23];
++            case (bank)
++                2'b00: short = Bank0[addr[22:1]];
++                2'b01: short = Bank1[addr[22:1]];
++                2'b10: short = Bank2[addr[22:1]];
++                2'b11: short = Bank3[addr[22:1]];
++            endcase
++
++            // Set the byte in the short
++            if (!addr[0])
++                short[15:8] = data;
++            else
++                short[7:0] = data;
++
++            // Write short back to memory
++            case (bank)
++                2'b00: Bank0[addr[22:1]] = short;
++                2'b01: Bank1[addr[22:1]] = short;
++                2'b10: Bank2[addr[22:1]] = short;
++                2'b11: Bank3[addr[22:1]] = short;
++            endcase
++       end
++    endtask
++
++    task get_short;
++        input  [31:0] addr;
++        output [15:0] data;
++        reg    [1:0]  bank;
++        reg    [15:0] short;
++
++        begin
++            bank = addr[24:23];
++            case (bank)
++                2'b00: short = Bank0[addr[22:1]];
++                2'b01: short = Bank1[addr[22:1]];
++                2'b10: short = Bank2[addr[22:1]];
++                2'b11: short = Bank3[addr[22:1]];
++            endcase
++            data = short;
++        end
++    endtask
++
++    task set_short;
++        input  [31:0] addr;
++        output [15:0] data;
++        reg    [1:0]  bank;
++        reg    [15:0] short;
++
++        begin
++            bank = addr[24:23];
++            case (bank)
++                2'b00: Bank0[addr[22:1]] = data;
++                2'b01: Bank1[addr[22:1]] = data;
++                2'b10: Bank2[addr[22:1]] = data;
++                2'b11: Bank3[addr[22:1]] = data;
++            endcase
++        end
++    endtask
++
+ endmodule
+-- 
+1.7.1
+
