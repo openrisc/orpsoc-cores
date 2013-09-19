@@ -22,6 +22,7 @@ tb_private_src_files =
 include_files =
  bench/verilog/include/or1200_defines.v
  bench/verilog/include/timescale.v
+ bench/verilog/wb_intercon.vh
 
 [verilator]
 verilator_options = -Wno-fatal --trace
