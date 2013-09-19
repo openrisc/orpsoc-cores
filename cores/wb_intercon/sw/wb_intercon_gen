@@ -71,6 +71,7 @@ class Port:
 class WbIntercon:
     def __init__(self, name, config_file):
         self.verilog_writer = VerilogWriter(name)
+        self.template_writer = VerilogWriter(name);
         self.name = 'wb_intercon'
         d = {}
         self.slaves = {}
@@ -184,25 +185,49 @@ class WbIntercon:
         self.verilog_writer.add(ModulePort('wb_clk_i', 'input'))
         self.verilog_writer.add(ModulePort('wb_rst_i', 'input'))
 
+        template_ports = [Port('wb_clk_i', 'wb_clk'),
+                          Port('wb_rst_i', 'wb_rst')]
+        template_parameters = []
+
         for master in self.masters.values():
             for p in WB_MASTER_PORTS:
-                self.verilog_writer.add(ModulePort('wb_{master}_{port}_i'.format(master=master.name, port=p.name), 'input', p.width))
+                portname = 'wb_{master}_{port}_i'.format(master=master.name, port=p.name)
+                wirename = 'wb_m2s_{master}_{port}'.format(master=master.name, port=p.name)
+                self.verilog_writer.add(ModulePort(portname, 'input', p.width))
+                self.template_writer.add(Wire(wirename, p.width))
+                template_ports += [Port(portname, wirename)]
             for p in WB_SLAVE_PORTS:
-                self.verilog_writer.add(ModulePort('wb_{master}_{port}_o'.format(master=master.name, port=p.name), 'output', p.width))
+                portname = 'wb_{master}_{port}_o'.format(master=master.name, port=p.name)
+                wirename = 'wb_s2m_{master}_{port}'.format(master=master.name, port=p.name)
+                self.verilog_writer.add(ModulePort(portname, 'output', p.width))
+                self.template_writer.add(Wire(wirename, p.width))
+                template_ports += [Port(portname, wirename)]
 
             if len(master.slaves) > 1:
                 self._gen_mux(master)
             
         for slave in self.slaves.values():
             for p in WB_MASTER_PORTS:
-                self.verilog_writer.add(ModulePort('wb_{master}_{port}_o'.format(master=slave.name, port=p.name), 'output', p.width))
+                portname = 'wb_{slave}_{port}_o'.format(slave=slave.name, port=p.name)
+                wirename = 'wb_m2s_{slave}_{port}'.format(slave=slave.name, port=p.name)
+                self.verilog_writer.add(ModulePort(portname, 'output', p.width))
+                self.template_writer.add(Wire(wirename, p.width))
+                template_ports += [Port(portname, wirename)]
             for p in WB_SLAVE_PORTS:
-                self.verilog_writer.add(ModulePort('wb_{master}_{port}_i'.format(master=slave.name, port=p.name), 'input', p.width))
+                portname = 'wb_{slave}_{port}_i'.format(slave=slave.name, port=p.name)
+                wirename = 'wb_s2m_{slave}_{port}'.format(slave=slave.name, port=p.name)
+                self.verilog_writer.add(ModulePort(portname, 'input', p.width))
+                self.template_writer.add(Wire(wirename, p.width))
+                template_ports += [Port(portname, wirename)]
 
             if len(slave.masters) > 1:
                 self._gen_arbiter(slave)
 
+        self.template_writer.add(Instance(self.name, self.name+'0',
+                                          template_parameters, template_ports))
+
         self.verilog_writer.write(file)
+        self.template_writer.write(file+'h')
 
 if __name__ == "__main__":
     g = WbIntercon('wb_intercon', sys.argv[1])

@@ -69,14 +69,14 @@ class VerilogWriter:
             raise Exception("Invalid type!" + str(obj))
 
     def write(self, file=None):
-        s = "module {name}\n".format(name=self.name)
-
+        s = ""
         if self.ports:
+            s += "module {name}\n".format(name=self.name)
             max_len = max([len(p.range()) for p in self.ports])
             s += '   ('
             s += ',\n    '.join([p.write(max_len) for p in self.ports])
             s += ')'
-        s += ';\n\n'
+            s += ';\n\n'
         if self.wires:
             max_len = max([len(w.range()) for w in self.wires])
             for w in self.wires:
@@ -85,7 +85,8 @@ class VerilogWriter:
         for i in self.instances:
             s += i.write()
             s += '\n'
-        s += 'endmodule\n'
+        if self.ports:
+            s += 'endmodule\n'
         if file is None:
             return s
         else:
