@@ -4,7 +4,9 @@ description = Micron 256Mb SDRAM Verilog model
 
 [verilog]
 src_files =
- verilog/mt48lc16m16a2.v
+ mt48lc16m16a2.v
 
-tb_src_files = 
- verilog/mt48lc16m16a2_loader.v
+[provider]
+name = url
+url = http://www.micron.com/~/media/Documents/Products/Sim%%20Model/DRAM/DRAM/4012mt48lc16m16a2.zip
+filetype = zip

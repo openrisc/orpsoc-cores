@@ -1,0 +1,25 @@
+From 8705b9dc6453c41faf931dced8cf6359425e8a38 Mon Sep 17 00:00:00 2001
+From: Franck Jullien <franck.jullien@gmail.com>
+Date: Sat, 21 Sep 2013 09:39:14 +0200
+Subject: [PATCH 3/4] Turn off debug message by default
+
+---
+ mt48lc16m16a2.v |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+diff --git a/mt48lc16m16a2.v b/mt48lc16m16a2.v
+index 883b55b..032af9c 100644
+--- a/mt48lc16m16a2.v
++++ b/mt48lc16m16a2.v
+@@ -119,7 +119,7 @@ module mt48lc16m16a2 (Dq, Addr, Ba, Clk, Cke, Cs_n, Ras_n, Cas_n, We_n, Dqm);
+     // Write Burst Mode
+     wire      Write_burst_mode = Mode_reg[9];
+ 
+-    wire      Debug            = 1'b1;                          // Debug messages : 1 = On
++    wire      Debug            = 1'b0;                          // Debug messages : 1 = On
+     wire      Dq_chk           = Sys_clk & Data_in_enable;      // Check setup/hold time for DQ
+     
+     assign    Dq               = Dq_reg;                        // DQ buffer
+-- 
+1.7.1
+
