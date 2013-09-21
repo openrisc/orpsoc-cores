@@ -1,0 +1,6 @@
+CAPI=1
+[main]
+description = Advanced Debug System wrapper for altera virtual jtag
+
+[verilog]
+src_files = altera_virtual_jtag.v
