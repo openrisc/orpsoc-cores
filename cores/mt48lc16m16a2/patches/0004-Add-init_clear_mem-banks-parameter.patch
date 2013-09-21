@@ -34,7 +34,7 @@ index 032af9c..2df51fe 100644
 +
 +        if (init_clear_mem_banks == "YES") begin
 +            $display("Initialize the SDRAM memory with '0'\n");
-+            for (mem_cnt = 0; mem_cnt < MEM_SIZES; mem_cnt = mem_cnt + 1)
++            for (mem_cnt = 0; mem_cnt < mem_sizes; mem_cnt = mem_cnt + 1)
 +            begin
 +                Bank0[mem_cnt] = 0;
 +                Bank1[mem_cnt] = 0;
