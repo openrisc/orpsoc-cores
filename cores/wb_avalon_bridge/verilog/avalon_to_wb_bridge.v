@@ -59,7 +59,7 @@ reg read_access;
 always @(posedge clk)
 	if (rst)
 		read_access <= 0;
-	else if (wbm_ack_i)
+	else if (wbm_ack_i | wbm_err_i)
 		read_access <= 0;
 	else if (avm_read_i)
 		read_access <= 1;
