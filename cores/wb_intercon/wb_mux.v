@@ -90,6 +90,7 @@ module wb_mux
 // Master/slave connection
 ///////////////////////////////////////////////////////////////////////////////
 
+   reg  			 wbm_err;
    wire [$clog2(num_slaves)-1:0] slave_sel;
    wire [$clog2(num_slaves)-1:0] slave_sel_int [0:num_slaves-1];
 
@@ -110,13 +111,16 @@ module wb_mux
       end
    endgenerate
    assign slave_sel = slave_sel_int[num_slaves-1];
-   
+
+   always @(posedge wb_clk_i)
+     wbm_err <= wbm_cyc_i & !(|match);
+
    assign wbs_adr_o = {num_slaves{wbm_adr_i}};
    assign wbs_dat_o = {num_slaves{wbm_dat_i}};
    assign wbs_sel_o = {num_slaves{wbm_sel_i}};
    assign wbs_we_o  = {num_slaves{wbm_we_i}};
 
-   assign wbs_cyc_o = {num_slaves{(|match)}} & (wbm_cyc_i << slave_sel);
+   assign wbs_cyc_o = match & (wbm_cyc_i << slave_sel);
    assign wbs_stb_o = {num_slaves{wbm_stb_i}};
    
    assign wbs_cti_o = {num_slaves{wbm_cti_i}};
@@ -124,7 +128,7 @@ module wb_mux
 
    assign wbm_dat_o = wbs_dat_i[slave_sel*dw+:dw];
    assign wbm_ack_o = wbs_ack_i[slave_sel];
-   assign wbm_err_o = wbs_err_i[slave_sel];
+   assign wbm_err_o = wbs_err_i[slave_sel] | wbm_err;
    assign wbm_rty_o = wbs_rty_i[slave_sel];
 
 endmodule
