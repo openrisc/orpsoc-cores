@@ -326,7 +326,7 @@ mor1kx #(
 	.dwbm_dat_o(wb_m2s_or1k_d_dat),
 
 	.clk(wb_clk),
-	.rst(wb_rst),
+	.rst(or1k_rst),
 
 	.iwbm_err_i(wb_s2m_or1k_i_err),
 	.iwbm_ack_i(wb_s2m_or1k_i_ack),
