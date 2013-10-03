@@ -18,6 +18,7 @@ depend =
 
 simulators =
  icarus
+ modelsim
 
 [verilog]
 src_files = 
@@ -39,8 +40,8 @@ include_files =
  rtl/verilog/wb_intercon.vh
 
 [icarus]
- iverilog_options = -DICARUS_SIM -DSIM
+iverilog_options = -DICARUS_SIM -DSIM
 
 [modelsim]
- vlog_options = +define+SIM +define+MODELSIM_SIM
- vsim_options = -L altera_mf_ver -L altera_mf
+vlog_options = +define+SIM +define+MODELSIM_SIM
+vsim_options = -L altera_mf_ver -L altera_mf
