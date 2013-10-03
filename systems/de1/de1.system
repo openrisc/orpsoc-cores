@@ -3,17 +3,7 @@ SAPI=1
 name = de1
 description = "Altera de1 board OpenRISC system"
 
-simulators =
- icarus
- modelsim
-
 backend = quartus
-
-[icarus]
-iverilog_options = -DSIM
-
-[modelsim]
-vlog_options = +define+SIM
 
 [quartus]
 family = "Cyclone II"
