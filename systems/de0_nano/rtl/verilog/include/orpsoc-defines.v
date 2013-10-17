@@ -42,6 +42,7 @@
 `define ALTERA_JTAG_TAP
 `define UART0
 `define SPI0
+`define SPI1
 `define RAM_WB
 `define INTGEN
 `define BOOTROM
