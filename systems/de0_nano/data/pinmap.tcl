@@ -16,6 +16,18 @@ set_location_assignment PIN_D15 -to uart0_stx_pad_o
 set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to uart0_stx_pad_o
 
 #
+# SPI0
+#
+set_location_assignment PIN_C1 -to spi0_mosi_o
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to spi0_mosi_o
+set_location_assignment PIN_H2 -to spi0_miso_i
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to spi0_miso_i
+set_location_assignment PIN_H1 -to spi0_sck_o
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to spi0_sck_o
+set_location_assignment PIN_D2 -to spi0_ss_o[0]
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to spi0_ss_o[0]
+
+#
 # SDRAM
 #
 set_location_assignment PIN_P2 -to sdram_a_pad_o[0]

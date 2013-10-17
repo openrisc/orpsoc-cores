@@ -571,6 +571,94 @@ wb_data_resize wb_data_resize_uart0 (
 	.wbs_rty_i	(wb8_s2m_uart0_rty)
 );
 
+`ifdef SPI0
+////////////////////////////////////////////////////////////////////////
+//
+// SPI0 controller
+//
+////////////////////////////////////////////////////////////////////////
+
+//
+// Wires
+//
+wire            spi0_irq;
+
+wire [31:0]	wb8_m2s_spi0_adr;
+wire [1:0]	wb8_m2s_spi0_bte;
+wire [2:0]	wb8_m2s_spi0_cti;
+wire		wb8_m2s_spi0_cyc;
+wire [7:0]	wb8_m2s_spi0_dat;
+wire		wb8_m2s_spi0_stb;
+wire		wb8_m2s_spi0_we;
+wire [7:0] 	wb8_s2m_spi0_dat;
+wire		wb8_s2m_spi0_ack;
+wire		wb8_s2m_spi0_err;
+wire		wb8_s2m_spi0_rty;
+
+//
+// Assigns
+//
+assign  wbs_d_spi0_err_o = 0;
+assign  wbs_d_spi0_rty_o = 0;
+assign  spi0_hold_n_o = 1;
+assign  spi0_w_n_o = 1;
+
+simple_spi spi0(
+	// Wishbone slave interface
+	.clk_i	(wb_clk),
+	.rst_i	(wb_rst),
+	.adr_i	(wb8_m2s_spi0_adr[2:0]),
+	.dat_i	(wb8_m2s_spi0_dat),
+	.we_i	(wb8_m2s_spi0_we),
+	.stb_i	(wb8_m2s_spi0_stb),
+	.cyc_i	(wb8_m2s_spi0_cyc),
+	.dat_o	(wb8_s2m_spi0_dat),
+	.ack_o	(wb8_s2m_spi0_ack),
+
+	// Outputs
+	.inta_o		(spi0_irq),
+	.sck_o		(spi0_sck_o),
+ `ifdef SPI0_SLAVE_SELECTS
+	.ss_o		(spi0_ss_o),
+ `else
+	.ss_o		(),
+ `endif
+	.mosi_o		(spi0_mosi_o),
+
+	// Inputs
+	.miso_i		(spi0_miso_i)
+);
+
+// 32-bit to 8-bit wishbone bus resize
+wb_data_resize wb_data_resize_spi0 (
+	// Wishbone Master interface
+	.wbm_adr_i	(wb_m2s_spi0_adr),
+	.wbm_dat_i	(wb_m2s_spi0_dat),
+	.wbm_sel_i	(wb_m2s_spi0_sel),
+	.wbm_we_i	(wb_m2s_spi0_we ),
+	.wbm_cyc_i	(wb_m2s_spi0_cyc),
+	.wbm_stb_i	(wb_m2s_spi0_stb),
+	.wbm_cti_i	(wb_m2s_spi0_cti),
+	.wbm_bte_i	(wb_m2s_spi0_bte),
+	.wbm_dat_o	(wb_s2m_spi0_dat),
+	.wbm_ack_o	(wb_s2m_spi0_ack),
+	.wbm_err_o	(wb_s2m_spi0_err),
+	.wbm_rty_o	(wb_s2m_spi0_rty),
+	// Wishbone Slave interface
+	.wbs_adr_o	(wb8_m2s_spi0_adr),
+	.wbs_dat_o	(wb8_m2s_spi0_dat),
+	.wbs_we_o 	(wb8_m2s_spi0_we ),
+	.wbs_cyc_o	(wb8_m2s_spi0_cyc),
+	.wbs_stb_o	(wb8_m2s_spi0_stb),
+	.wbs_cti_o	(wb8_m2s_spi0_cti),
+	.wbs_bte_o	(wb8_m2s_spi0_bte),
+	.wbs_dat_i	(wb8_s2m_spi0_dat),
+	.wbs_ack_i	(wb8_s2m_spi0_ack),
+	.wbs_err_i	(wb8_s2m_spi0_err),
+	.wbs_rty_i	(wb8_s2m_spi0_rty)
+);
+`endif
+
 ////////////////////////////////////////////////////////////////////////
 //
 // GPIO 0
@@ -666,7 +754,11 @@ assign or1k_irq[2] = uart0_irq;
 assign or1k_irq[3] = 0;
 assign or1k_irq[4] = 0;
 assign or1k_irq[5] = 0;
-assign or1k_irq[6] = 0;
+`ifdef SPI0
+   assign or1k_irq[6] = spi0_irq;
+`else
+   assign or1k_irq[6] = 0;
+`endif
 assign or1k_irq[7] = 0;
 assign or1k_irq[8] = 0;
 assign or1k_irq[9] = 0;
