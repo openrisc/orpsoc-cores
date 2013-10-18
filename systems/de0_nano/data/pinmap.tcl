@@ -41,6 +41,21 @@ set_location_assignment PIN_A10 -to spi1_ss_o[0]
 set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to spi1_ss_o[0]
 
 #
+# SPI2: MOSI <-> GPIO_2[2] (Pin  7, bottom header)
+#       MISO <-> GPIO_2[3] (Pin  8, bottom header)
+#       SCK  <-> GPIO_2[4] (Pin  9, bottom header)
+#       SS   <-> GPIO_2[5] (Pin 10, bottom header)
+#
+set_location_assignment PIN_C14 -to spi2_mosi_o
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to spi2_mosi_o
+set_location_assignment PIN_C16 -to spi2_miso_i
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to spi2_miso_i
+set_location_assignment PIN_C15 -to spi2_sck_o
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to spi2_sck_o
+set_location_assignment PIN_D16 -to spi2_ss_o[0]
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to spi2_ss_o[0]
+
+#
 # SDRAM
 #
 set_location_assignment PIN_P2 -to sdram_a_pad_o[0]
