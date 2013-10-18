@@ -1,3 +1,4 @@
+CAPI=1
 [main]
 name= jp_vpi
 description = Debug interface GDB server

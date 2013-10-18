@@ -8,12 +8,52 @@ set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to sys_clk_pad_i
 set_location_assignment PIN_G5 -to VCC
 
 #
-# UART0
+# UART0: RX <-> GPIO_2[0] (Pin 5, bottom header)
+#        TX <-> GPIO_2[1] (Pin 6, bottom header)
 #
-set_location_assignment PIN_C16 -to uart0_srx_pad_i
+set_location_assignment PIN_A14 -to uart0_srx_pad_i
 set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to uart0_srx_pad_i
-set_location_assignment PIN_D15 -to uart0_stx_pad_o
+set_location_assignment PIN_B16 -to uart0_stx_pad_o
 set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to uart0_stx_pad_o
+
+#
+# SPI0: Connected to the EPCS
+#
+set_location_assignment PIN_C1 -to spi0_mosi_o
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to spi0_mosi_o
+set_location_assignment PIN_H2 -to spi0_miso_i
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to spi0_miso_i
+set_location_assignment PIN_H1 -to spi0_sck_o
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to spi0_sck_o
+set_location_assignment PIN_D2 -to spi0_ss_o[0]
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to spi0_ss_o[0]
+
+#
+# SPI1: Connected to the AD converter
+#
+set_location_assignment PIN_B10 -to spi1_mosi_o
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to spi1_mosi_o
+set_location_assignment PIN_A9 -to spi1_miso_i
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to spi1_miso_i
+set_location_assignment PIN_B14 -to spi1_sck_o
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to spi1_sck_o
+set_location_assignment PIN_A10 -to spi1_ss_o[0]
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to spi1_ss_o[0]
+
+#
+# SPI2: MOSI <-> GPIO_2[2] (Pin  7, bottom header)
+#       MISO <-> GPIO_2[3] (Pin  8, bottom header)
+#       SCK  <-> GPIO_2[4] (Pin  9, bottom header)
+#       SS   <-> GPIO_2[5] (Pin 10, bottom header)
+#
+set_location_assignment PIN_C14 -to spi2_mosi_o
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to spi2_mosi_o
+set_location_assignment PIN_C16 -to spi2_miso_i
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to spi2_miso_i
+set_location_assignment PIN_C15 -to spi2_sck_o
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to spi2_sck_o
+set_location_assignment PIN_D16 -to spi2_ss_o[0]
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to spi2_ss_o[0]
 
 #
 # SDRAM
