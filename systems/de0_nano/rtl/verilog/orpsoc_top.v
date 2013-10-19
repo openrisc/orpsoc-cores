@@ -47,8 +47,6 @@ module orpsoc_top #(
 	input		sys_clk_pad_i,
 	input		rst_n_pad_i,
 
-	inout	[7:0]	gpio0_io,
-
 `ifdef SIM
 	output		tdo_pad_o,
 	input		tms_pad_i,
@@ -68,7 +66,36 @@ module orpsoc_top #(
 	output		sdram_clk_pad_o,
 
 	input		uart0_srx_pad_i,
-	output		uart0_stx_pad_o
+	output		uart0_stx_pad_o,
+
+`ifdef SPI0
+    output          spi0_sck_o,
+    output          spi0_mosi_o,
+    input           spi0_miso_i,
+ `ifdef SPI0_SLAVE_SELECTS
+    output          spi0_ss_o,
+ `endif
+`endif
+
+`ifdef SPI1
+    output          spi1_sck_o,
+    output          spi1_mosi_o,
+    input           spi1_miso_i,
+ `ifdef SPI1_SLAVE_SELECTS
+    output          spi1_ss_o,
+ `endif
+`endif
+
+`ifdef SPI2
+    output          spi2_sck_o,
+    output          spi2_mosi_o,
+    input           spi2_miso_i,
+ `ifdef SPI2_SLAVE_SELECTS
+    output          spi2_ss_o,
+ `endif
+`endif
+
+	inout	[7:0]	gpio0_io
 );
 
 parameter	IDCODE_VALUE=32'h14951185;
