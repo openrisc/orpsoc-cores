@@ -15,4 +15,4 @@ include_files =
 name = opencores
 repo_name = i2c
 repo_root = trunk/rtl/verilog
-revision = 74
+revision = 76
