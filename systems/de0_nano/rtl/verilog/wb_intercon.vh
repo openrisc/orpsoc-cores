@@ -236,6 +236,36 @@ wb_intercon wb_intercon0
     .wb_uart0_err_i      (wb_s2m_uart0_err),
     .wb_uart0_rty_i      (wb_s2m_uart0_rty),
     
+    // i2c0
+    .wb_i2c0_adr_o       (wb_m2s_i2c0_adr),
+    .wb_i2c0_dat_o       (wb_m2s_i2c0_dat),
+    .wb_i2c0_sel_o       (wb_m2s_i2c0_sel),
+    .wb_i2c0_we_o        (wb_m2s_i2c0_we),
+    .wb_i2c0_cyc_o       (wb_m2s_i2c0_cyc),
+    .wb_i2c0_stb_o       (wb_m2s_i2c0_stb),
+    .wb_i2c0_cti_o       (wb_m2s_i2c0_cti),
+    .wb_i2c0_bte_o       (wb_m2s_i2c0_bte),
+    
+    .wb_i2c0_dat_i       (wb_s2m_i2c0_dat),
+    .wb_i2c0_ack_i       (wb_s2m_i2c0_ack),
+    .wb_i2c0_err_i       (wb_s2m_i2c0_err),
+    .wb_i2c0_rty_i       (wb_s2m_i2c0_rty),
+
+    // i2c1
+    .wb_i2c1_adr_o       (wb_m2s_i2c1_adr),
+    .wb_i2c1_dat_o       (wb_m2s_i2c1_dat),
+    .wb_i2c1_sel_o       (wb_m2s_i2c1_sel),
+    .wb_i2c1_we_o        (wb_m2s_i2c1_we),
+    .wb_i2c1_cyc_o       (wb_m2s_i2c1_cyc),
+    .wb_i2c1_stb_o       (wb_m2s_i2c1_stb),
+    .wb_i2c1_cti_o       (wb_m2s_i2c1_cti),
+    .wb_i2c1_bte_o       (wb_m2s_i2c1_bte),
+    
+    .wb_i2c1_dat_i       (wb_s2m_i2c1_dat),
+    .wb_i2c1_ack_i       (wb_s2m_i2c1_ack),
+    .wb_i2c1_err_i       (wb_s2m_i2c1_err),
+    .wb_i2c1_rty_i       (wb_s2m_i2c1_rty),
+    
     // spi0
     .wb_spi0_adr_o       (wb_m2s_spi0_adr),
     .wb_spi0_dat_o       (wb_m2s_spi0_dat),
@@ -323,7 +353,7 @@ wb_intercon wb_intercon0
     .wb_sdram_ibus_dat_i (wb_s2m_sdram_ibus_dat),
     .wb_sdram_ibus_ack_i (wb_s2m_sdram_ibus_ack),
     .wb_sdram_ibus_err_i (wb_s2m_sdram_ibus_err),
-    .wb_sdram_ibus_rty_i (wb_s2m_sdram_ibus_rty)
+    .wb_sdram_ibus_rty_i (wb_s2m_sdram_ibus_rty),
 
     // rom0
     .wb_rom0_adr_o       (wb_m2s_rom0_adr),

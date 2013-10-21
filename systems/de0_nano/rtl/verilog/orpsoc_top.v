@@ -42,7 +42,10 @@
 
 module orpsoc_top #(
 	parameter	rom0_aw = 6,
-	parameter	uart0_aw = 3
+	parameter	uart0_aw = 3,
+        parameter       HV1_SADR = 8'h45,
+        parameter       i2c0_wb_adr_width = 3,
+        parameter       i2c1_wb_adr_width = 3
 )(
 	input		sys_clk_pad_i,
 	input		rst_n_pad_i,
@@ -67,7 +70,14 @@ module orpsoc_top #(
 
 	input		uart0_srx_pad_i,
 	output		uart0_stx_pad_o,
-
+`ifdef I2C0
+	inout		i2c0_sda_io,
+	inout		i2c0_scl_io,
+`endif    
+`ifdef I2C1
+	inout		i2c1_sda_io,
+	inout		i2c1_scl_io,
+`endif    
 `ifdef SPI0
     output          spi0_sck_o,
     output          spi0_mosi_o,
@@ -598,6 +608,214 @@ wb_data_resize wb_data_resize_uart0 (
 	.wbs_rty_i	(wb8_s2m_uart0_rty)
 );
 
+`ifdef I2C0
+////////////////////////////////////////////////////////////////////////
+//
+// I2C controller 0
+// 
+////////////////////////////////////////////////////////////////////////
+
+//
+// Wires
+//
+wire 		i2c0_irq;
+wire 		scl0_pad_o;
+wire 		scl0_padoen_o;
+wire 		sda0_pad_o;
+wire 		sda0_padoen_o;
+
+wire [31:0]	wb8_m2s_i2c0_adr;
+wire [1:0]	wb8_m2s_i2c0_bte;
+wire [2:0]	wb8_m2s_i2c0_cti;
+wire		wb8_m2s_i2c0_cyc;
+wire [7:0]	wb8_m2s_i2c0_dat;
+wire		wb8_m2s_i2c0_stb;
+wire		wb8_m2s_i2c0_we;
+wire [7:0] 	wb8_s2m_i2c0_dat;
+wire		wb8_s2m_i2c0_ack;
+wire		wb8_s2m_i2c0_err;
+wire		wb8_s2m_i2c0_rty;
+
+i2c_master_slave
+ #
+ (
+  .DEFAULT_SLAVE_ADDR(HV1_SADR)     
+ )
+i2c_master_slave0 
+  (
+   .wb_clk_i			     (wb_clk),
+   .wb_rst_i			     (wb_rst),
+   .arst_i			     (wb_rst),
+   .wb_adr_i			     (wb8_m2s_i2c0_adr[i2c0_wb_adr_width-1:0]),
+   .wb_dat_i			     (wb8_m2s_i2c0_dat),
+   .wb_we_i			     (wb8_m2s_i2c0_we),
+   .wb_cyc_i			     (wb8_m2s_i2c0_cyc),
+   .wb_stb_i			     (wb8_m2s_i2c0_stb),    
+   .wb_dat_o			     (wb8_s2m_i2c0_dat),
+   .wb_ack_o			     (wb8_s2m_i2c0_ack),
+   .scl_pad_i		     	     (i2c0_scl_io        ),
+   .scl_pad_o			     (scl0_pad_o	 ),
+   .scl_padoen_o		     (scl0_padoen_o	 ),
+   .sda_pad_i			     (i2c0_sda_io 	 ),
+   .sda_pad_o			     (sda0_pad_o	 ),
+   .sda_padoen_o		     (sda0_padoen_o	 ),
+   
+   // Interrupt
+   .wb_inta_o			     (i2c0_irq)
+ 
+   );
+
+assign wb8_s2m_i2c0_err = 0;
+assign wb8_s2m_i2c0_rty = 0;
+
+// i2c phy lines
+assign i2c0_scl_io = scl0_padoen_o ? 1'bz : scl0_pad_o; 
+assign i2c0_sda_io = sda0_padoen_o ? 1'bz : sda0_pad_o;
+
+// 32-bit to 8-bit wishbone bus resize
+wb_data_resize wb_data_resize_i2c0 (
+	// Wishbone Master interface
+	.wbm_adr_i	(wb_m2s_i2c0_adr),
+	.wbm_dat_i	(wb_m2s_i2c0_dat),
+	.wbm_sel_i	(wb_m2s_i2c0_sel),
+	.wbm_we_i	(wb_m2s_i2c0_we ),
+	.wbm_cyc_i	(wb_m2s_i2c0_cyc),
+	.wbm_stb_i	(wb_m2s_i2c0_stb),
+	.wbm_cti_i	(wb_m2s_i2c0_cti),
+	.wbm_bte_i	(wb_m2s_i2c0_bte),
+	.wbm_dat_o	(wb_s2m_i2c0_dat),
+	.wbm_ack_o	(wb_s2m_i2c0_ack),
+	.wbm_err_o	(wb_s2m_i2c0_err),
+	.wbm_rty_o	(wb_s2m_i2c0_rty),
+	// Wishbone Slave interface
+	.wbs_adr_o	(wb8_m2s_i2c0_adr),
+	.wbs_dat_o	(wb8_m2s_i2c0_dat),
+	.wbs_we_o 	(wb8_m2s_i2c0_we ),
+	.wbs_cyc_o	(wb8_m2s_i2c0_cyc),
+	.wbs_stb_o	(wb8_m2s_i2c0_stb),
+	.wbs_cti_o	(wb8_m2s_i2c0_cti),
+	.wbs_bte_o	(wb8_m2s_i2c0_bte),
+	.wbs_dat_i	(wb8_s2m_i2c0_dat),
+	.wbs_ack_i	(wb8_s2m_i2c0_ack),
+	.wbs_err_i	(wb8_s2m_i2c0_err),
+	.wbs_rty_i	(wb8_s2m_i2c0_rty)
+);
+
+////////////////////////////////////////////////////////////////////////
+`else // !`ifdef I2C0   
+
+assign wb8_s2m_i2c0_dat = 0;
+assign wb8_s2m_i2c0_ack = 0;
+assign wb8_s2m_i2c0_err = 0;
+assign wb8_s2m_i2c0_rty = 0;
+
+////////////////////////////////////////////////////////////////////////
+`endif // !`ifdef I2C0
+
+`ifdef I2C1
+////////////////////////////////////////////////////////////////////////
+//
+// I2C controller 1
+// 
+////////////////////////////////////////////////////////////////////////
+
+//
+// Wires
+//
+wire 		i2c1_irq;
+wire 		scl1_pad_o;
+wire 		scl1_padoen_o;
+wire 		sda1_pad_o;
+wire 		sda1_padoen_o;
+
+wire [31:0]	wb8_m2s_i2c1_adr;
+wire [1:0]	wb8_m2s_i2c1_bte;
+wire [2:0]	wb8_m2s_i2c1_cti;
+wire		wb8_m2s_i2c1_cyc;
+wire [7:0]	wb8_m2s_i2c1_dat;
+wire		wb8_m2s_i2c1_stb;
+wire		wb8_m2s_i2c1_we;
+wire [7:0] 	wb8_s2m_i2c1_dat;
+wire		wb8_s2m_i2c1_ack;
+wire		wb8_s2m_i2c1_err;
+wire		wb8_s2m_i2c1_rty;
+
+i2c_master_slave
+ #
+ (
+  .DEFAULT_SLAVE_ADDR(HV1_SADR)     
+ )
+i2c_master_slave1 
+  (
+   .wb_clk_i			     (wb_clk),
+   .wb_rst_i			     (wb_rst),
+   .arst_i			     (wb_rst),
+   .wb_adr_i			     (wb8_m2s_i2c1_adr[i2c1_wb_adr_width-1:0]),
+   .wb_dat_i			     (wb8_m2s_i2c1_dat),
+   .wb_we_i			     (wb8_m2s_i2c1_we),
+   .wb_cyc_i			     (wb8_m2s_i2c1_cyc),
+   .wb_stb_i			     (wb8_m2s_i2c1_stb),    
+   .wb_dat_o			     (wb8_s2m_i2c1_dat),
+   .wb_ack_o			     (wb8_s2m_i2c1_ack),
+   .scl_pad_i		     	     (i2c1_scl_io        ),
+   .scl_pad_o			     (scl1_pad_o	 ),
+   .scl_padoen_o		     (scl1_padoen_o	 ),
+   .sda_pad_i			     (i2c1_sda_io 	 ),
+   .sda_pad_o			     (sda1_pad_o	 ),
+   .sda_padoen_o		     (sda1_padoen_o	 ),
+   
+   // Interrupt
+   .wb_inta_o			     (i2c1_irq)
+ 
+   );
+
+assign wb8_s2m_i2c1_err = 0;
+assign wb8_s2m_i2c1_rty = 0;
+
+// i2c phy lines
+assign i2c1_scl_io = scl1_padoen_o ? 1'bz : scl1_pad_o;
+assign i2c1_sda_io = sda1_padoen_o ? 1'bz : sda1_pad_o;
+
+// 32-bit to 8-bit wishbone bus resize
+wb_data_resize wb_data_resize_i2c1 (
+	// Wishbone Master interface
+	.wbm_adr_i	(wb_m2s_i2c1_adr),
+	.wbm_dat_i	(wb_m2s_i2c1_dat),
+	.wbm_sel_i	(wb_m2s_i2c1_sel),
+	.wbm_we_i	(wb_m2s_i2c1_we ),
+	.wbm_cyc_i	(wb_m2s_i2c1_cyc),
+	.wbm_stb_i	(wb_m2s_i2c1_stb),
+	.wbm_cti_i	(wb_m2s_i2c1_cti),
+	.wbm_bte_i	(wb_m2s_i2c1_bte),
+	.wbm_dat_o	(wb_s2m_i2c1_dat),
+	.wbm_ack_o	(wb_s2m_i2c1_ack),
+	.wbm_err_o	(wb_s2m_i2c1_err),
+	.wbm_rty_o	(wb_s2m_i2c1_rty),
+	// Wishbone Slave interface
+	.wbs_adr_o	(wb8_m2s_i2c1_adr),
+	.wbs_dat_o	(wb8_m2s_i2c1_dat),
+	.wbs_we_o 	(wb8_m2s_i2c1_we ),
+	.wbs_cyc_o	(wb8_m2s_i2c1_cyc),
+	.wbs_stb_o	(wb8_m2s_i2c1_stb),
+	.wbs_cti_o	(wb8_m2s_i2c1_cti),
+	.wbs_bte_o	(wb8_m2s_i2c1_bte),
+	.wbs_dat_i	(wb8_s2m_i2c1_dat),
+	.wbs_ack_i	(wb8_s2m_i2c1_ack),
+	.wbs_err_i	(wb8_s2m_i2c1_err),
+	.wbs_rty_i	(wb8_s2m_i2c1_rty)
+);
+
+////////////////////////////////////////////////////////////////////////
+`else // !`ifdef I2C1   
+
+assign wb8_s2m_i2c1_dat = 0;
+assign wb8_s2m_i2c1_ack = 0;
+assign wb8_s2m_i2c1_err = 0;
+assign wb8_s2m_i2c1_rty = 0;
+
+////////////////////////////////////////////////////////////////////////
+`endif // !`ifdef I2C1   
+   
 `ifdef SPI0
 ////////////////////////////////////////////////////////////////////////
 //
@@ -973,8 +1191,16 @@ assign or1k_irq[5] = 0;
    assign or1k_irq[8] = 0;
 `endif
 assign or1k_irq[9] = 0;
-assign or1k_irq[10] = 0;
-assign or1k_irq[11] = 0;
+`ifdef I2C0
+   assign or1k_irq[10] = i2c0_irq;
+`else   
+   assign or1k_irq[10] = 0;
+`endif
+`ifdef I2C1
+   assign or1k_irq[11] = i2c1_irq;
+`else   
+   assign or1k_irq[11] = 0;
+`endif   
 assign or1k_irq[12] = 0;
 assign or1k_irq[13] = 0;
 assign or1k_irq[14] = 0;
