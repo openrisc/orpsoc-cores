@@ -6,10 +6,10 @@ description = "OpenCores I2C Controller core"
 src_files =
  i2c_master_bit_ctrl.v
  i2c_master_byte_ctrl.v
- i2c_master_top.v
+ i2c_master_slave.v
 
 include_files =
- i2c_master_defines.v
+ i2c_master_slave_defines.v
 
 [provider]
 name = opencores
