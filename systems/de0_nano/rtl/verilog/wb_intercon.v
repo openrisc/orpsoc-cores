@@ -182,6 +182,18 @@ wire [31:0] wb_s2m_or1k_d_uart0_dat;
 wire        wb_s2m_or1k_d_uart0_ack;
 wire        wb_s2m_or1k_d_uart0_err;
 wire        wb_s2m_or1k_d_uart0_rty;
+wire [31:0] wb_m2s_or1k_d_gpio0_adr;
+wire [31:0] wb_m2s_or1k_d_gpio0_dat;
+wire  [3:0] wb_m2s_or1k_d_gpio0_sel;
+wire        wb_m2s_or1k_d_gpio0_we;
+wire        wb_m2s_or1k_d_gpio0_cyc;
+wire        wb_m2s_or1k_d_gpio0_stb;
+wire  [2:0] wb_m2s_or1k_d_gpio0_cti;
+wire  [1:0] wb_m2s_or1k_d_gpio0_bte;
+wire [31:0] wb_s2m_or1k_d_gpio0_dat;
+wire        wb_s2m_or1k_d_gpio0_ack;
+wire        wb_s2m_or1k_d_gpio0_err;
+wire        wb_s2m_or1k_d_gpio0_rty;
 wire [31:0] wb_m2s_or1k_d_i2c0_adr;
 wire [31:0] wb_m2s_or1k_d_i2c0_dat;
 wire  [3:0] wb_m2s_or1k_d_i2c0_sel;
@@ -242,18 +254,6 @@ wire [31:0] wb_s2m_or1k_d_spi2_dat;
 wire        wb_s2m_or1k_d_spi2_ack;
 wire        wb_s2m_or1k_d_spi2_err;
 wire        wb_s2m_or1k_d_spi2_rty;
-wire [31:0] wb_m2s_or1k_d_gpio0_adr;
-wire [31:0] wb_m2s_or1k_d_gpio0_dat;
-wire  [3:0] wb_m2s_or1k_d_gpio0_sel;
-wire        wb_m2s_or1k_d_gpio0_we;
-wire        wb_m2s_or1k_d_gpio0_cyc;
-wire        wb_m2s_or1k_d_gpio0_stb;
-wire  [2:0] wb_m2s_or1k_d_gpio0_cti;
-wire  [1:0] wb_m2s_or1k_d_gpio0_bte;
-wire [31:0] wb_s2m_or1k_d_gpio0_dat;
-wire        wb_s2m_or1k_d_gpio0_ack;
-wire        wb_s2m_or1k_d_gpio0_err;
-wire        wb_s2m_or1k_d_gpio0_rty;
 wire [31:0] wb_m2s_dbg_sdram_dbus_adr;
 wire [31:0] wb_m2s_dbg_sdram_dbus_dat;
 wire  [3:0] wb_m2s_dbg_sdram_dbus_sel;
@@ -278,6 +278,18 @@ wire [31:0] wb_s2m_dbg_uart0_dat;
 wire        wb_s2m_dbg_uart0_ack;
 wire        wb_s2m_dbg_uart0_err;
 wire        wb_s2m_dbg_uart0_rty;
+wire [31:0] wb_m2s_dbg_gpio0_adr;
+wire [31:0] wb_m2s_dbg_gpio0_dat;
+wire  [3:0] wb_m2s_dbg_gpio0_sel;
+wire        wb_m2s_dbg_gpio0_we;
+wire        wb_m2s_dbg_gpio0_cyc;
+wire        wb_m2s_dbg_gpio0_stb;
+wire  [2:0] wb_m2s_dbg_gpio0_cti;
+wire  [1:0] wb_m2s_dbg_gpio0_bte;
+wire [31:0] wb_s2m_dbg_gpio0_dat;
+wire        wb_s2m_dbg_gpio0_ack;
+wire        wb_s2m_dbg_gpio0_err;
+wire        wb_s2m_dbg_gpio0_rty;
 wire [31:0] wb_m2s_dbg_i2c0_adr;
 wire [31:0] wb_m2s_dbg_i2c0_dat;
 wire  [3:0] wb_m2s_dbg_i2c0_sel;
@@ -338,18 +350,6 @@ wire [31:0] wb_s2m_dbg_spi2_dat;
 wire        wb_s2m_dbg_spi2_ack;
 wire        wb_s2m_dbg_spi2_err;
 wire        wb_s2m_dbg_spi2_rty;
-wire [31:0] wb_m2s_dbg_gpio0_adr;
-wire [31:0] wb_m2s_dbg_gpio0_dat;
-wire  [3:0] wb_m2s_dbg_gpio0_sel;
-wire        wb_m2s_dbg_gpio0_we;
-wire        wb_m2s_dbg_gpio0_cyc;
-wire        wb_m2s_dbg_gpio0_stb;
-wire  [2:0] wb_m2s_dbg_gpio0_cti;
-wire  [1:0] wb_m2s_dbg_gpio0_bte;
-wire [31:0] wb_s2m_dbg_gpio0_dat;
-wire        wb_s2m_dbg_gpio0_ack;
-wire        wb_s2m_dbg_gpio0_err;
-wire        wb_s2m_dbg_gpio0_rty;
 
 wb_mux
   #(.num_slaves (2),
@@ -385,8 +385,8 @@ wb_mux
 
 wb_mux
   #(.num_slaves (8),
-    .MATCH_ADDR ({32'h00000000, 32'h90000000, 32'ha0000000, 32'ha1000000, 32'hb0000000, 32'hb1000000, 32'hb2000000, 32'h91000000}),
-    .MATCH_MASK ({32'hfe000000, 32'hffffffe0, 32'hfffffff8, 32'hfffffff8, 32'hfffffff8, 32'hfffffff8, 32'hfffffff8, 32'hfffffffe}))
+    .MATCH_ADDR ({32'h00000000, 32'h90000000, 32'h91000000, 32'ha0000000, 32'ha1000000, 32'hb0000000, 32'hb1000000, 32'hb2000000}),
+    .MATCH_MASK ({32'hfe000000, 32'hffffffe0, 32'hfffffffe, 32'hfffffff8, 32'hfffffff8, 32'hfffffff8, 32'hfffffff8, 32'hfffffff8}))
  wb_mux_or1k_d
    (.wb_clk_i  (wb_clk_i),
     .wb_rst_i  (wb_rst_i),
@@ -402,23 +402,23 @@ wb_mux
     .wbm_ack_o (wb_or1k_d_ack_o),
     .wbm_err_o (wb_or1k_d_err_o),
     .wbm_rty_o (wb_or1k_d_rty_o),
-    .wbs_adr_o ({wb_m2s_or1k_d_sdram_dbus_adr, wb_m2s_or1k_d_uart0_adr, wb_m2s_or1k_d_i2c0_adr, wb_m2s_or1k_d_i2c1_adr, wb_m2s_or1k_d_spi0_adr, wb_m2s_or1k_d_spi1_adr, wb_m2s_or1k_d_spi2_adr, wb_m2s_or1k_d_gpio0_adr}),
-    .wbs_dat_o ({wb_m2s_or1k_d_sdram_dbus_dat, wb_m2s_or1k_d_uart0_dat, wb_m2s_or1k_d_i2c0_dat, wb_m2s_or1k_d_i2c1_dat, wb_m2s_or1k_d_spi0_dat, wb_m2s_or1k_d_spi1_dat, wb_m2s_or1k_d_spi2_dat, wb_m2s_or1k_d_gpio0_dat}),
-    .wbs_sel_o ({wb_m2s_or1k_d_sdram_dbus_sel, wb_m2s_or1k_d_uart0_sel, wb_m2s_or1k_d_i2c0_sel, wb_m2s_or1k_d_i2c1_sel, wb_m2s_or1k_d_spi0_sel, wb_m2s_or1k_d_spi1_sel, wb_m2s_or1k_d_spi2_sel, wb_m2s_or1k_d_gpio0_sel}),
-    .wbs_we_o  ({wb_m2s_or1k_d_sdram_dbus_we, wb_m2s_or1k_d_uart0_we, wb_m2s_or1k_d_i2c0_we, wb_m2s_or1k_d_i2c1_we, wb_m2s_or1k_d_spi0_we, wb_m2s_or1k_d_spi1_we, wb_m2s_or1k_d_spi2_we, wb_m2s_or1k_d_gpio0_we}),
-    .wbs_cyc_o ({wb_m2s_or1k_d_sdram_dbus_cyc, wb_m2s_or1k_d_uart0_cyc, wb_m2s_or1k_d_i2c0_cyc, wb_m2s_or1k_d_i2c1_cyc, wb_m2s_or1k_d_spi0_cyc, wb_m2s_or1k_d_spi1_cyc, wb_m2s_or1k_d_spi2_cyc, wb_m2s_or1k_d_gpio0_cyc}),
-    .wbs_stb_o ({wb_m2s_or1k_d_sdram_dbus_stb, wb_m2s_or1k_d_uart0_stb, wb_m2s_or1k_d_i2c0_stb, wb_m2s_or1k_d_i2c1_stb, wb_m2s_or1k_d_spi0_stb, wb_m2s_or1k_d_spi1_stb, wb_m2s_or1k_d_spi2_stb, wb_m2s_or1k_d_gpio0_stb}),
-    .wbs_cti_o ({wb_m2s_or1k_d_sdram_dbus_cti, wb_m2s_or1k_d_uart0_cti, wb_m2s_or1k_d_i2c0_cti, wb_m2s_or1k_d_i2c1_cti, wb_m2s_or1k_d_spi0_cti, wb_m2s_or1k_d_spi1_cti, wb_m2s_or1k_d_spi2_cti, wb_m2s_or1k_d_gpio0_cti}),
-    .wbs_bte_o ({wb_m2s_or1k_d_sdram_dbus_bte, wb_m2s_or1k_d_uart0_bte, wb_m2s_or1k_d_i2c0_bte, wb_m2s_or1k_d_i2c1_bte, wb_m2s_or1k_d_spi0_bte, wb_m2s_or1k_d_spi1_bte, wb_m2s_or1k_d_spi2_bte, wb_m2s_or1k_d_gpio0_bte}),
-    .wbs_dat_i ({wb_s2m_or1k_d_sdram_dbus_dat, wb_s2m_or1k_d_uart0_dat, wb_s2m_or1k_d_i2c0_dat, wb_s2m_or1k_d_i2c1_dat, wb_s2m_or1k_d_spi0_dat, wb_s2m_or1k_d_spi1_dat, wb_s2m_or1k_d_spi2_dat, wb_s2m_or1k_d_gpio0_dat}),
-    .wbs_ack_i ({wb_s2m_or1k_d_sdram_dbus_ack, wb_s2m_or1k_d_uart0_ack, wb_s2m_or1k_d_i2c0_ack, wb_s2m_or1k_d_i2c1_ack, wb_s2m_or1k_d_spi0_ack, wb_s2m_or1k_d_spi1_ack, wb_s2m_or1k_d_spi2_ack, wb_s2m_or1k_d_gpio0_ack}),
-    .wbs_err_i ({wb_s2m_or1k_d_sdram_dbus_err, wb_s2m_or1k_d_uart0_err, wb_s2m_or1k_d_i2c0_err, wb_s2m_or1k_d_i2c1_err, wb_s2m_or1k_d_spi0_err, wb_s2m_or1k_d_spi1_err, wb_s2m_or1k_d_spi2_err, wb_s2m_or1k_d_gpio0_err}),
-    .wbs_rty_i ({wb_s2m_or1k_d_sdram_dbus_rty, wb_s2m_or1k_d_uart0_rty, wb_s2m_or1k_d_i2c0_rty, wb_s2m_or1k_d_i2c1_rty, wb_s2m_or1k_d_spi0_rty, wb_s2m_or1k_d_spi1_rty, wb_s2m_or1k_d_spi2_rty, wb_s2m_or1k_d_gpio0_rty}));
+    .wbs_adr_o ({wb_m2s_or1k_d_sdram_dbus_adr, wb_m2s_or1k_d_uart0_adr, wb_m2s_or1k_d_gpio0_adr, wb_m2s_or1k_d_i2c0_adr, wb_m2s_or1k_d_i2c1_adr, wb_m2s_or1k_d_spi0_adr, wb_m2s_or1k_d_spi1_adr, wb_m2s_or1k_d_spi2_adr}),
+    .wbs_dat_o ({wb_m2s_or1k_d_sdram_dbus_dat, wb_m2s_or1k_d_uart0_dat, wb_m2s_or1k_d_gpio0_dat, wb_m2s_or1k_d_i2c0_dat, wb_m2s_or1k_d_i2c1_dat, wb_m2s_or1k_d_spi0_dat, wb_m2s_or1k_d_spi1_dat, wb_m2s_or1k_d_spi2_dat}),
+    .wbs_sel_o ({wb_m2s_or1k_d_sdram_dbus_sel, wb_m2s_or1k_d_uart0_sel, wb_m2s_or1k_d_gpio0_sel, wb_m2s_or1k_d_i2c0_sel, wb_m2s_or1k_d_i2c1_sel, wb_m2s_or1k_d_spi0_sel, wb_m2s_or1k_d_spi1_sel, wb_m2s_or1k_d_spi2_sel}),
+    .wbs_we_o  ({wb_m2s_or1k_d_sdram_dbus_we, wb_m2s_or1k_d_uart0_we, wb_m2s_or1k_d_gpio0_we, wb_m2s_or1k_d_i2c0_we, wb_m2s_or1k_d_i2c1_we, wb_m2s_or1k_d_spi0_we, wb_m2s_or1k_d_spi1_we, wb_m2s_or1k_d_spi2_we}),
+    .wbs_cyc_o ({wb_m2s_or1k_d_sdram_dbus_cyc, wb_m2s_or1k_d_uart0_cyc, wb_m2s_or1k_d_gpio0_cyc, wb_m2s_or1k_d_i2c0_cyc, wb_m2s_or1k_d_i2c1_cyc, wb_m2s_or1k_d_spi0_cyc, wb_m2s_or1k_d_spi1_cyc, wb_m2s_or1k_d_spi2_cyc}),
+    .wbs_stb_o ({wb_m2s_or1k_d_sdram_dbus_stb, wb_m2s_or1k_d_uart0_stb, wb_m2s_or1k_d_gpio0_stb, wb_m2s_or1k_d_i2c0_stb, wb_m2s_or1k_d_i2c1_stb, wb_m2s_or1k_d_spi0_stb, wb_m2s_or1k_d_spi1_stb, wb_m2s_or1k_d_spi2_stb}),
+    .wbs_cti_o ({wb_m2s_or1k_d_sdram_dbus_cti, wb_m2s_or1k_d_uart0_cti, wb_m2s_or1k_d_gpio0_cti, wb_m2s_or1k_d_i2c0_cti, wb_m2s_or1k_d_i2c1_cti, wb_m2s_or1k_d_spi0_cti, wb_m2s_or1k_d_spi1_cti, wb_m2s_or1k_d_spi2_cti}),
+    .wbs_bte_o ({wb_m2s_or1k_d_sdram_dbus_bte, wb_m2s_or1k_d_uart0_bte, wb_m2s_or1k_d_gpio0_bte, wb_m2s_or1k_d_i2c0_bte, wb_m2s_or1k_d_i2c1_bte, wb_m2s_or1k_d_spi0_bte, wb_m2s_or1k_d_spi1_bte, wb_m2s_or1k_d_spi2_bte}),
+    .wbs_dat_i ({wb_s2m_or1k_d_sdram_dbus_dat, wb_s2m_or1k_d_uart0_dat, wb_s2m_or1k_d_gpio0_dat, wb_s2m_or1k_d_i2c0_dat, wb_s2m_or1k_d_i2c1_dat, wb_s2m_or1k_d_spi0_dat, wb_s2m_or1k_d_spi1_dat, wb_s2m_or1k_d_spi2_dat}),
+    .wbs_ack_i ({wb_s2m_or1k_d_sdram_dbus_ack, wb_s2m_or1k_d_uart0_ack, wb_s2m_or1k_d_gpio0_ack, wb_s2m_or1k_d_i2c0_ack, wb_s2m_or1k_d_i2c1_ack, wb_s2m_or1k_d_spi0_ack, wb_s2m_or1k_d_spi1_ack, wb_s2m_or1k_d_spi2_ack}),
+    .wbs_err_i ({wb_s2m_or1k_d_sdram_dbus_err, wb_s2m_or1k_d_uart0_err, wb_s2m_or1k_d_gpio0_err, wb_s2m_or1k_d_i2c0_err, wb_s2m_or1k_d_i2c1_err, wb_s2m_or1k_d_spi0_err, wb_s2m_or1k_d_spi1_err, wb_s2m_or1k_d_spi2_err}),
+    .wbs_rty_i ({wb_s2m_or1k_d_sdram_dbus_rty, wb_s2m_or1k_d_uart0_rty, wb_s2m_or1k_d_gpio0_rty, wb_s2m_or1k_d_i2c0_rty, wb_s2m_or1k_d_i2c1_rty, wb_s2m_or1k_d_spi0_rty, wb_s2m_or1k_d_spi1_rty, wb_s2m_or1k_d_spi2_rty}));
 
 wb_mux
   #(.num_slaves (8),
-    .MATCH_ADDR ({32'h00000000, 32'h90000000, 32'ha0000000, 32'ha1000000, 32'hb0000000, 32'hb1000000, 32'hb2000000, 32'h91000000}),
-    .MATCH_MASK ({32'hfe000000, 32'hffffffe0, 32'hfffffff8, 32'hfffffff8, 32'hfffffff8, 32'hfffffff8, 32'hfffffff8, 32'hfffffffe}))
+    .MATCH_ADDR ({32'h00000000, 32'h90000000, 32'h91000000, 32'ha0000000, 32'ha1000000, 32'hb0000000, 32'hb1000000, 32'hb2000000}),
+    .MATCH_MASK ({32'hfe000000, 32'hffffffe0, 32'hfffffffe, 32'hfffffff8, 32'hfffffff8, 32'hfffffff8, 32'hfffffff8, 32'hfffffff8}))
  wb_mux_dbg
    (.wb_clk_i  (wb_clk_i),
     .wb_rst_i  (wb_rst_i),
@@ -434,18 +434,18 @@ wb_mux
     .wbm_ack_o (wb_dbg_ack_o),
     .wbm_err_o (wb_dbg_err_o),
     .wbm_rty_o (wb_dbg_rty_o),
-    .wbs_adr_o ({wb_m2s_dbg_sdram_dbus_adr, wb_m2s_dbg_uart0_adr, wb_m2s_dbg_i2c0_adr, wb_m2s_dbg_i2c1_adr, wb_m2s_dbg_spi0_adr, wb_m2s_dbg_spi1_adr, wb_m2s_dbg_spi2_adr, wb_m2s_dbg_gpio0_adr}),
-    .wbs_dat_o ({wb_m2s_dbg_sdram_dbus_dat, wb_m2s_dbg_uart0_dat, wb_m2s_dbg_i2c0_dat, wb_m2s_dbg_i2c1_dat, wb_m2s_dbg_spi0_dat, wb_m2s_dbg_spi1_dat, wb_m2s_dbg_spi2_dat, wb_m2s_dbg_gpio0_dat}),
-    .wbs_sel_o ({wb_m2s_dbg_sdram_dbus_sel, wb_m2s_dbg_uart0_sel, wb_m2s_dbg_i2c0_sel, wb_m2s_dbg_i2c1_sel, wb_m2s_dbg_spi0_sel, wb_m2s_dbg_spi1_sel, wb_m2s_dbg_spi2_sel, wb_m2s_dbg_gpio0_sel}),
-    .wbs_we_o  ({wb_m2s_dbg_sdram_dbus_we, wb_m2s_dbg_uart0_we, wb_m2s_dbg_i2c0_we, wb_m2s_dbg_i2c1_we, wb_m2s_dbg_spi0_we, wb_m2s_dbg_spi1_we, wb_m2s_dbg_spi2_we, wb_m2s_dbg_gpio0_we}),
-    .wbs_cyc_o ({wb_m2s_dbg_sdram_dbus_cyc, wb_m2s_dbg_uart0_cyc, wb_m2s_dbg_i2c0_cyc, wb_m2s_dbg_i2c1_cyc, wb_m2s_dbg_spi0_cyc, wb_m2s_dbg_spi1_cyc, wb_m2s_dbg_spi2_cyc, wb_m2s_dbg_gpio0_cyc}),
-    .wbs_stb_o ({wb_m2s_dbg_sdram_dbus_stb, wb_m2s_dbg_uart0_stb, wb_m2s_dbg_i2c0_stb, wb_m2s_dbg_i2c1_stb, wb_m2s_dbg_spi0_stb, wb_m2s_dbg_spi1_stb, wb_m2s_dbg_spi2_stb, wb_m2s_dbg_gpio0_stb}),
-    .wbs_cti_o ({wb_m2s_dbg_sdram_dbus_cti, wb_m2s_dbg_uart0_cti, wb_m2s_dbg_i2c0_cti, wb_m2s_dbg_i2c1_cti, wb_m2s_dbg_spi0_cti, wb_m2s_dbg_spi1_cti, wb_m2s_dbg_spi2_cti, wb_m2s_dbg_gpio0_cti}),
-    .wbs_bte_o ({wb_m2s_dbg_sdram_dbus_bte, wb_m2s_dbg_uart0_bte, wb_m2s_dbg_i2c0_bte, wb_m2s_dbg_i2c1_bte, wb_m2s_dbg_spi0_bte, wb_m2s_dbg_spi1_bte, wb_m2s_dbg_spi2_bte, wb_m2s_dbg_gpio0_bte}),
-    .wbs_dat_i ({wb_s2m_dbg_sdram_dbus_dat, wb_s2m_dbg_uart0_dat, wb_s2m_dbg_i2c0_dat, wb_s2m_dbg_i2c1_dat, wb_s2m_dbg_spi0_dat, wb_s2m_dbg_spi1_dat, wb_s2m_dbg_spi2_dat, wb_s2m_dbg_gpio0_dat}),
-    .wbs_ack_i ({wb_s2m_dbg_sdram_dbus_ack, wb_s2m_dbg_uart0_ack, wb_s2m_dbg_i2c0_ack, wb_s2m_dbg_i2c1_ack, wb_s2m_dbg_spi0_ack, wb_s2m_dbg_spi1_ack, wb_s2m_dbg_spi2_ack, wb_s2m_dbg_gpio0_ack}),
-    .wbs_err_i ({wb_s2m_dbg_sdram_dbus_err, wb_s2m_dbg_uart0_err, wb_s2m_dbg_i2c0_err, wb_s2m_dbg_i2c1_err, wb_s2m_dbg_spi0_err, wb_s2m_dbg_spi1_err, wb_s2m_dbg_spi2_err, wb_s2m_dbg_gpio0_err}),
-    .wbs_rty_i ({wb_s2m_dbg_sdram_dbus_rty, wb_s2m_dbg_uart0_rty, wb_s2m_dbg_i2c0_rty, wb_s2m_dbg_i2c1_rty, wb_s2m_dbg_spi0_rty, wb_s2m_dbg_spi1_rty, wb_s2m_dbg_spi2_rty, wb_s2m_dbg_gpio0_rty}));
+    .wbs_adr_o ({wb_m2s_dbg_sdram_dbus_adr, wb_m2s_dbg_uart0_adr, wb_m2s_dbg_gpio0_adr, wb_m2s_dbg_i2c0_adr, wb_m2s_dbg_i2c1_adr, wb_m2s_dbg_spi0_adr, wb_m2s_dbg_spi1_adr, wb_m2s_dbg_spi2_adr}),
+    .wbs_dat_o ({wb_m2s_dbg_sdram_dbus_dat, wb_m2s_dbg_uart0_dat, wb_m2s_dbg_gpio0_dat, wb_m2s_dbg_i2c0_dat, wb_m2s_dbg_i2c1_dat, wb_m2s_dbg_spi0_dat, wb_m2s_dbg_spi1_dat, wb_m2s_dbg_spi2_dat}),
+    .wbs_sel_o ({wb_m2s_dbg_sdram_dbus_sel, wb_m2s_dbg_uart0_sel, wb_m2s_dbg_gpio0_sel, wb_m2s_dbg_i2c0_sel, wb_m2s_dbg_i2c1_sel, wb_m2s_dbg_spi0_sel, wb_m2s_dbg_spi1_sel, wb_m2s_dbg_spi2_sel}),
+    .wbs_we_o  ({wb_m2s_dbg_sdram_dbus_we, wb_m2s_dbg_uart0_we, wb_m2s_dbg_gpio0_we, wb_m2s_dbg_i2c0_we, wb_m2s_dbg_i2c1_we, wb_m2s_dbg_spi0_we, wb_m2s_dbg_spi1_we, wb_m2s_dbg_spi2_we}),
+    .wbs_cyc_o ({wb_m2s_dbg_sdram_dbus_cyc, wb_m2s_dbg_uart0_cyc, wb_m2s_dbg_gpio0_cyc, wb_m2s_dbg_i2c0_cyc, wb_m2s_dbg_i2c1_cyc, wb_m2s_dbg_spi0_cyc, wb_m2s_dbg_spi1_cyc, wb_m2s_dbg_spi2_cyc}),
+    .wbs_stb_o ({wb_m2s_dbg_sdram_dbus_stb, wb_m2s_dbg_uart0_stb, wb_m2s_dbg_gpio0_stb, wb_m2s_dbg_i2c0_stb, wb_m2s_dbg_i2c1_stb, wb_m2s_dbg_spi0_stb, wb_m2s_dbg_spi1_stb, wb_m2s_dbg_spi2_stb}),
+    .wbs_cti_o ({wb_m2s_dbg_sdram_dbus_cti, wb_m2s_dbg_uart0_cti, wb_m2s_dbg_gpio0_cti, wb_m2s_dbg_i2c0_cti, wb_m2s_dbg_i2c1_cti, wb_m2s_dbg_spi0_cti, wb_m2s_dbg_spi1_cti, wb_m2s_dbg_spi2_cti}),
+    .wbs_bte_o ({wb_m2s_dbg_sdram_dbus_bte, wb_m2s_dbg_uart0_bte, wb_m2s_dbg_gpio0_bte, wb_m2s_dbg_i2c0_bte, wb_m2s_dbg_i2c1_bte, wb_m2s_dbg_spi0_bte, wb_m2s_dbg_spi1_bte, wb_m2s_dbg_spi2_bte}),
+    .wbs_dat_i ({wb_s2m_dbg_sdram_dbus_dat, wb_s2m_dbg_uart0_dat, wb_s2m_dbg_gpio0_dat, wb_s2m_dbg_i2c0_dat, wb_s2m_dbg_i2c1_dat, wb_s2m_dbg_spi0_dat, wb_s2m_dbg_spi1_dat, wb_s2m_dbg_spi2_dat}),
+    .wbs_ack_i ({wb_s2m_dbg_sdram_dbus_ack, wb_s2m_dbg_uart0_ack, wb_s2m_dbg_gpio0_ack, wb_s2m_dbg_i2c0_ack, wb_s2m_dbg_i2c1_ack, wb_s2m_dbg_spi0_ack, wb_s2m_dbg_spi1_ack, wb_s2m_dbg_spi2_ack}),
+    .wbs_err_i ({wb_s2m_dbg_sdram_dbus_err, wb_s2m_dbg_uart0_err, wb_s2m_dbg_gpio0_err, wb_s2m_dbg_i2c0_err, wb_s2m_dbg_i2c1_err, wb_s2m_dbg_spi0_err, wb_s2m_dbg_spi1_err, wb_s2m_dbg_spi2_err}),
+    .wbs_rty_i ({wb_s2m_dbg_sdram_dbus_rty, wb_s2m_dbg_uart0_rty, wb_s2m_dbg_gpio0_rty, wb_s2m_dbg_i2c0_rty, wb_s2m_dbg_i2c1_rty, wb_s2m_dbg_spi0_rty, wb_s2m_dbg_spi1_rty, wb_s2m_dbg_spi2_rty}));
 
 wb_arbiter
   #(.num_masters (2))
