@@ -1,0 +1,24 @@
+From a83d2b438fc5ce780280ff88a616e0fc2ee803c6 Mon Sep 17 00:00:00 2001
+From: Hans Baier <hansfbaier@googlemail.com>
+Date: Mon, 21 Oct 2013 14:36:24 +0700
+Subject: [PATCH 5/5] add defines for slave mode
+
+---
+ i2c_master_slave_defines.v |    4 ++++
+ 1 file changed, 4 insertions(+)
+
+diff --git a/i2c_master_slave_defines.v b/i2c_master_slave_defines.v
+index e81c546..2335cad 100644
+--- a/i2c_master_slave_defines.v
++++ b/i2c_master_slave_defines.v
+@@ -57,3 +57,7 @@
+ `define I2C_CMD_STOP  4'b0010
+ `define I2C_CMD_WRITE 4'b0100
+ `define I2C_CMD_READ  4'b1000
++
++`define I2C_SLAVE_CMD_WRITE 2'b01
++`define I2C_SLAVE_CMD_READ 2'b10
++`define I2C_SLAVE_CMD_NOP 2'b00
+-- 
+1.7.9.5
+
