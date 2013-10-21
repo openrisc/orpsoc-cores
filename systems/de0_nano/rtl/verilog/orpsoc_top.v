@@ -70,14 +70,18 @@ module orpsoc_top #(
 
 	input		uart0_srx_pad_i,
 	output		uart0_stx_pad_o,
+	
+	inout	[7:0]	gpio0_io,
+	
 `ifdef I2C0
 	inout		i2c0_sda_io,
 	inout		i2c0_scl_io,
-`endif    
+`endif
 `ifdef I2C1
 	inout		i2c1_sda_io,
 	inout		i2c1_scl_io,
-`endif    
+`endif
+
 `ifdef SPI0
     output          spi0_sck_o,
     output          spi0_mosi_o,
@@ -105,10 +109,13 @@ module orpsoc_top #(
  `endif
 `endif
 
-	inout	[7:0]	gpio0_io
+    output          accelerometer_cs
 );
 
 parameter	IDCODE_VALUE=32'h14951185;
+
+// choose I2C operation mode
+assign accelerometer_cs = 1;
 
 ////////////////////////////////////////////////////////////////////////
 //

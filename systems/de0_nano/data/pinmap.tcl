@@ -5,7 +5,6 @@ set_location_assignment PIN_J15 -to rst_n_pad_i
 set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to rst_n_pad_i
 set_location_assignment PIN_R8 -to sys_clk_pad_i
 set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to sys_clk_pad_i
-set_location_assignment PIN_G5 -to VCC
 
 #
 # UART0: RX <-> GPIO_2[0] (Pin 5, bottom header)
@@ -17,8 +16,10 @@ set_location_assignment PIN_B16 -to uart0_stx_pad_o
 set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to uart0_stx_pad_o
 
 #
-# I2C0: Connected to the EEPROM
+# I2C0: Connected to the EEPROM and Accelerometer
 #
+set_location_assignment PIN_G5 -to accelerometer_cs
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to accelerometer_cs
 set_location_assignment PIN_F2 -to i2c0_scl_io
 set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to i2c0_scl_io
 set_location_assignment PIN_F1 -to i2c0_sda_io
