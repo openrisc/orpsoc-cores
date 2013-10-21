@@ -47,8 +47,6 @@ module orpsoc_top #(
 	input		sys_clk_pad_i,
 	input		rst_n_pad_i,
 
-	inout	[7:0]	gpio0_io,
-
 `ifdef SIM
 	output		tdo_pad_o,
 	input		tms_pad_i,
@@ -68,7 +66,36 @@ module orpsoc_top #(
 	output		sdram_clk_pad_o,
 
 	input		uart0_srx_pad_i,
-	output		uart0_stx_pad_o
+	output		uart0_stx_pad_o,
+
+`ifdef SPI0
+    output          spi0_sck_o,
+    output          spi0_mosi_o,
+    input           spi0_miso_i,
+ `ifdef SPI0_SLAVE_SELECTS
+    output          spi0_ss_o,
+ `endif
+`endif
+
+`ifdef SPI1
+    output          spi1_sck_o,
+    output          spi1_mosi_o,
+    input           spi1_miso_i,
+ `ifdef SPI1_SLAVE_SELECTS
+    output          spi1_ss_o,
+ `endif
+`endif
+
+`ifdef SPI2
+    output          spi2_sck_o,
+    output          spi2_mosi_o,
+    input           spi2_miso_i,
+ `ifdef SPI2_SLAVE_SELECTS
+    output          spi2_ss_o,
+ `endif
+`endif
+
+	inout	[7:0]	gpio0_io
 );
 
 parameter	IDCODE_VALUE=32'h14951185;
@@ -571,6 +598,270 @@ wb_data_resize wb_data_resize_uart0 (
 	.wbs_rty_i	(wb8_s2m_uart0_rty)
 );
 
+`ifdef SPI0
+////////////////////////////////////////////////////////////////////////
+//
+// SPI0 controller
+//
+////////////////////////////////////////////////////////////////////////
+
+//
+// Wires
+//
+wire            spi0_irq;
+
+wire [31:0]	wb8_m2s_spi0_adr;
+wire [1:0]	wb8_m2s_spi0_bte;
+wire [2:0]	wb8_m2s_spi0_cti;
+wire		wb8_m2s_spi0_cyc;
+wire [7:0]	wb8_m2s_spi0_dat;
+wire		wb8_m2s_spi0_stb;
+wire		wb8_m2s_spi0_we;
+wire [7:0] 	wb8_s2m_spi0_dat;
+wire		wb8_s2m_spi0_ack;
+wire		wb8_s2m_spi0_err;
+wire		wb8_s2m_spi0_rty;
+
+//
+// Assigns
+//
+assign  wbs_d_spi0_err_o = 0;
+assign  wbs_d_spi0_rty_o = 0;
+assign  spi0_hold_n_o = 1;
+assign  spi0_w_n_o = 1;
+
+simple_spi spi0(
+	// Wishbone slave interface
+	.clk_i	(wb_clk),
+	.rst_i	(wb_rst),
+	.adr_i	(wb8_m2s_spi0_adr[2:0]),
+	.dat_i	(wb8_m2s_spi0_dat),
+	.we_i	(wb8_m2s_spi0_we),
+	.stb_i	(wb8_m2s_spi0_stb),
+	.cyc_i	(wb8_m2s_spi0_cyc),
+	.dat_o	(wb8_s2m_spi0_dat),
+	.ack_o	(wb8_s2m_spi0_ack),
+
+	// Outputs
+	.inta_o		(spi0_irq),
+	.sck_o		(spi0_sck_o),
+ `ifdef SPI0_SLAVE_SELECTS
+	.ss_o		(spi0_ss_o),
+ `else
+	.ss_o		(),
+ `endif
+	.mosi_o		(spi0_mosi_o),
+
+	// Inputs
+	.miso_i		(spi0_miso_i)
+);
+
+// 32-bit to 8-bit wishbone bus resize
+wb_data_resize wb_data_resize_spi0 (
+	// Wishbone Master interface
+	.wbm_adr_i	(wb_m2s_spi0_adr),
+	.wbm_dat_i	(wb_m2s_spi0_dat),
+	.wbm_sel_i	(wb_m2s_spi0_sel),
+	.wbm_we_i	(wb_m2s_spi0_we ),
+	.wbm_cyc_i	(wb_m2s_spi0_cyc),
+	.wbm_stb_i	(wb_m2s_spi0_stb),
+	.wbm_cti_i	(wb_m2s_spi0_cti),
+	.wbm_bte_i	(wb_m2s_spi0_bte),
+	.wbm_dat_o	(wb_s2m_spi0_dat),
+	.wbm_ack_o	(wb_s2m_spi0_ack),
+	.wbm_err_o	(wb_s2m_spi0_err),
+	.wbm_rty_o	(wb_s2m_spi0_rty),
+	// Wishbone Slave interface
+	.wbs_adr_o	(wb8_m2s_spi0_adr),
+	.wbs_dat_o	(wb8_m2s_spi0_dat),
+	.wbs_we_o 	(wb8_m2s_spi0_we ),
+	.wbs_cyc_o	(wb8_m2s_spi0_cyc),
+	.wbs_stb_o	(wb8_m2s_spi0_stb),
+	.wbs_cti_o	(wb8_m2s_spi0_cti),
+	.wbs_bte_o	(wb8_m2s_spi0_bte),
+	.wbs_dat_i	(wb8_s2m_spi0_dat),
+	.wbs_ack_i	(wb8_s2m_spi0_ack),
+	.wbs_err_i	(wb8_s2m_spi0_err),
+	.wbs_rty_i	(wb8_s2m_spi0_rty)
+);
+`endif
+
+`ifdef SPI1
+////////////////////////////////////////////////////////////////////////
+//
+// SPI1 controller
+//
+////////////////////////////////////////////////////////////////////////
+
+//
+// Wires
+//
+wire            spi1_irq;
+
+wire [31:0]	wb8_m2s_spi1_adr;
+wire [1:0]	wb8_m2s_spi1_bte;
+wire [2:0]	wb8_m2s_spi1_cti;
+wire		wb8_m2s_spi1_cyc;
+wire [7:0]	wb8_m2s_spi1_dat;
+wire		wb8_m2s_spi1_stb;
+wire		wb8_m2s_spi1_we;
+wire [7:0] 	wb8_s2m_spi1_dat;
+wire		wb8_s2m_spi1_ack;
+wire		wb8_s2m_spi1_err;
+wire		wb8_s2m_spi1_rty;
+
+//
+// Assigns
+//
+assign  wbs_d_spi1_err_o = 0;
+assign  wbs_d_spi1_rty_o = 0;
+assign  spi1_hold_n_o = 1;
+assign  spi1_w_n_o = 1;
+
+simple_spi spi1(
+	// Wishbone slave interface
+	.clk_i	(wb_clk),
+	.rst_i	(wb_rst),
+	.adr_i	(wb8_m2s_spi1_adr[2:0]),
+	.dat_i	(wb8_m2s_spi1_dat),
+	.we_i	(wb8_m2s_spi1_we),
+	.stb_i	(wb8_m2s_spi1_stb),
+	.cyc_i	(wb8_m2s_spi1_cyc),
+	.dat_o	(wb8_s2m_spi1_dat),
+	.ack_o	(wb8_s2m_spi1_ack),
+
+	// Outputs
+	.inta_o		(spi1_irq),
+	.sck_o		(spi1_sck_o),
+ `ifdef SPI1_SLAVE_SELECTS
+	.ss_o		(spi1_ss_o),
+ `else
+	.ss_o		(),
+ `endif
+	.mosi_o		(spi1_mosi_o),
+
+	// Inputs
+	.miso_i		(spi1_miso_i)
+);
+
+// 32-bit to 8-bit wishbone bus resize
+wb_data_resize wb_data_resize_spi1 (
+	// Wishbone Master interface
+	.wbm_adr_i	(wb_m2s_spi1_adr),
+	.wbm_dat_i	(wb_m2s_spi1_dat),
+	.wbm_sel_i	(wb_m2s_spi1_sel),
+	.wbm_we_i	(wb_m2s_spi1_we ),
+	.wbm_cyc_i	(wb_m2s_spi1_cyc),
+	.wbm_stb_i	(wb_m2s_spi1_stb),
+	.wbm_cti_i	(wb_m2s_spi1_cti),
+	.wbm_bte_i	(wb_m2s_spi1_bte),
+	.wbm_dat_o	(wb_s2m_spi1_dat),
+	.wbm_ack_o	(wb_s2m_spi1_ack),
+	.wbm_err_o	(wb_s2m_spi1_err),
+	.wbm_rty_o	(wb_s2m_spi1_rty),
+	// Wishbone Slave interface
+	.wbs_adr_o	(wb8_m2s_spi1_adr),
+	.wbs_dat_o	(wb8_m2s_spi1_dat),
+	.wbs_we_o 	(wb8_m2s_spi1_we ),
+	.wbs_cyc_o	(wb8_m2s_spi1_cyc),
+	.wbs_stb_o	(wb8_m2s_spi1_stb),
+	.wbs_cti_o	(wb8_m2s_spi1_cti),
+	.wbs_bte_o	(wb8_m2s_spi1_bte),
+	.wbs_dat_i	(wb8_s2m_spi1_dat),
+	.wbs_ack_i	(wb8_s2m_spi1_ack),
+	.wbs_err_i	(wb8_s2m_spi1_err),
+	.wbs_rty_i	(wb8_s2m_spi1_rty)
+);
+`endif
+
+`ifdef SPI2
+////////////////////////////////////////////////////////////////////////
+//
+// SPI2 controller
+//
+////////////////////////////////////////////////////////////////////////
+
+//
+// Wires
+//
+wire            spi2_irq;
+
+wire [31:0]	wb8_m2s_spi2_adr;
+wire [1:0]	wb8_m2s_spi2_bte;
+wire [2:0]	wb8_m2s_spi2_cti;
+wire		wb8_m2s_spi2_cyc;
+wire [7:0]	wb8_m2s_spi2_dat;
+wire		wb8_m2s_spi2_stb;
+wire		wb8_m2s_spi2_we;
+wire [7:0] 	wb8_s2m_spi2_dat;
+wire		wb8_s2m_spi2_ack;
+wire		wb8_s2m_spi2_err;
+wire		wb8_s2m_spi2_rty;
+
+//
+// Assigns
+//
+assign  wbs_d_spi2_err_o = 0;
+assign  wbs_d_spi2_rty_o = 0;
+assign  spi2_hold_n_o = 1;
+assign  spi2_w_n_o = 1;
+
+simple_spi spi2(
+	// Wishbone slave interface
+	.clk_i	(wb_clk),
+	.rst_i	(wb_rst),
+	.adr_i	(wb8_m2s_spi2_adr[2:0]),
+	.dat_i	(wb8_m2s_spi2_dat),
+	.we_i	(wb8_m2s_spi2_we),
+	.stb_i	(wb8_m2s_spi2_stb),
+	.cyc_i	(wb8_m2s_spi2_cyc),
+	.dat_o	(wb8_s2m_spi2_dat),
+	.ack_o	(wb8_s2m_spi2_ack),
+
+	// Outputs
+	.inta_o		(spi2_irq),
+	.sck_o		(spi2_sck_o),
+ `ifdef SPI2_SLAVE_SELECTS
+	.ss_o		(spi2_ss_o),
+ `else
+	.ss_o		(),
+ `endif
+	.mosi_o		(spi2_mosi_o),
+
+	// Inputs
+	.miso_i		(spi2_miso_i)
+);
+
+// 32-bit to 8-bit wishbone bus resize
+wb_data_resize wb_data_resize_spi2 (
+	// Wishbone Master interface
+	.wbm_adr_i	(wb_m2s_spi2_adr),
+	.wbm_dat_i	(wb_m2s_spi2_dat),
+	.wbm_sel_i	(wb_m2s_spi2_sel),
+	.wbm_we_i	(wb_m2s_spi2_we ),
+	.wbm_cyc_i	(wb_m2s_spi2_cyc),
+	.wbm_stb_i	(wb_m2s_spi2_stb),
+	.wbm_cti_i	(wb_m2s_spi2_cti),
+	.wbm_bte_i	(wb_m2s_spi2_bte),
+	.wbm_dat_o	(wb_s2m_spi2_dat),
+	.wbm_ack_o	(wb_s2m_spi2_ack),
+	.wbm_err_o	(wb_s2m_spi2_err),
+	.wbm_rty_o	(wb_s2m_spi2_rty),
+	// Wishbone Slave interface
+	.wbs_adr_o	(wb8_m2s_spi2_adr),
+	.wbs_dat_o	(wb8_m2s_spi2_dat),
+	.wbs_we_o 	(wb8_m2s_spi2_we ),
+	.wbs_cyc_o	(wb8_m2s_spi2_cyc),
+	.wbs_stb_o	(wb8_m2s_spi2_stb),
+	.wbs_cti_o	(wb8_m2s_spi2_cti),
+	.wbs_bte_o	(wb8_m2s_spi2_bte),
+	.wbs_dat_i	(wb8_s2m_spi2_dat),
+	.wbs_ack_i	(wb8_s2m_spi2_ack),
+	.wbs_err_i	(wb8_s2m_spi2_err),
+	.wbs_rty_i	(wb8_s2m_spi2_rty)
+);
+`endif
+
 ////////////////////////////////////////////////////////////////////////
 //
 // GPIO 0
@@ -666,9 +957,21 @@ assign or1k_irq[2] = uart0_irq;
 assign or1k_irq[3] = 0;
 assign or1k_irq[4] = 0;
 assign or1k_irq[5] = 0;
-assign or1k_irq[6] = 0;
-assign or1k_irq[7] = 0;
-assign or1k_irq[8] = 0;
+`ifdef SPI0
+   assign or1k_irq[6] = spi0_irq;
+`else
+   assign or1k_irq[6] = 0;
+`endif
+`ifdef SPI1
+   assign or1k_irq[7] = spi1_irq;
+`else
+   assign or1k_irq[7] = 0;
+`endif
+`ifdef SPI2
+   assign or1k_irq[8] = spi1_irq;
+`else
+   assign or1k_irq[8] = 0;
+`endif
 assign or1k_irq[9] = 0;
 assign or1k_irq[10] = 0;
 assign or1k_irq[11] = 0;
