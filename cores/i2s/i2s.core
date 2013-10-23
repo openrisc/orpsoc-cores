@@ -1,0 +1,23 @@
+CAPI=1
+[main]
+description = I2S interface core
+depend =
+ vlog_tb_utils
+ wb_bfm
+simulators = icarus modelsim
+
+[verilog]
+src_files =
+ rtl/verilog/i2s_tx.v
+ rtl/verilog/i2s_rx.v
+
+tb_private_src_files = bench/i2s_tb.v
+
+[simulator]
+toplevel=i2s_tb
+
+[provider]
+name = github
+user = skristiansson
+repo = i2s
+version = master
