@@ -61,7 +61,7 @@ module wb_bfm_master
 	 
 	 init;
 	 @(posedge wb_clk_i);
-	 wait_for_ack;
+	 next;
 	 err_o = wb_err_i;
       end
    endtask //
@@ -203,13 +203,5 @@ module wb_bfm_master
 	 end
       end
    endtask // while
-
-   task wait_for_ack;
-      begin
-	 if(cycle_type == CLASSIC_CYCLE) begin
-	 end
-      end
-   endtask // if
-   
 endmodule
 	    
