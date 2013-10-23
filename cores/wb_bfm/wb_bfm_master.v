@@ -1,6 +1,7 @@
 module wb_bfm_master
   #(parameter aw = 32,
     parameter dw = 32,
+    parameter Tp = 0,
     parameter MAX_BURST_LENGTH = 32)
    (
     input 		wb_clk_i,
@@ -20,8 +21,6 @@ module wb_bfm_master
 
 `include "wb_bfm_common.v"
 
-   localparam Tp = 1;
-   
    reg [aw-1:0]    addr;
    reg [31:0] 	   index = 0;
    reg [dw-1:0]    data = {dw{1'b0}};
@@ -62,7 +61,7 @@ module wb_bfm_master
 	 
 	 init;
 	 @(posedge wb_clk_i);
-	 wait_for_ack;
+	 next;
 	 err_o = wb_err_i;
       end
    endtask //
@@ -204,13 +203,5 @@ module wb_bfm_master
 	 end
       end
    endtask // while
-
-   task wait_for_ack;
-      begin
-	 if(cycle_type == CLASSIC_CYCLE) begin
-	 end
-      end
-   endtask // if
-   
 endmodule
 	    
