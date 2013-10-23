@@ -1,6 +1,7 @@
 module wb_bfm_master
   #(parameter aw = 32,
     parameter dw = 32,
+    parameter Tp = 0,
     parameter MAX_BURST_LENGTH = 32)
    (
     input 		wb_clk_i,
@@ -20,8 +21,6 @@ module wb_bfm_master
 
 `include "wb_bfm_common.v"
 
-   localparam Tp = 1;
-   
    reg [aw-1:0]    addr;
    reg [31:0] 	   index = 0;
    reg [dw-1:0]    data = {dw{1'b0}};
