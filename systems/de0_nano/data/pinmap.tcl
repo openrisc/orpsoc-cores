@@ -18,12 +18,18 @@ set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to uart0_stx_pad_o
 #
 # I2C0: Connected to the EEPROM and Accelerometer
 #
-set_location_assignment PIN_G5 -to accelerometer_cs
-set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to accelerometer_cs
 set_location_assignment PIN_F2 -to i2c0_scl_io
 set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to i2c0_scl_io
 set_location_assignment PIN_F1 -to i2c0_sda_io
 set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to i2c0_sda_io
+
+#
+# Accelerometer specific lines
+#
+set_location_assignment PIN_M2 -to accelerometer_irq_i
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to accelerometer_irq_i
+set_location_assignment PIN_G5 -to accelerometer_cs_o
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to accelerometer_cs_o
 
 #
 # I2C1: sda <-> GPIO_2[6] (Pin 11, bottom header)

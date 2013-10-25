@@ -109,13 +109,14 @@ module orpsoc_top #(
  `endif
 `endif
 
-    output          accelerometer_cs
+    output          accelerometer_cs_o,
+    input           accelerometer_irq_i
 );
 
 parameter	IDCODE_VALUE=32'h14951185;
 
 // choose I2C operation mode
-assign accelerometer_cs = 1;
+assign accelerometer_cs_o = 1;
 
 ////////////////////////////////////////////////////////////////////////
 //
@@ -1220,7 +1221,7 @@ assign or1k_irq[20] = 0;
 assign or1k_irq[21] = 0;
 assign or1k_irq[22] = 0;
 assign or1k_irq[23] = 0;
-assign or1k_irq[24] = 0;
+assign or1k_irq[24] = accelerometer_irq_i;
 assign or1k_irq[25] = 0;
 assign or1k_irq[26] = 0;
 assign or1k_irq[27] = 0;
