@@ -4,6 +4,7 @@ depend =
  adv_debug_sys
  altera_virtual_jtag
  simple_spi
+ i2c
  gpio
  jtag_tap
  jtag_vpi
