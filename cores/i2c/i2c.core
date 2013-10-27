@@ -1,6 +1,6 @@
 CAPI=1
 [main]
-description = "OpenCores I2C Controller core"
+description = "OpenCores I2C Controller core (with slave additions)"
 
 [verilog]
 src_files =
@@ -15,4 +15,4 @@ include_files =
 name = opencores
 repo_name = i2c
 repo_root = trunk/rtl/verilog
-revision = 74
+revision = 76
