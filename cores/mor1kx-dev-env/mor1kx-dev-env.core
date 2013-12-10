@@ -1,6 +1,7 @@
+CAPI=1
 [main]
 name=mor1kx-dev-env
-description="sdgfsd"
+description="mor1kx development platform"
 
 tb_files =
  bench/verilog/mor1kx_monitor.v
