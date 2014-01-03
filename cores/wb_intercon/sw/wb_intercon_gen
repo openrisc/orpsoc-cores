@@ -135,10 +135,20 @@ class WbIntercon:
         #Create mux slave side connections
         name_list = []
         for s in master.slaves:
-            if len(s.masters) == 1:
+
+            #If we have only one master the wb_mux is the last piece before
+            #the slave. If the slave's datawidth is 32, we go straight from
+            #the wb_mux to the slave.
+            if len(s.masters) == 1 and int(s.datawidth) == 32:
                 name_list += ['wb_' + s.name + '_{0}_{1}']
+            #If not, we'll need a wb_data_resize and then new wires.
+            elif len(s.masters) == 1 and int(s.datawidth) < 32:
+                 name_list += ['wb_{dir}' + 'resize_' + s.name + '_{0}']
+            #If there is more than on master for that slave, there will
+            #be an arbiter and the wb_data_resize will be after that.
             else:
                 name_list += ['wb_{dir}'+ m + '_' + s.name + '_{0}']
+
         for p in WB_MASTER_PORTS:
             ports += [Port('wbs_'+p.name+'_o', '{' + ', '.join(name_list).format(p.name, 'o', dir='m2s_')+'}')]
         for p in WB_SLAVE_PORTS:
@@ -164,12 +174,42 @@ class WbIntercon:
             ports += [Port('wbm_'+p.name+'_o', '{' + ', '.join(name_list).format(p.name, 'o', dir='s2m_')+'}')]
 
         #Create slave connections
-        for p in WB_MASTER_PORTS:
-            ports += [Port('wbs_' + p.name + '_o', 'wb_'+s+'_'+p.name+'_o')]
-        for p in WB_SLAVE_PORTS:
-            ports += [Port('wbs_' + p.name + '_i', 'wb_'+s+'_'+p.name+'_i')]
+        #If the slave's data width is 32, we don't need a wb_data_resize
+        if int(slave.datawidth) == 32:
+            for p in WB_MASTER_PORTS:
+                ports += [Port('wbs_' + p.name + '_o', 'wb_'+s+'_'+p.name+'_o')]
+            for p in WB_SLAVE_PORTS:
+                ports += [Port('wbs_' + p.name + '_i', 'wb_'+s+'_'+p.name+'_i')]
+        #Else, connect to the resizer
+        else:
+            for p in WB_MASTER_PORTS:
+                ports += [Port('wbs_' + p.name + '_o', 'wb_m2s_resize_'+s+'_'+p.name)]
+            for p in WB_SLAVE_PORTS:
+                ports += [Port('wbs_' + p.name + '_i', 'wb_s2m_resize_'+s+'_'+p.name)]
 
         self.verilog_writer.add(Instance('wb_arbiter', 'wb_arbiter_'+s,parameters, ports))
+
+    def _gen_resize(self, slave):
+        parameters = [Parameter('aw', 32)]
+        parameters += [Parameter('mdw', 32)]
+        parameters += [Parameter('sdw', slave.datawidth)]
+        s = slave.name
+
+        ports =[]
+        #Create master connections
+        for p in WB_MASTER_PORTS:
+            ports += [Port('wbm_'+p.name+'_i', 'wb_m2s_resize_'+s+'_'+p.name)]
+        for p in WB_SLAVE_PORTS:
+            ports += [Port('wbm_'+p.name+'_o', 'wb_s2m_resize_'+s+'_'+p.name)]
+
+        #Create slave connections
+        for p in WB_MASTER_PORTS:
+            if p.name != "sel":
+                ports += [Port('wbs_' + p.name + '_o', 'wb_'+s+'_'+p.name + '_o')]
+        for p in WB_SLAVE_PORTS:
+            ports += [Port('wbs_' + p.name + '_i', 'wb_'+s+'_'+p.name + '_i')]
+
+        self.verilog_writer.add(Instance('wb_data_resize', 'wb_data_resize_'+s,parameters, ports))
 
     def write(self, file):
         #Declare wires. Only conections between muxes and arbiters need explicit wires
@@ -219,9 +259,19 @@ class WbIntercon:
                 self.verilog_writer.add(ModulePort(portname, 'input', p.width))
                 self.template_writer.add(Wire(wirename, p.width))
                 template_ports += [Port(portname, wirename)]
+            if int(slave.datawidth) < 32:
+                for p in WB_MASTER_PORTS:
+                    wirename = 'wb_m2s_resize_{slave}_{port}'.format(slave=slave.name, port=p.name)
+                    self.verilog_writer.add(Wire(wirename, p.width))
+                for p in WB_SLAVE_PORTS:
+                    wirename = 'wb_s2m_resize_{slave}_{port}'.format(slave=slave.name, port=p.name)
+                    self.verilog_writer.add(Wire(wirename, p.width))
 
             if len(slave.masters) > 1:
                 self._gen_arbiter(slave)
+
+            if int(slave.datawidth) < 32:
+                self._gen_resize(slave)
 
         self.template_writer.add(Instance(self.name, self.name+'0',
                                           template_parameters, template_ports))
