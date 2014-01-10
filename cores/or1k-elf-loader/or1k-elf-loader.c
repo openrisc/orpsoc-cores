@@ -1,88 +1,200 @@
+/***************************************************************************
+ *   Copyright (C) 2014 by Franck Jullien                                  *
+ *   franck.jullien@gmail.com                                              *
+ *                                                                         *
+ *   This program is free software; you can redistribute it and/or modify  *
+ *   it under the terms of the GNU General Public License as published by  *
+ *   the Free Software Foundation; either version 2 of the License, or     *
+ *   (at your option) any later version.                                   *
+ *                                                                         *
+ *   This program is distributed in the hope that it will be useful,       *
+ *   but WITHOUT ANY WARRANTY; without even the implied warranty of        *
+ *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the         *
+ *   GNU General Public License for more details.                          *
+ *                                                                         *
+ *   You should have received a copy of the GNU General Public License     *
+ *   along with this program; if not, write to the                         *
+ *   Free Software Foundation, Inc.,                                       *
+ *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
+ ***************************************************************************/
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
+#include <gelf.h>
+#include <fcntl.h>
 
+uint8_t *dump_program_data(Elf *elf_object, int *size)
+{
+	uint8_t *buffer = NULL;
+	Elf_Data *data = NULL;
+	size_t phdr_num;
+	size_t max_paddr = 0;
+	GElf_Phdr phdr;
 
-FILE* load_elf_file(char *elf_file_name) {
-  const char *objcopy_arg = "or1k-elf-objcopy -O binary";
-  FILE *bin_file;
-  char *bin_file_name = NULL;
-  char *system_args = NULL;
+	*size = 0;
 
-  //FIXME: Pipe objcopy output directly to bin file
-  if(access (elf_file_name, R_OK)) 
-    return NULL;
+	int ret = elf_getphdrnum(elf_object, &phdr_num);
+	if (ret) {
+		printf("Problem during ELF parsing\n");
+		return NULL;
+	}
 
-  bin_file_name = malloc(L_tmpnam);
+	if (phdr_num == 0)
+		return NULL;
 
-  if(!tmpnam(bin_file_name))
-    return NULL;
+	for (int i = 0; i < phdr_num; i++) {
+		if (gelf_getphdr(elf_object, i, &phdr) != &phdr) {
+			printf("Problem during ELF parsing\n");
+			return NULL;
+		}
 
-  system_args = malloc(strlen(objcopy_arg) + strlen(elf_file_name) + 1 + strlen(bin_file_name));
-  sprintf(system_args, "%s %s %s", objcopy_arg, elf_file_name, bin_file_name);
-  if(system(system_args))
-    return NULL;
+		printf("Program header %d: addr 0x%08X,", i, (unsigned int)phdr.p_paddr);
+		printf(" size 0x%08X\n", (unsigned int)phdr.p_filesz);
 
-  bin_file = fopen(bin_file_name, "r");
-  remove(bin_file_name);
+		if (phdr.p_paddr >= max_paddr) {
+			buffer = realloc(buffer, phdr.p_paddr + phdr.p_filesz);
+			max_paddr = phdr.p_paddr + phdr.p_filesz;
+		}
 
-  if(bin_file_name)
-    free(bin_file_name);
-  if(system_args)
-    free(system_args);
-  return bin_file;
+		data = elf_getdata_rawchunk(elf_object, phdr.p_offset, phdr.p_filesz, ELF_T_BYTE);
+		if (data != NULL)
+			memcpy(buffer + phdr.p_paddr, data->d_buf, data->d_size);
+		else {
+			printf("Couldn't load program data chunk\n");
+			return NULL;
+		}
+	}
+
+	*size = max_paddr;
+	return buffer;
 }
 
-long get_size(FILE *bin_file) {
-  long file_size;
-  fseek(bin_file, 0L, SEEK_END);
-  file_size = ftell(bin_file);
-  return file_size;
+uint8_t *dump_section_data(Elf *elf_object, int *size)
+{
+	uint8_t *buffer = NULL;
+	Elf_Data *data = NULL;
+	size_t shdr_num;
+	size_t max_paddr = 0;
+	GElf_Shdr shdr;
+	size_t shstrndx;
+	char *name = NULL;
+
+	*size = 0;
+
+	int ret = elf_getshdrnum(elf_object, &shdr_num);
+	if (ret) {
+		printf("Problem during ELF parsing\n");
+		return NULL;
+	}
+
+	if (shdr_num == 0)
+		return NULL;
+
+	Elf_Scn *cur_section = NULL;
+	ret = elf_getshdrstrndx(elf_object, &shstrndx);
+	if (ret)
+		printf("No string table found\n");
+
+	while ((cur_section = elf_nextscn(elf_object, cur_section)) != NULL ) {
+		if (gelf_getshdr(cur_section, &shdr) != &shdr) {
+			printf("Problem during ELF parsing\n");
+			return NULL;
+		}
+
+		if ((shdr.sh_type == SHT_PROGBITS) && (shdr.sh_flags & SHF_ALLOC) && shdr.sh_size != 0) {
+
+			name = elf_strptr(elf_object, shstrndx , shdr.sh_name);
+			printf("Loading section %s, size 0x%08X lma 0x%08X\n",
+				name ? name : "??", (unsigned int)shdr.sh_size, (unsigned int)shdr.sh_addr);
+
+			if (shdr.sh_addr >= max_paddr) {
+				buffer = realloc(buffer, shdr.sh_addr + shdr.sh_size);
+				max_paddr = shdr.sh_addr + shdr.sh_size;
+			}
+
+			data = elf_getdata(cur_section, data);
+			if (data != NULL)
+				memcpy(buffer + shdr.sh_addr, data->d_buf, data->d_size);
+			else {
+				printf("Couldn't load section data chunk\n");
+				return NULL;
+			}
+		}
+	}
+
+	*size = max_paddr;
+	return buffer;
 }
 
-unsigned int read_32(FILE *bin_file, unsigned int address) {
-  unsigned int data;
-  unsigned int swapped;
+uint8_t *load_elf_file(char *elf_file_name, int *size)
+{
+	uint8_t *buf = NULL;
 
-  fseek(bin_file, address, SEEK_SET);
-  if(fread(&data, sizeof(int), 1, bin_file));
-  swapped = ((data>>24)&0xff) | // move byte 3 to byte 0
-    ((data<<8)&0xff0000) | // move byte 1 to byte 2
-    ((data>>8)&0xff00) | // move byte 2 to byte 1
-    ((data<<24)&0xff000000); // byte 0 to byte 3  
+	if (elf_version(EV_CURRENT) == EV_NONE)
+		return NULL;
 
-  return swapped;
+	int fd = open(elf_file_name, O_RDONLY , 0);
+	if (fd < 0) {
+		printf("Can't open %s\n", elf_file_name);
+		return NULL;
+	}
+
+	Elf *elf_object = elf_begin(fd , ELF_C_READ , NULL);
+	if (elf_object == NULL) {
+		printf("Problem while starting ELF parsing\n");
+		close(fd);
+		return NULL;
+	}
+
+	if (elf_kind(elf_object) != ELF_K_ELF) {
+		printf("%s is not an ELF file\n", elf_file_name);
+		elf_end(elf_object);
+		close(fd);
+		return NULL;
+	}
+
+	buf = dump_program_data(elf_object, size);
+
+	if (buf == NULL)
+		buf = dump_section_data(elf_object, size);
+
+	elf_end(elf_object);
+	close(fd);
+
+	return buf;
 }
 
-unsigned short read_16(FILE *bin_file, unsigned int address) {
-  unsigned short data;
-  unsigned short swapped;
-
-  fseek(bin_file, address, SEEK_SET);
-  if(fread(&data, sizeof(short), 1, bin_file));
-  swapped = ((data>>8)&0x00ff) | // move byte 1 to byte 0
-            ((data<<8)&0xff00);  // move byte 0 to byte 1  
-
-  return swapped;
+unsigned int read_32(uint8_t *bin_file, unsigned int address)
+{
+	return (bin_file[address] << 24) | (bin_file[address + 1] << 16) |
+	       (bin_file[address + 2] << 8) | (bin_file[address + 3]);
 }
- 
-/*int main(void) {
-  long size;
-  int i;
-  char *elf_file_name = "/home/olof/code/or1k/orpsocv2/sw/tests/or1200/sim/or1200-basic.elf2";
-  FILE *bin_file;
 
-  bin_file = load_elf_file(elf_file_name);
-  if(!bin_file) {
-    printf("Error: Failed to read \"%s\"\n", elf_file_name);
-    return 1;
-  }
-
-  size = get_size(bin_file);
-  for(i=0;i<size;i+=4)
-    printf("%02x = %08x\n", i, read_32(bin_file, i));
-  printf("Size is %d\n", (int)size);
+unsigned short read_16(uint8_t *bin_file, unsigned int address)
+{
+	return (bin_file[address] << 8) | (bin_file[address + 1]);
 }
-  
+
+/*
+int main(int argc , char ** argv)
+{
+	int i;
+	int size;
+	uint8_t *buf = load_elf_file(argv[1], &size);
+
+	for (i = 0; i < 128; i++) {
+		if (!(i%16))
+			printf("\n0x%04X: ", 0x100 + i);
+		printf("%02X ", buf[0x100 + i]);
+	}
+	printf("\n");
+
+	printf("Size = %x\n", size);
+
+	free(buf);
+
+	return 0;
+}
 */
