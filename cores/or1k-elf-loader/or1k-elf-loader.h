@@ -1,6 +1,5 @@
 #include <stdio.h>
 
-FILE* load_elf_file(char* elf_file_name);
-long get_size(FILE* bin_file);
-unsigned int read_32(FILE* bin_file, unsigned int address);
-unsigned short read_16(FILE* bin_file, unsigned int address);
+uint8_t* load_elf_file(char* elf_file_name, int *size);
+unsigned int read_32(uint8_t *bin_file, unsigned int address);
+unsigned short read_16(uint8_t *bin_file, unsigned int address);
