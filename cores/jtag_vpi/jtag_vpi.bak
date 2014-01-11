@@ -1,0 +1,19 @@
+CAPI=1
+[main]
+description = "TCP/IP controlled VPI JTAG Interface"
+
+[verilog]
+tb_src_files = jtag_vpi.v
+
+[vpi]
+name = jtag_vpi
+src_files = jtag_vpi.c
+
+[plusargs]
+jtag-vpi-enable = bool "Enable JTAG debug interface"
+
+[provider]
+name = github
+user = fjullien
+repo = jtag_vpi
+branch = master

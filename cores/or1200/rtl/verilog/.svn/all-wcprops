@@ -1,0 +1,473 @@
+K 25
+svn:wc:ra_dav:version-url
+V 62
+/ocsvn/openrisc/!svn/ver/852/openrisc/trunk/or1200/rtl/verilog
+END
+or1200_sb.v
+K 25
+svn:wc:ra_dav:version-url
+V 74
+/ocsvn/openrisc/!svn/ver/358/openrisc/trunk/or1200/rtl/verilog/or1200_sb.v
+END
+or1200_dpram_32x32.v
+K 25
+svn:wc:ra_dav:version-url
+V 83
+/ocsvn/openrisc/!svn/ver/358/openrisc/trunk/or1200/rtl/verilog/or1200_dpram_32x32.v
+END
+or1200_sb_fifo.v
+K 25
+svn:wc:ra_dav:version-url
+V 79
+/ocsvn/openrisc/!svn/ver/358/openrisc/trunk/or1200/rtl/verilog/or1200_sb_fifo.v
+END
+or1200_fpu_pre_norm_mul.v
+K 25
+svn:wc:ra_dav:version-url
+V 88
+/ocsvn/openrisc/!svn/ver/258/openrisc/trunk/or1200/rtl/verilog/or1200_fpu_pre_norm_mul.v
+END
+or1200_spram_256x21.v
+K 25
+svn:wc:ra_dav:version-url
+V 84
+/ocsvn/openrisc/!svn/ver/358/openrisc/trunk/or1200/rtl/verilog/or1200_spram_256x21.v
+END
+or1200_fpu_post_norm_addsub.v
+K 25
+svn:wc:ra_dav:version-url
+V 92
+/ocsvn/openrisc/!svn/ver/364/openrisc/trunk/or1200/rtl/verilog/or1200_fpu_post_norm_addsub.v
+END
+or1200_spram_2048x8.v
+K 25
+svn:wc:ra_dav:version-url
+V 84
+/ocsvn/openrisc/!svn/ver/358/openrisc/trunk/or1200/rtl/verilog/or1200_spram_2048x8.v
+END
+or1200_fpu_arith.v
+K 25
+svn:wc:ra_dav:version-url
+V 81
+/ocsvn/openrisc/!svn/ver/364/openrisc/trunk/or1200/rtl/verilog/or1200_fpu_arith.v
+END
+or1200_tpram_32x32.v
+K 25
+svn:wc:ra_dav:version-url
+V 83
+/ocsvn/openrisc/!svn/ver/358/openrisc/trunk/or1200/rtl/verilog/or1200_tpram_32x32.v
+END
+or1200_ic_tag.v
+K 25
+svn:wc:ra_dav:version-url
+V 78
+/ocsvn/openrisc/!svn/ver/481/openrisc/trunk/or1200/rtl/verilog/or1200_ic_tag.v
+END
+or1200_ic_ram.v
+K 25
+svn:wc:ra_dav:version-url
+V 78
+/ocsvn/openrisc/!svn/ver/481/openrisc/trunk/or1200/rtl/verilog/or1200_ic_ram.v
+END
+or1200_fpu_post_norm_div.v
+K 25
+svn:wc:ra_dav:version-url
+V 89
+/ocsvn/openrisc/!svn/ver/364/openrisc/trunk/or1200/rtl/verilog/or1200_fpu_post_norm_div.v
+END
+or1200_reg2mem.v
+K 25
+svn:wc:ra_dav:version-url
+V 79
+/ocsvn/openrisc/!svn/ver/364/openrisc/trunk/or1200/rtl/verilog/or1200_reg2mem.v
+END
+or1200_mem2reg.v
+K 25
+svn:wc:ra_dav:version-url
+V 79
+/ocsvn/openrisc/!svn/ver/141/openrisc/trunk/or1200/rtl/verilog/or1200_mem2reg.v
+END
+or1200_fpu_fcmp.v
+K 25
+svn:wc:ra_dav:version-url
+V 80
+/ocsvn/openrisc/!svn/ver/364/openrisc/trunk/or1200/rtl/verilog/or1200_fpu_fcmp.v
+END
+or1200_lsu.v
+K 25
+svn:wc:ra_dav:version-url
+V 75
+/ocsvn/openrisc/!svn/ver/364/openrisc/trunk/or1200/rtl/verilog/or1200_lsu.v
+END
+or1200_dmmu_tlb.v
+K 25
+svn:wc:ra_dav:version-url
+V 80
+/ocsvn/openrisc/!svn/ver/258/openrisc/trunk/or1200/rtl/verilog/or1200_dmmu_tlb.v
+END
+or1200_ctrl.v
+K 25
+svn:wc:ra_dav:version-url
+V 76
+/ocsvn/openrisc/!svn/ver/845/openrisc/trunk/or1200/rtl/verilog/or1200_ctrl.v
+END
+or1200_rf.v
+K 25
+svn:wc:ra_dav:version-url
+V 74
+/ocsvn/openrisc/!svn/ver/643/openrisc/trunk/or1200/rtl/verilog/or1200_rf.v
+END
+or1200_fpu_post_norm_mul.v
+K 25
+svn:wc:ra_dav:version-url
+V 89
+/ocsvn/openrisc/!svn/ver/364/openrisc/trunk/or1200/rtl/verilog/or1200_fpu_post_norm_mul.v
+END
+or1200_wb_biu.v
+K 25
+svn:wc:ra_dav:version-url
+V 78
+/ocsvn/openrisc/!svn/ver/481/openrisc/trunk/or1200/rtl/verilog/or1200_wb_biu.v
+END
+or1200_du.v
+K 25
+svn:wc:ra_dav:version-url
+V 74
+/ocsvn/openrisc/!svn/ver/815/openrisc/trunk/or1200/rtl/verilog/or1200_du.v
+END
+or1200_pm.v
+K 25
+svn:wc:ra_dav:version-url
+V 74
+/ocsvn/openrisc/!svn/ver/358/openrisc/trunk/or1200/rtl/verilog/or1200_pm.v
+END
+or1200_ic_top.v
+K 25
+svn:wc:ra_dav:version-url
+V 78
+/ocsvn/openrisc/!svn/ver/481/openrisc/trunk/or1200/rtl/verilog/or1200_ic_top.v
+END
+or1200_fpu_post_norm_intfloat_conv.v
+K 25
+svn:wc:ra_dav:version-url
+V 99
+/ocsvn/openrisc/!svn/ver/364/openrisc/trunk/or1200/rtl/verilog/or1200_fpu_post_norm_intfloat_conv.v
+END
+or1200_dc_tag.v
+K 25
+svn:wc:ra_dav:version-url
+V 78
+/ocsvn/openrisc/!svn/ver/481/openrisc/trunk/or1200/rtl/verilog/or1200_dc_tag.v
+END
+or1200_spram.v
+K 25
+svn:wc:ra_dav:version-url
+V 77
+/ocsvn/openrisc/!svn/ver/258/openrisc/trunk/or1200/rtl/verilog/or1200_spram.v
+END
+or1200_spram_32x24.v
+K 25
+svn:wc:ra_dav:version-url
+V 83
+/ocsvn/openrisc/!svn/ver/358/openrisc/trunk/or1200/rtl/verilog/or1200_spram_32x24.v
+END
+or1200_spram_1024x32.v
+K 25
+svn:wc:ra_dav:version-url
+V 85
+/ocsvn/openrisc/!svn/ver/358/openrisc/trunk/or1200/rtl/verilog/or1200_spram_1024x32.v
+END
+or1200_dc_ram.v
+K 25
+svn:wc:ra_dav:version-url
+V 78
+/ocsvn/openrisc/!svn/ver/481/openrisc/trunk/or1200/rtl/verilog/or1200_dc_ram.v
+END
+or1200_amultp2_32x32.v
+K 25
+svn:wc:ra_dav:version-url
+V 85
+/ocsvn/openrisc/!svn/ver/358/openrisc/trunk/or1200/rtl/verilog/or1200_amultp2_32x32.v
+END
+or1200_fpu_intfloat_conv_except.v
+K 25
+svn:wc:ra_dav:version-url
+V 96
+/ocsvn/openrisc/!svn/ver/794/openrisc/trunk/or1200/rtl/verilog/or1200_fpu_intfloat_conv_except.v
+END
+or1200_spram_64x22.v
+K 25
+svn:wc:ra_dav:version-url
+V 83
+/ocsvn/openrisc/!svn/ver/358/openrisc/trunk/or1200/rtl/verilog/or1200_spram_64x22.v
+END
+or1200_spram_64x24.v
+K 25
+svn:wc:ra_dav:version-url
+V 83
+/ocsvn/openrisc/!svn/ver/358/openrisc/trunk/or1200/rtl/verilog/or1200_spram_64x24.v
+END
+or1200_gmultp2_32x32.v
+K 25
+svn:wc:ra_dav:version-url
+V 85
+/ocsvn/openrisc/!svn/ver/481/openrisc/trunk/or1200/rtl/verilog/or1200_gmultp2_32x32.v
+END
+or1200_spram_2048x32.v
+K 25
+svn:wc:ra_dav:version-url
+V 85
+/ocsvn/openrisc/!svn/ver/358/openrisc/trunk/or1200/rtl/verilog/or1200_spram_2048x32.v
+END
+or1200_dpram_256x32.v
+K 25
+svn:wc:ra_dav:version-url
+V 84
+/ocsvn/openrisc/!svn/ver/358/openrisc/trunk/or1200/rtl/verilog/or1200_dpram_256x32.v
+END
+or1200_if.v
+K 25
+svn:wc:ra_dav:version-url
+V 74
+/ocsvn/openrisc/!svn/ver/358/openrisc/trunk/or1200/rtl/verilog/or1200_if.v
+END
+or1200_mult_mac.v
+K 25
+svn:wc:ra_dav:version-url
+V 80
+/ocsvn/openrisc/!svn/ver/644/openrisc/trunk/or1200/rtl/verilog/or1200_mult_mac.v
+END
+or1200_wbmux.v
+K 25
+svn:wc:ra_dav:version-url
+V 77
+/ocsvn/openrisc/!svn/ver/364/openrisc/trunk/or1200/rtl/verilog/or1200_wbmux.v
+END
+or1200_immu_tlb.v
+K 25
+svn:wc:ra_dav:version-url
+V 80
+/ocsvn/openrisc/!svn/ver/141/openrisc/trunk/or1200/rtl/verilog/or1200_immu_tlb.v
+END
+or1200_dc_top.v
+K 25
+svn:wc:ra_dav:version-url
+V 78
+/ocsvn/openrisc/!svn/ver/481/openrisc/trunk/or1200/rtl/verilog/or1200_dc_top.v
+END
+or1200_spram_128x32.v
+K 25
+svn:wc:ra_dav:version-url
+V 84
+/ocsvn/openrisc/!svn/ver/358/openrisc/trunk/or1200/rtl/verilog/or1200_spram_128x32.v
+END
+or1200_operandmuxes.v
+K 25
+svn:wc:ra_dav:version-url
+V 84
+/ocsvn/openrisc/!svn/ver/364/openrisc/trunk/or1200/rtl/verilog/or1200_operandmuxes.v
+END
+or1200_pic.v
+K 25
+svn:wc:ra_dav:version-url
+V 75
+/ocsvn/openrisc/!svn/ver/358/openrisc/trunk/or1200/rtl/verilog/or1200_pic.v
+END
+or1200_fpu_addsub.v
+K 25
+svn:wc:ra_dav:version-url
+V 82
+/ocsvn/openrisc/!svn/ver/258/openrisc/trunk/or1200/rtl/verilog/or1200_fpu_addsub.v
+END
+or1200_spram_1024x32_bw.v
+K 25
+svn:wc:ra_dav:version-url
+V 88
+/ocsvn/openrisc/!svn/ver/358/openrisc/trunk/or1200/rtl/verilog/or1200_spram_1024x32_bw.v
+END
+or1200_fpu_pre_norm_addsub.v
+K 25
+svn:wc:ra_dav:version-url
+V 91
+/ocsvn/openrisc/!svn/ver/364/openrisc/trunk/or1200/rtl/verilog/or1200_fpu_pre_norm_addsub.v
+END
+or1200_spram_32_bw.v
+K 25
+svn:wc:ra_dav:version-url
+V 83
+/ocsvn/openrisc/!svn/ver/258/openrisc/trunk/or1200/rtl/verilog/or1200_spram_32_bw.v
+END
+or1200_dmmu_top.v
+K 25
+svn:wc:ra_dav:version-url
+V 80
+/ocsvn/openrisc/!svn/ver/364/openrisc/trunk/or1200/rtl/verilog/or1200_dmmu_top.v
+END
+or1200_except.v
+K 25
+svn:wc:ra_dav:version-url
+V 78
+/ocsvn/openrisc/!svn/ver/808/openrisc/trunk/or1200/rtl/verilog/or1200_except.v
+END
+or1200_spram_64x14.v
+K 25
+svn:wc:ra_dav:version-url
+V 83
+/ocsvn/openrisc/!svn/ver/358/openrisc/trunk/or1200/rtl/verilog/or1200_spram_64x14.v
+END
+or1200_xcv_ram32x8d.v
+K 25
+svn:wc:ra_dav:version-url
+V 84
+/ocsvn/openrisc/!svn/ver/142/openrisc/trunk/or1200/rtl/verilog/or1200_xcv_ram32x8d.v
+END
+or1200_genpc.v
+K 25
+svn:wc:ra_dav:version-url
+V 77
+/ocsvn/openrisc/!svn/ver/852/openrisc/trunk/or1200/rtl/verilog/or1200_genpc.v
+END
+or1200_fpu_div.v
+K 25
+svn:wc:ra_dav:version-url
+V 79
+/ocsvn/openrisc/!svn/ver/258/openrisc/trunk/or1200/rtl/verilog/or1200_fpu_div.v
+END
+or1200_ic_fsm.v
+K 25
+svn:wc:ra_dav:version-url
+V 78
+/ocsvn/openrisc/!svn/ver/846/openrisc/trunk/or1200/rtl/verilog/or1200_ic_fsm.v
+END
+or1200_top.v
+K 25
+svn:wc:ra_dav:version-url
+V 75
+/ocsvn/openrisc/!svn/ver/813/openrisc/trunk/or1200/rtl/verilog/or1200_top.v
+END
+or1200_rfram_generic.v
+K 25
+svn:wc:ra_dav:version-url
+V 85
+/ocsvn/openrisc/!svn/ver/481/openrisc/trunk/or1200/rtl/verilog/or1200_rfram_generic.v
+END
+or1200_dpram.v
+K 25
+svn:wc:ra_dav:version-url
+V 77
+/ocsvn/openrisc/!svn/ver/639/openrisc/trunk/or1200/rtl/verilog/or1200_dpram.v
+END
+or1200_spram_512x20.v
+K 25
+svn:wc:ra_dav:version-url
+V 84
+/ocsvn/openrisc/!svn/ver/358/openrisc/trunk/or1200/rtl/verilog/or1200_spram_512x20.v
+END
+timescale.v
+K 25
+svn:wc:ra_dav:version-url
+V 73
+/ocsvn/openrisc/!svn/ver/10/openrisc/trunk/or1200/rtl/verilog/timescale.v
+END
+or1200_fpu_mul.v
+K 25
+svn:wc:ra_dav:version-url
+V 79
+/ocsvn/openrisc/!svn/ver/258/openrisc/trunk/or1200/rtl/verilog/or1200_fpu_mul.v
+END
+or1200_spram_1024x8.v
+K 25
+svn:wc:ra_dav:version-url
+V 84
+/ocsvn/openrisc/!svn/ver/358/openrisc/trunk/or1200/rtl/verilog/or1200_spram_1024x8.v
+END
+or1200_defines.v
+K 25
+svn:wc:ra_dav:version-url
+V 79
+/ocsvn/openrisc/!svn/ver/845/openrisc/trunk/or1200/rtl/verilog/or1200_defines.v
+END
+or1200_fpu_intfloat_conv.v
+K 25
+svn:wc:ra_dav:version-url
+V 89
+/ocsvn/openrisc/!svn/ver/794/openrisc/trunk/or1200/rtl/verilog/or1200_fpu_intfloat_conv.v
+END
+or1200_iwb_biu.v
+K 25
+svn:wc:ra_dav:version-url
+V 79
+/ocsvn/openrisc/!svn/ver/258/openrisc/trunk/or1200/rtl/verilog/or1200_iwb_biu.v
+END
+or1200_freeze.v
+K 25
+svn:wc:ra_dav:version-url
+V 78
+/ocsvn/openrisc/!svn/ver/640/openrisc/trunk/or1200/rtl/verilog/or1200_freeze.v
+END
+or1200_qmem_top.v
+K 25
+svn:wc:ra_dav:version-url
+V 80
+/ocsvn/openrisc/!svn/ver/358/openrisc/trunk/or1200/rtl/verilog/or1200_qmem_top.v
+END
+or1200_cfgr.v
+K 25
+svn:wc:ra_dav:version-url
+V 76
+/ocsvn/openrisc/!svn/ver/258/openrisc/trunk/or1200/rtl/verilog/or1200_cfgr.v
+END
+or1200_alu.v
+K 25
+svn:wc:ra_dav:version-url
+V 75
+/ocsvn/openrisc/!svn/ver/804/openrisc/trunk/or1200/rtl/verilog/or1200_alu.v
+END
+or1200_spram_2048x32_bw.v
+K 25
+svn:wc:ra_dav:version-url
+V 88
+/ocsvn/openrisc/!svn/ver/358/openrisc/trunk/or1200/rtl/verilog/or1200_spram_2048x32_bw.v
+END
+or1200_cpu.v
+K 25
+svn:wc:ra_dav:version-url
+V 75
+/ocsvn/openrisc/!svn/ver/847/openrisc/trunk/or1200/rtl/verilog/or1200_cpu.v
+END
+or1200_sprs.v
+K 25
+svn:wc:ra_dav:version-url
+V 76
+/ocsvn/openrisc/!svn/ver/808/openrisc/trunk/or1200/rtl/verilog/or1200_sprs.v
+END
+or1200_tt.v
+K 25
+svn:wc:ra_dav:version-url
+V 74
+/ocsvn/openrisc/!svn/ver/481/openrisc/trunk/or1200/rtl/verilog/or1200_tt.v
+END
+or1200_immu_top.v
+K 25
+svn:wc:ra_dav:version-url
+V 80
+/ocsvn/openrisc/!svn/ver/679/openrisc/trunk/or1200/rtl/verilog/or1200_immu_top.v
+END
+or1200_fpu.v
+K 25
+svn:wc:ra_dav:version-url
+V 75
+/ocsvn/openrisc/!svn/ver/364/openrisc/trunk/or1200/rtl/verilog/or1200_fpu.v
+END
+or1200_dc_fsm.v
+K 25
+svn:wc:ra_dav:version-url
+V 78
+/ocsvn/openrisc/!svn/ver/846/openrisc/trunk/or1200/rtl/verilog/or1200_dc_fsm.v
+END
+or1200_fpu_pre_norm_div.v
+K 25
+svn:wc:ra_dav:version-url
+V 88
+/ocsvn/openrisc/!svn/ver/364/openrisc/trunk/or1200/rtl/verilog/or1200_fpu_pre_norm_div.v
+END
