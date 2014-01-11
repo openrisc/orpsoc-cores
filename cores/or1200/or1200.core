@@ -85,9 +85,3 @@ src_files =
 tb_src_files =  bench/or1200_monitor.v
 tb_include_files = bench/or1200_monitor_defines.v
 
-[provider]
-name = opencores
-repo_name = openrisc 
-repo_root = trunk/or1200
-revision = 852
-
