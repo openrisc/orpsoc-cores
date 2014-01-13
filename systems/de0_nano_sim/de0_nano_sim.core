@@ -34,3 +34,31 @@ include_files =
  rtl/verilog/include/timescale.v
  rtl/verilog/include/uart_defines.v
  rtl/verilog/wb_intercon.vh
+
+[verilator]
+source_type = systemC
+verilator_options = -Wno-fatal --trace
+src_files = 
+ bench/verilator/ResetSC.cpp
+ bench/verilator/JtagServerSC.cpp
+ bench/verilator/Or1200MonitorSC.cpp
+ bench/verilator/UartSC.cpp
+ bench/verilator/OrpsocAccess.cpp
+ bench/verilator/UartSC.cpp
+ bench/verilator/Or1200MonitorSC.cpp
+ bench/verilator/MemoryLoad.cpp
+
+include_files = 
+ bench/verilator/OrpsocMain.h
+ bench/verilator/coff.h
+ bench/verilator/ResetSC.h
+ bench/verilator/elf.h
+ bench/verilator/UartSC.h
+ bench/verilator/JtagServerSC.h
+ bench/verilator/UartSC.h
+ bench/verilator/OrpsocAccess.h
+ bench/verilator/Or1200MonitorSC.h
+ bench/verilator/MemoryLoad.h
+
+define_file = de0_nano_sim/rtl/verilog/include/orpsoc-defines.v
+tb_toplevel = bench/verilator/OrpsocMain.cpp
