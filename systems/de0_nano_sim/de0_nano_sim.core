@@ -25,8 +25,8 @@ src_files =
  rtl/verilog/wb_intercon.v
 
 tb_private_src_files =
- bench/orpsoc_tb.v
- bench/uart_decoder.v
+ bench/verilog/orpsoc_tb.v
+ bench/verilog/uart_decoder.v
 
 include_files =
  rtl/verilog/include/or1200_defines.v

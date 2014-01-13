@@ -39,15 +39,15 @@
 ////                                                              ////
 //////////////////////////////////////////////////////////////////////
 
+// Default baud of 115200, period (ns)   
+`define  uart_baudrate_period_ns 8680
+
 // Receieves and decodes 8-bit,  1 stop bit, no parity UART signals.
 `timescale 1ns/1ns
 module uart_decoder(clk, uart_tx);
 
    input clk;   
    input uart_tx;
-
-   // Default baud of 115200, period (ns)
-   parameter uart_baudrate_period_ns = 8680; 
 
    // Something to trigger the task
    always @(posedge clk)
@@ -61,23 +61,32 @@ module uart_decoder(clk, uart_tx);
 	 // Wait for start bit
 	 while (uart_tx !== 1'b0)
            @(uart_tx);
-	 #(uart_baudrate_period_ns+(uart_baudrate_period_ns/2));
+	 
+	 #(`uart_baudrate_period_ns * 1.5)
 	 tx_byte[0] = uart_tx;
-	 #uart_baudrate_period_ns;
+	 //$write("%d  ", uart_tx);
+	 #`uart_baudrate_period_ns
 	 tx_byte[1] = uart_tx;
-	 #uart_baudrate_period_ns;
+	 //$write("%d  ", uart_tx);
+	 #`uart_baudrate_period_ns
 	 tx_byte[2] = uart_tx;
-	 #uart_baudrate_period_ns;
+	 //$write("%d  ", uart_tx);
+	 #`uart_baudrate_period_ns
 	 tx_byte[3] = uart_tx;
-	 #uart_baudrate_period_ns;
+	 //$write("%d  ", uart_tx);
+	 #`uart_baudrate_period_ns
 	 tx_byte[4] = uart_tx;
-	 #uart_baudrate_period_ns;
+	 //$write("%d  ", uart_tx);
+	 #`uart_baudrate_period_ns
 	 tx_byte[5] = uart_tx;
-	 #uart_baudrate_period_ns;
+	 //$write("%d  ", uart_tx);
+	 #`uart_baudrate_period_ns
 	 tx_byte[6] = uart_tx;
-	 #uart_baudrate_period_ns;
+	 //$write("%d  ", uart_tx);
+	 #`uart_baudrate_period_ns
 	 tx_byte[7] = uart_tx;
-	 #uart_baudrate_period_ns;
+	 //$write("%d  \n", uart_tx);
+	 #`uart_baudrate_period_ns
 	 //Check for stop bit
 	 if (uart_tx !== 1'b1)
 	   begin
