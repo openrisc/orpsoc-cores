@@ -1,4 +1,5 @@
 module orpsoc_top
+  #(parameter UART_SIM = 0)
   (input wb_clk_i,
    input wb_rst_i);
 
@@ -172,12 +173,16 @@ module orpsoc_top
     .wbs_err_i (wb_s2m_uart8_err),
     .wbs_rty_i (wb_s2m_uart8_rty));
 
-   wb_uart_wrapper #(.DEBUG (0))
+   wb_uart_wrapper
+     #(.DEBUG (0),
+       .SIM   (UART_SIM))
    wb_uart_wrapper0
      (
       //Wishbone Master interface
       .wb_clk_i (wb_clk_i),
       .wb_rst_i (wb_rst_i),
+      .rx       (1'b0),
+      .tx       (uart),
       .wb_adr_i	(wb_m2s_uart8_adr),
       .wb_dat_i	(wb_m2s_uart8_dat),
       .wb_we_i	(wb_m2s_uart8_we),
@@ -189,6 +194,35 @@ module orpsoc_top
       .wb_ack_o	(wb_s2m_uart8_ack),
       .wb_err_o (wb_s2m_uart8_err),
       .wb_rty_o (wb_s2m_uart8_rty));
+
+   `ifdef VERILATOR
+   wire [7:0] 				  uart_rx_data;
+   wire  				  uart_rx_done;
+   
+   uart_transceiver uart_transceiver0
+     (
+      .sys_rst (wb_rst_i),
+      .sys_clk  (wb_clk_i),
+
+      .uart_rx (uart),
+      .uart_tx (),
+
+      .divisor(16'd26),
+
+      .rx_data (uart_rx_data),
+      .rx_done (uart_rx_done),
+
+      .tx_data (8'h00),
+      .tx_wr   (1'b0),
+      .tx_done (),
+
+      .rx_break ());
+
+   always @(posedge wb_clk_i)
+     if(uart_rx_done)
+       $write("%c", uart_rx_data);
+   
+   `endif
 
    ////////////////////////////////////////////////////////////////////////
    //
