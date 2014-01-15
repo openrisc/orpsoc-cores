@@ -59,48 +59,54 @@ module orpsoc_top #(
 
 
 	input		uart0_srx_pad_i,
-	output		uart0_stx_pad_o,
-
-	inout	[7:0]	gpio0_io,
+	output		uart0_stx_pad_o
 
 `ifdef I2C0
-	inout		i2c0_sda_io,
-	inout		i2c0_scl_io,
+,	inout	[7:0]	gpio0_io
 `endif
+  
+`ifdef I2C0
+,	inout		i2c0_sda_io,
+	inout		i2c0_scl_io
+`endif
+
 `ifdef I2C1
-	inout		i2c1_sda_io,
-	inout		i2c1_scl_io,
+,	inout		i2c1_sda_io,
+	inout		i2c1_scl_io
 `endif
 
 `ifdef SPI0
-    output          spi0_sck_o,
+,    output          spi0_sck_o,
     output          spi0_mosi_o,
-    input           spi0_miso_i,
+    input           spi0_miso_i
  `ifdef SPI0_SLAVE_SELECTS
-    output          spi0_ss_o,
+,    output          spi0_ss_o
  `endif
 `endif
 
 `ifdef SPI1
-    output          spi1_sck_o,
+,    output          spi1_sck_o,
     output          spi1_mosi_o,
-    input           spi1_miso_i,
- `ifdef SPI1_SLAVE_SELECTS
-    output          spi1_ss_o,
+    input           spi1_miso_i
+`ifdef SPI1_SLAVE_SELECTS
+,    output          spi1_ss_o
  `endif
 `endif
 
 `ifdef SPI2
-    output          spi2_sck_o,
+,    output          spi2_sck_o
     output          spi2_mosi_o,
     input           spi2_miso_i,
  `ifdef SPI2_SLAVE_SELECTS
-    output          spi2_ss_o,
+,    output          spi2_ss_o
  `endif
 `endif
 
-    output          accelerometer_cs_o,
+`ifdef ACCELEROMETER
+,    output          accelerometer_cs_o,
     input           accelerometer_irq_i
+`endif
+
 );
 
 parameter	IDCODE_VALUE=32'h14951185;
@@ -109,9 +115,6 @@ localparam wb_aw = 32;
 localparam wb_dw = 32;
 
 localparam MEM_SIZE_BITS = 23;
-
-// choose I2C operation mode
-assign accelerometer_cs_o = 1;
 
 ////////////////////////////////////////////////////////////////////////
 //
@@ -1054,6 +1057,7 @@ wire		wb8_s2m_gpio0_ack;
 wire		wb8_s2m_gpio0_err;
 wire		wb8_s2m_gpio0_rty;
 
+`ifdef GPIO0   
 // Tristate logic for IO
 // 0 = input, 1 = output
 genvar                    i;
@@ -1086,6 +1090,7 @@ gpio gpio0 (
 	.wb_rst		(wb_rst)
 );
 
+   
 // 32-bit to 8-bit wishbone bus resize
 wb_data_resize wb_data_resize_gpio0 (
 	// Wishbone Master interface
@@ -1114,6 +1119,7 @@ wb_data_resize wb_data_resize_gpio0 (
 	.wbs_err_i	(wb8_s2m_gpio0_err),
 	.wbs_rty_i	(wb8_s2m_gpio0_rty)
 );
+`endif //  `ifdef GPIO0
 
 ////////////////////////////////////////////////////////////////////////
 //

@@ -30,8 +30,7 @@
 #define ORPSOC_ACCESS__H
 
 #include <stdint.h>
-//#define wishbone_ram orpsoc_top->v->ram_wb0->ram_wb_b3_0 old version
-#define wishbone_ram orpsoc_top->v->wb_bfm_memory0
+#define wishbone_ram orpsoc_top->v->ram_wb0->ram_wb_b3_0
 
 class Vorpsoc_top;
 class Vorpsoc_top_orpsoc_top;

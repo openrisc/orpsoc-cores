@@ -39,8 +39,10 @@
 `ifndef MOR1KX
 `define OR1200
 `endif
+`define JTAG_DEBUG
 //`define ALTERA_JTAG_TAP
 `define UART0
+//`define GPIO0
 //`define I2C0
 //`define I2C1
 //`define SPI0_SLAVE_SELECTS

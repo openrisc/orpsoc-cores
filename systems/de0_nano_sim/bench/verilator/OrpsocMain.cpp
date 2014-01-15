@@ -43,11 +43,10 @@
 #include "OrpsocMain.h"
 
 #include "Vorpsoc_top.h"
-#include "OrpsocAccess.h"
-#include "MemoryLoad.h"
-
 #include <verilated_vcd_c.h>
 
+#include "OrpsocAccess.h"
+#include "MemoryLoad.h"
 
 #include "ResetSC.h" 
 
