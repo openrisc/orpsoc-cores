@@ -1,0 +1,3 @@
+NOTE: If you experience errors saying "Couldn't load program data chunk" and
+"Couldn't load section data chunk", make sure that your libelf is recent enough.
+Versions >=0.152 has been shown to work, while 0.149 does not work

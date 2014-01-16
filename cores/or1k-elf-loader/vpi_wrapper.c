@@ -13,7 +13,8 @@ void sim_reset_callback();
 void sim_endofcompile_callback();
 void sim_finish_callback();
 
-FILE* bin_file;
+uint8_t *bin_file;
+int size;
 
 void or1k_elf_load_file() {
   vpiHandle func_h, args_iter, arg_h;
@@ -33,7 +34,7 @@ void or1k_elf_load_file() {
     while(isspace(*elf_file_name))
       elf_file_name++;
 
-    bin_file = load_elf_file(elf_file_name);
+    bin_file = load_elf_file(elf_file_name, &size);
     if(bin_file)
       vpi_printf("or1k-elf-loader: %s was loaded\n", elf_file_name);
     else
@@ -53,7 +54,7 @@ void or1k_elf_get_size() {
   func_h = vpi_handle(vpiSysTfCall, NULL);
 
   argval.format = vpiIntVal;
-  argval.value.integer = get_size(bin_file);
+  argval.value.integer = size;
  
   vpi_put_value(func_h, &argval, NULL, vpiNoDelay);
   //vpi_printf("or1k_elf_get_size done\n");
@@ -249,6 +250,7 @@ void setup_finish_callbacks()
 
 void sim_finish_callback()
 {
+  free(bin_file);
   return;
 }
 

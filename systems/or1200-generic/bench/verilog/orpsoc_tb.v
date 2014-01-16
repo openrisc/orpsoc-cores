@@ -50,7 +50,9 @@ module orpsoc_tb;
    // DUT
    // 
    ////////////////////////////////////////////////////////////////////////
-   orpsoc_top dut
+   orpsoc_top
+     #(.UART_SIM (1))
+   dut
      (.wb_clk_i (wb_clk),
       .wb_rst_i (wb_rst));
 
