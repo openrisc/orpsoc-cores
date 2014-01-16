@@ -426,7 +426,7 @@ Index: or1200/bench/or1200_monitor.v
 +
 +
 +`ifdef RAM_WB
-+ `define RAM_WB_TOP `DUT_TOP.ram_wb0.ram_wb_b3_0
++ `define RAM_WB_TOP `DUT_TOP.ram_wb_b3_0
 +   task get_insn_from_wb_ram;
 +      input [31:0] addr;
 +      output [31:0] insn;

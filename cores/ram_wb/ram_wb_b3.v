@@ -30,7 +30,7 @@ module ram_wb_b3
    localparam mem_words = (mem_size_bytes/bytes_per_dw);   
 
    // synthesis attribute ram_style of mem is block
-   reg [dw-1:0] 	mem [ 0 : mem_words-1 ]   /* verilator public */ /* synthesis ram_style = no_rw_check */;
+   reg [dw-1:0] 	mem[0 : mem_words-1]   /* verilator public */ /* synthesis ram_style = no_rw_check */;
 
    // Register to address internal memory array
    reg [(mem_adr_width-adr_width_for_num_word_bytes)-1:0] adr;
