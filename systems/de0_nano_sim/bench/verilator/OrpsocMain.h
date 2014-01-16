@@ -11,7 +11,6 @@
 ////  Author(s):                                                  ////
 ////      - Jeremy Bennett jeremy.bennett@embecosm.com            ////
 ////      - Julius Baxter jb@orsoc.se                             ////
-////      - Jose T. de Sousa jb@inesc-id.pt                       ////
 ////                                                              ////
 ////                                                              ////
 //////////////////////////////////////////////////////////////////////
