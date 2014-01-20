@@ -12,3 +12,5 @@ sdc_files = data/de1.sdc
 tcl_files = data/pinmap.tcl
             data/options.tcl
 
+[scripts]
+post_build_scripts = scripts/build_summary.sh
