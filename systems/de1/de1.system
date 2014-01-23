@@ -13,4 +13,4 @@ tcl_files = data/pinmap.tcl
             data/options.tcl
 
 [scripts]
-post_build_scripts = scripts/build_summary.sh
+post_build_scripts = scripts/build_summary
