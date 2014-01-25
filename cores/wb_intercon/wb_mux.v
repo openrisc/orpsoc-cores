@@ -50,12 +50,6 @@
 //////////////////////////////////////////////////////////////////////
 
 module wb_mux
-  #(parameter dw = 32,        // Data width
-    parameter aw = 32,        // Address width
-    parameter num_slaves = 2, // Number of slaves
-    parameter [num_slaves*aw-1:0] MATCH_ADDR = 0,
-    parameter [num_slaves*aw-1:0] MATCH_MASK = 0)
-   
    (input                      wb_clk_i,
     input 		       wb_rst_i,
 
@@ -86,6 +80,13 @@ module wb_mux
     input [num_slaves-1:0]     wbs_err_i,
     input [num_slaves-1:0]     wbs_rty_i);
       
+   parameter dw = 32;        // Data width
+   parameter aw = 32;        // Address width
+   parameter num_slaves = 2; // Number of slaves
+   parameter [num_slaves*aw-1:0] MATCH_ADDR = 0;
+   parameter [num_slaves*aw-1:0] MATCH_MASK = 0;
+   
+   
 ///////////////////////////////////////////////////////////////////////////////
 // Master/slave connection
 ///////////////////////////////////////////////////////////////////////////////
