@@ -61,3 +61,10 @@ include_files =
 
 define_file = de0_nano_sim/rtl/verilog/include/orpsoc-defines.v
 tb_toplevel = bench/verilator/OrpsocMain.cpp
+
+[icarus]
+iverilog_options = -DICARUS_SIM -DSIM
+
+[modelsim]
+vlog_options = +define+SIM +define+MODELSIM_SIM
+vsim_options = -L altera_mf_ver -L altera_mf
