@@ -1,6 +1,6 @@
 /*
  * TCP/IP controlled JTAG Interface.
- * Based on Julius Baxter's work on jtag_vpi.c
+ * Based on Franck Jullien's work on jtag_vpi.c
  *
  * Copyright (C) 2013 Jose T. de Sousa, <jts@inesc-id.pt>
  *
