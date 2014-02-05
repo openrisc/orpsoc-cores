@@ -61,7 +61,7 @@ or1200_monitor i_monitor();
 
 //FIXME: Get correct baud rate from parameter
 uart_decoder
-	#(.uart_baudrate_period_ns(8680/2))
+	#(.uart_baudrate_period_ns(8680))
 uart_decoder0
 (
 	.clk(clk),

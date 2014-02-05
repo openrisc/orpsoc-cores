@@ -187,7 +187,7 @@ tap_top jtag_tap0 (
 //
 ////////////////////////////////////////////////////////////////////////
 
-wire	[31:0]	or1k_irq;
+wire	[30:0]	or1k_irq;
 
 wire	[31:0]	or1k_dbg_dat_i;
 wire	[31:0]	or1k_dbg_adr_i;
@@ -1186,6 +1186,5 @@ assign or1k_irq[27] = 0;
 assign or1k_irq[28] = 0;
 assign or1k_irq[29] = 0;
 assign or1k_irq[30] = 0;
-assign or1k_irq[31] = 0;
 
 endmodule // orpsoc_top

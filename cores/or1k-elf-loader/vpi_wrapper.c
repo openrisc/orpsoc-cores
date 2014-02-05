@@ -1,4 +1,6 @@
 #include <vpi_user.h>
+#include <stdlib.h>
+#include <ctype.h>
 #include "or1k-elf-loader.h"
 
 //install a callback on simulation reset which calls setup

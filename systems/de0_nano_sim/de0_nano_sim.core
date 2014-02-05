@@ -4,7 +4,6 @@ depend =
  adv_debug_sys
  gpio
  jtag_tap
- jtag_vpi
  mor1kx
  or1200
  or1k-elf-loader
@@ -59,11 +58,12 @@ include_files =
  bench/verilator/Or1200MonitorSC.h
  bench/verilator/MemoryLoad.h
 
-define_file = de0_nano_sim/rtl/verilog/include/orpsoc-defines.v
+define_files = de0_nano_sim/rtl/verilog/include/orpsoc-defines.v
 tb_toplevel = bench/verilator/OrpsocMain.cpp
 
 [icarus]
 iverilog_options = -DICARUS_SIM -DSIM
+depend =  jtag_vpi
 
 [modelsim]
 vlog_options = +define+SIM +define+MODELSIM_SIM
