@@ -31,6 +31,7 @@
 
 #include "MemoryLoad.h"
 #include "OrpsocMain.h"
+#include "or1k-elf-loader.h"
 
 //! Constructor for the ORPSoC memory loader class
 
@@ -38,6 +39,7 @@
 
 //! @param[in] orpsoc  The SystemC Verilated ORPSoC instance
 //! @param[in] accessor  Accessor class for this Verilated ORPSoC model
+
 
 MemoryLoad::MemoryLoad(OrpsocAccess * _accessor)
 {
@@ -358,242 +360,19 @@ void MemoryLoad::readsyms_coff(char *filename, uint32_t symptr, uint32_t syms)
 /*---------------------------------------------------------------------------*/
 void MemoryLoad::readfile_elf(char *filename)
 {
+    int size;
+    uint8_t *bin_file = load_elf_file(filename,&size);
+	
+    printf("Loading %s\n",filename);
+    if(bin_file == NULL) {
+      printf("Error loading elf file\n");
+      exit(1);
+	
+    }
 
-	FILE *inputfs;
-	struct elf32_hdr elfhdr;
-	struct elf32_phdr *elf_phdata = NULL;
-	struct elf32_shdr *elf_spnt, *elf_shdata;
-	struct elf32_sym *sym_tbl = (struct elf32_sym *)0;
-	uint32_t syms = 0;
-	char *str_tbl = (char *)0;
-	char *s_str = (char *)0;
-	int breakpoint = 0;
-	uint32_t inputbuf;
-	uint32_t padd;
-	uint32_t insn;
-	int i, j, sectsize, len;
-
-	if (!(inputfs = fopen(filename, "r"))) {
-		perror("readfile_elf");
-		exit(1);
-	}
-
-	if (fread(&elfhdr, sizeof(elfhdr), 1, inputfs) != 1) {
-		perror("readfile_elf");
-		exit(1);
-	}
-
-	if ((elf_shdata =
-	     (struct elf32_shdr *)malloc(ELF_SHORT_H(elfhdr.e_shentsize) *
-					 ELF_SHORT_H(elfhdr.e_shnum))) == NULL)
-	{
-		perror("readfile_elf");
-		exit(1);
-	}
-
-	if (fseek(inputfs, ELF_LONG_H(elfhdr.e_shoff), SEEK_SET) != 0) {
-		perror("readfile_elf");
-		exit(1);
-	}
-
-	if (fread
-	    (elf_shdata,
-	     ELF_SHORT_H(elfhdr.e_shentsize) * ELF_SHORT_H(elfhdr.e_shnum), 1,
-	     inputfs) != 1) {
-		perror("readfile_elf");
-		exit(1);
-	}
-
-	if (ELF_LONG_H(elfhdr.e_phoff)) {
-		if ((elf_phdata =
-		     (struct elf32_phdr *)malloc(ELF_SHORT_H(elfhdr.e_phnum) *
-						 ELF_SHORT_H
-						 (elfhdr.e_phentsize))) ==
-		    NULL) {
-			perror("readfile_elf");
-			exit(1);
-		}
-
-		if (fseek(inputfs, ELF_LONG_H(elfhdr.e_phoff), SEEK_SET) != 0) {
-			perror("readfile_elf");
-			exit(1);
-		}
-
-		if (fread
-		    (elf_phdata,
-		     ELF_SHORT_H(elfhdr.e_phnum) *
-		     ELF_SHORT_H(elfhdr.e_phentsize), 1, inputfs) != 1) {
-			perror("readfile_elf");
-			exit(1);
-		}
-	}
-
-	for (i = 0, elf_spnt = elf_shdata; i < ELF_SHORT_H(elfhdr.e_shnum);
-	     i++, elf_spnt++) {
-
-		if (ELF_LONG_H(elf_spnt->sh_type) == SHT_STRTAB) {
-			if (NULL != str_tbl) {
-				free(str_tbl);
-			}
-
-			if ((str_tbl =
-			     (char *)malloc(ELF_LONG_H(elf_spnt->sh_size))) ==
-			    NULL) {
-				perror("readfile_elf");
-				exit(1);
-			}
-
-			if (fseek
-			    (inputfs, ELF_LONG_H(elf_spnt->sh_offset),
-			     SEEK_SET) != 0) {
-				perror("readfile_elf");
-				exit(1);
-			}
-
-			if (fread
-			    (str_tbl, ELF_LONG_H(elf_spnt->sh_size), 1,
-			     inputfs) != 1) {
-				perror("readfile_elf");
-				exit(1);
-			}
-		} else if (ELF_LONG_H(elf_spnt->sh_type) == SHT_SYMTAB) {
-
-			if (NULL != sym_tbl) {
-				free(sym_tbl);
-			}
-
-			if ((sym_tbl = (struct elf32_sym *)
-			     malloc(ELF_LONG_H(elf_spnt->sh_size)))
-			    == NULL) {
-				perror("readfile_elf");
-				exit(1);
-			}
-
-			if (fseek
-			    (inputfs, ELF_LONG_H(elf_spnt->sh_offset),
-			     SEEK_SET) != 0) {
-				perror("readfile_elf");
-				exit(1);
-			}
-
-			if (fread
-			    (sym_tbl, ELF_LONG_H(elf_spnt->sh_size), 1,
-			     inputfs) != 1) {
-				perror("readfile_elf");
-				exit(1);
-			}
-
-			syms =
-			    ELF_LONG_H(elf_spnt->sh_size) /
-			    ELF_LONG_H(elf_spnt->sh_entsize);
-		}
-	}
-
-	if (ELF_SHORT_H(elfhdr.e_shstrndx) != SHN_UNDEF) {
-		elf_spnt = &elf_shdata[ELF_SHORT_H(elfhdr.e_shstrndx)];
-
-		if ((s_str =
-		     (char *)malloc(ELF_LONG_H(elf_spnt->sh_size))) == NULL) {
-			perror("readfile_elf");
-			exit(1);
-		}
-
-		if (fseek(inputfs, ELF_LONG_H(elf_spnt->sh_offset), SEEK_SET) !=
-		    0) {
-			perror("readfile_elf");
-			exit(1);
-		}
-
-		if (fread(s_str, ELF_LONG_H(elf_spnt->sh_size), 1, inputfs) !=
-		    1) {
-			perror("readfile_elf");
-			exit(1);
-		}
-	}
-
-	for (i = 0, elf_spnt = elf_shdata; i < ELF_SHORT_H(elfhdr.e_shnum);
-	     i++, elf_spnt++) {
-
-		if ((ELF_LONG_H(elf_spnt->sh_type) & SHT_PROGBITS)
-		    && (ELF_LONG_H(elf_spnt->sh_flags) & SHF_ALLOC)) {
-
-			padd = ELF_LONG_H(elf_spnt->sh_addr);
-			for (j = 0; j < ELF_SHORT_H(elfhdr.e_phnum); j++) {
-				if (ELF_LONG_H(elf_phdata[j].p_offset) &&
-				    ELF_LONG_H(elf_phdata[j].p_offset) <=
-				    ELF_LONG_H(elf_spnt->sh_offset)
-				    && (ELF_LONG_H(elf_phdata[j].p_offset) +
-					ELF_LONG_H(elf_phdata[j].p_memsz)) >
-				    ELF_LONG_H(elf_spnt->sh_offset))
-					padd =
-					    ELF_LONG_H(elf_phdata[j].p_paddr) +
-					    ELF_LONG_H(elf_spnt->sh_offset) -
-					    ELF_LONG_H(elf_phdata[j].p_offset);
-			}
-			
-			if (!gQuiet)
-			{
-				if (ELF_LONG_H(elf_spnt->sh_name) && s_str)
-					printf("* Section: %s,",
-					       &s_str[ELF_LONG_H(elf_spnt->sh_name)]);
-				else
-					printf("* Section: noname,");
-				printf("* vaddr: 0x%.8lx,",
-				       ELF_LONG_H(elf_spnt->sh_addr));
-				printf("* paddr: 0x%" PRIx32, padd);
-				printf("* offset: 0x%.8lx,",
-				       ELF_LONG_H(elf_spnt->sh_offset));
-				printf("* size: 0x%.8lx\n",
-				       ELF_LONG_H(elf_spnt->sh_size));
-			}
-			
-			freemem = padd;
-			sectsize = ELF_LONG_H(elf_spnt->sh_size);
-
-			if (fseek
-			    (inputfs, ELF_LONG_H(elf_spnt->sh_offset),
-			     SEEK_SET) != 0) {
-				perror("readfile_elf");
-				free(elf_phdata);
-				exit(1);
-			}
-
-			while (sectsize > 0
-			       && (len =
-				   fread(&inputbuf, sizeof(inputbuf), 1,
-					 inputfs))) {
-				insn = ELF_LONG_H(inputbuf);
-				//PRINTF("* addprogram(%.8x, %.8x, %d)\n", freemem, insn, breakpoint);
-				addprogram(freemem, insn);
-				sectsize -= 4;
-			}
-		}
-	}
-
-	if (str_tbl) {
-		i = 0;
-		while (syms--) {
-			if (sym_tbl[i].st_name && sym_tbl[i].st_info
-			    && ELF_SHORT_H(sym_tbl[i].st_shndx) < 0x8000) {
-				add_label(ELF_LONG_H(sym_tbl[i].st_value),
-					  &str_tbl[ELF_LONG_H
-						   (sym_tbl[i].st_name)]);
-			}
-			i++;
-		}
-	}
-
-	if (NULL != str_tbl) {
-		free(str_tbl);
-	}
-
-	if (NULL != sym_tbl) {
-		free(sym_tbl);
-	}
-
-	free(s_str);
-	free(elf_phdata);
-	free(elf_shdata);
+    for(int i=0; i <size;i+=4) {
+	addprogram(freemem, read_32(bin_file, i));
+    }
 
 }
 
@@ -604,7 +383,7 @@ void MemoryLoad::identifyfile(char *filename)
 {
 	FILE *inputfs;
 	COFF_FILHDR coffhdr;
-	struct elf32_hdr elfhdr;
+	uint8_t *buf;
 
 	if (!(inputfs = fopen(filename, "r"))) {
 		perror(filename);
@@ -645,28 +424,8 @@ void MemoryLoad::identifyfile(char *filename)
 			fseek(inputfs, 0, SEEK_SET);
 		}
 	}
-	if (fread(&elfhdr, sizeof(elfhdr), 1, inputfs) == 1) {
-		if (elfhdr.e_ident[0] == 0x7f && elfhdr.e_ident[1] == 0x45
-		    && elfhdr.e_ident[2] == 0x4c && elfhdr.e_ident[3] == 0x46) {
-			PRINTF("ELF type: 0x%.4x\n",
-			       ELF_SHORT_H(elfhdr.e_type));
-			PRINTF("ELF machine: 0x%.4x\n",
-			       ELF_SHORT_H(elfhdr.e_machine));
-			PRINTF("ELF version: 0x%.8lx\n",
-			       ELF_LONG_H(elfhdr.e_version));
-			PRINTF("ELF sec = %d\n", ELF_SHORT_H(elfhdr.e_shnum));
-			if (ELF_SHORT_H(elfhdr.e_type) != ET_EXEC) {
-				PRINTF("This ELF is not an executable.\n");
-				exit(1);
-			}
-			fclose(inputfs);
-			readfile_elf(filename);
-			return;
-		} else {
-			PRINTF("Not ELF file format.\n");
-			fseek(inputfs, 0, SEEK_SET);
-		}
-	}
+	
+	readfile_elf(filename);
 
 	perror("identifyfile2");
 	fclose(inputfs);
