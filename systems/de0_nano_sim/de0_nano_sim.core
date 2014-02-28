@@ -43,7 +43,7 @@ src_files =
  bench/verilator/UartSC.cpp
  bench/verilator/OrpsocAccess.cpp
  bench/verilator/MemoryLoad.cpp
- bench/verilator/or1k-elf-loader.c
+ bench/verilator/elf-loader.c
 
 include_files = 
  bench/verilator/OrpsocMain.h
@@ -56,7 +56,7 @@ include_files =
  bench/verilator/OrpsocAccess.h
  bench/verilator/Or1200MonitorSC.h
  bench/verilator/MemoryLoad.h
- bench/verilator/or1k-elf-loader.h
+ bench/verilator/elf-loader.h
 
 define_files = de0_nano_sim/rtl/verilog/include/orpsoc-defines.v
 tb_toplevel = bench/verilator/OrpsocMain.cpp

@@ -31,7 +31,7 @@
 
 #include "MemoryLoad.h"
 #include "OrpsocMain.h"
-#include "or1k-elf-loader.h"
+#include "elf-loader.h"
 
 //! Constructor for the ORPSoC memory loader class
 
