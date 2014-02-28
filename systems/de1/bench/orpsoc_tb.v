@@ -105,13 +105,13 @@ reg	[1023:0]	elf_file;
 reg	[31:0]		temp;
 
 initial begin
-	if($value$plusargs("or1k_elf_load=%s", elf_file)) begin
-		$or1k_elf_load_file(elf_file);
+	if($value$plusargs("elf_load=%s", elf_file)) begin
+		$elf_load_file(elf_file);
 
-		mem_words = $or1k_elf_get_size / 4;
+		mem_words = $elf_get_size / 4;
 		$display("Loading %d words", mem_words);
 		for(i = 0; i < mem_words; i = i + 1) begin
-			temp = $or1k_elf_read_32(i * 4);
+			temp = $elf_read_32(i * 4);
 			orpsoc_tb.sdram0.Bank0[(i * 2)] = temp[31:16];
 			orpsoc_tb.sdram0.Bank0[(i * 2) + 1] = temp[15:0];
 		end
