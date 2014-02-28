@@ -1,5 +1,5 @@
 #include <vpi_user.h>
-#include "or1k-elf-loader.h"
+#include "elf-loader.h"
 
 //install a callback on simulation reset which calls setup
 void setup_reset_callbacks();
@@ -16,7 +16,7 @@ void sim_finish_callback();
 uint8_t *bin_file;
 int size;
 
-void or1k_elf_load_file() {
+void elf_load_file() {
   vpiHandle func_h, args_iter, arg_h;
   struct t_vpi_value argval;
 
@@ -36,19 +36,19 @@ void or1k_elf_load_file() {
 
     bin_file = load_elf_file(elf_file_name, &size);
     if(bin_file)
-      vpi_printf("or1k-elf-loader: %s was loaded\n", elf_file_name);
+      vpi_printf("elf-loader: %s was loaded\n", elf_file_name);
     else
       vpi_printf("Error: Failed to load elf file from \"%s\"\n", elf_file_name);
   }
-  //vpi_printf("or1k_elf_load_file done\n");
+  //vpi_printf("elf_load_file done\n");
 }
 
-void or1k_elf_get_size() {
+void elf_get_size() {
   vpiHandle func_h;
   struct t_vpi_value argval;
 
   if(!bin_file) {
-    vpi_printf("Error: $or1k_elf_load_file must be called first\n");
+    vpi_printf("Error: $elf_load_file must be called first\n");
     return;
   }
   func_h = vpi_handle(vpiSysTfCall, NULL);
@@ -57,18 +57,18 @@ void or1k_elf_get_size() {
   argval.value.integer = size;
  
   vpi_put_value(func_h, &argval, NULL, vpiNoDelay);
-  //vpi_printf("or1k_elf_get_size done\n");
+  //vpi_printf("elf_get_size done\n");
 }
 
-void or1k_elf_read_32() {
+void elf_read_32() {
   vpiHandle func_h, arg_h, args_iter;
   struct t_vpi_value argval;
   unsigned int address;
   unsigned int data;
 
-  //vpi_printf("or1k_elf_read_32 start\n");
+  //vpi_printf("elf_read_32 start\n");
   if(!bin_file) {
-    vpi_printf("Error: $or1k_elf_load_file must be called first\n");
+    vpi_printf("Error: $elf_load_file must be called first\n");
     return;
   }
 
@@ -86,17 +86,17 @@ void or1k_elf_read_32() {
   argval.value.integer = data;
   vpi_put_value(func_h, &argval, NULL, vpiNoDelay);
   vpi_free_object(args_iter);
-  //vpi_printf("or1k_elf_read_32 done\n");
+  //vpi_printf("elf_read_32 done\n");
 }
 
-void or1k_elf_read_16() {
+void elf_read_16() {
   vpiHandle func_h, arg_h, args_iter;
   struct t_vpi_value argval;
   unsigned int address;
   unsigned short data;
 
   if(!bin_file) {
-    vpi_printf("Error: $or1k_elf_load_file must be called first\n");
+    vpi_printf("Error: $elf_load_file must be called first\n");
     return;
   }
 
@@ -114,7 +114,7 @@ void or1k_elf_read_16() {
   argval.value.integer = data;
   vpi_put_value(func_h, &argval, NULL, vpiNoDelay);
   vpi_free_object(args_iter);
-  //vpi_printf("or1k_elf_read_16 done\n");
+  //vpi_printf("elf_read_16 done\n");
 }
 
 void setup_user_functions() {
@@ -123,30 +123,30 @@ void setup_user_functions() {
 
   task_data_p->type = vpiSysTask;
   task_data_p->sysfunctype = vpiIntFunc;
-  task_data_p->tfname = "$or1k_elf_load_file";
-  task_data_p->calltf = (void *)or1k_elf_load_file;
+  task_data_p->tfname = "$elf_load_file";
+  task_data_p->calltf = (void *)elf_load_file;
   task_data_p->sizetf = 0;
   task_data_p->compiletf = 0;
 
   vpi_register_systf(task_data_p);
 
   task_data_p->type = vpiSysFunc;
-  task_data_p->tfname = "$or1k_elf_get_size";
-  task_data_p->calltf = (void *)or1k_elf_get_size;
+  task_data_p->tfname = "$elf_get_size";
+  task_data_p->calltf = (void *)elf_get_size;
   task_data_p->compiletf = 0;
 
   vpi_register_systf(task_data_p);
 
   task_data_p->type = vpiSysFunc;
-  task_data_p->tfname = "$or1k_elf_read_32";
-  task_data_p->calltf = (void *)or1k_elf_read_32;
+  task_data_p->tfname = "$elf_read_32";
+  task_data_p->calltf = (void *)elf_read_32;
   task_data_p->compiletf = 0;
 
   vpi_register_systf(task_data_p);
 
   task_data_p->type = vpiSysFunc;
-  task_data_p->tfname = "$or1k_elf_read_16";
-  task_data_p->calltf = (void *)or1k_elf_read_16;
+  task_data_p->tfname = "$elf_read_16";
+  task_data_p->calltf = (void *)elf_read_16;
   task_data_p->compiletf = 0;
 
   vpi_register_systf(task_data_p);

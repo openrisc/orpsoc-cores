@@ -4,7 +4,7 @@ description = "Minimal OR1200 simulation environment"
 depend = 
  mmuart
  or1200
- or1k-elf-loader
+ elf-loader
  ram_wb
  uart16550
  vlog_tb_utils
