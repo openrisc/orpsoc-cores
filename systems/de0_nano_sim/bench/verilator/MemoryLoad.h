@@ -32,7 +32,6 @@
 #include <stdint.h>
 
 #include "coff.h"
-#include "elf.h"
 
 #include "OrpsocAccess.h"
 
