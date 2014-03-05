@@ -1,3 +1,5 @@
+#include <stdlib.h>
+#include <ctype.h>
 #include <vpi_user.h>
 #include "elf-loader.h"
 
