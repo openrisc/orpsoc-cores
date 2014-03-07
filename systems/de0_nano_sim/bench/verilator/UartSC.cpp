@@ -30,12 +30,16 @@
 //#define UART_SC_DEBUG
 
 // Keep disabled for now, to stop any portability problems cropping up.
-//#define UART_SC_STDIN_ENABLE
+#define UART_SC_STDIN_ENABLE
 
 #ifdef UART_SC_STDIN_ENABLE
 #include <termios.h>
 #include <unistd.h>
 #endif
+
+#define NB_ENABLE 1
+#define NB_DISABLE 0
+
 
 SC_HAS_PROCESS(UartSC);
 
@@ -47,6 +51,9 @@ SC_HAS_PROCESS(UartSC);
 UartSC::UartSC(sc_core::sc_module_name uart):
 	sc_module(uart)
 {
+
+	UartSC::nonblock(NB_ENABLE);
+
 #ifdef UART_SC_STDIN_ENABLE
 	SC_THREAD(driveRx);
 #endif
@@ -96,8 +103,7 @@ int UartSC::kbhit()
 #endif
 }
 
-#define NB_ENABLE 1
-#define NB_DISABLE 0
+
 
 // The following is apparently VERY Linux-centric. Maybe a ncurses version could
 // be handy if this gets used on various platforms.
@@ -132,7 +138,7 @@ void UartSC::driveRx()
 {
 	static char c;
 
-	UartSC::nonblock(NB_ENABLE);
+
 
 	while(1)
 	{
@@ -153,7 +159,7 @@ void UartSC::driveRx()
 				rx_state++;				
 			}
 
-			wait(1000000, SC_NS);
+			wait(1000, SC_NS);
 
 		}
 		else if (rx_state == 1)
