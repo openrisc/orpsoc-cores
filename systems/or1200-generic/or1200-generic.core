@@ -32,3 +32,4 @@ verilator_options = -Wno-fatal --trace
 src_files     = bench/verilator/or1k-elf-loader.c
 include_files = bench/verilator/or1k-elf-loader.h
 tb_toplevel   = bench/verilator/tb.cpp
+top_module    = orpsoc_top
