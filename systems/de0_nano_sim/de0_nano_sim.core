@@ -6,7 +6,7 @@ depend =
  jtag_tap
  mor1kx
  or1200
- or1k-elf-loader
+ elf-loader
  uart16550
  vlog_tb_utils
  wb_intercon
@@ -60,6 +60,8 @@ include_files =
 
 define_files = de0_nano_sim/rtl/verilog/include/orpsoc-defines.v
 tb_toplevel = bench/verilator/OrpsocMain.cpp
+top_module  = orpsoc_top
+libs = -lelf
 
 [icarus]
 iverilog_options = -DICARUS_SIM -DSIM
