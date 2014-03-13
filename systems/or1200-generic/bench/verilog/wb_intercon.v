@@ -38,14 +38,14 @@ module wb_intercon
     input         wb_mem_err_i,
     input         wb_mem_rty_i,
     output [31:0] wb_uart_adr_o,
-    output [31:0] wb_uart_dat_o,
+    output  [7:0] wb_uart_dat_o,
     output  [3:0] wb_uart_sel_o,
     output        wb_uart_we_o,
     output        wb_uart_cyc_o,
     output        wb_uart_stb_o,
     output  [2:0] wb_uart_cti_o,
     output  [1:0] wb_uart_bte_o,
-    input  [31:0] wb_uart_dat_i,
+    input   [7:0] wb_uart_dat_i,
     input         wb_uart_ack_i,
     input         wb_uart_err_i,
     input         wb_uart_rty_i);
@@ -62,6 +62,18 @@ wire [31:0] wb_s2m_or1200_d_mem_dat;
 wire        wb_s2m_or1200_d_mem_ack;
 wire        wb_s2m_or1200_d_mem_err;
 wire        wb_s2m_or1200_d_mem_rty;
+wire [31:0] wb_m2s_resize_uart_adr;
+wire [31:0] wb_m2s_resize_uart_dat;
+wire  [3:0] wb_m2s_resize_uart_sel;
+wire        wb_m2s_resize_uart_we;
+wire        wb_m2s_resize_uart_cyc;
+wire        wb_m2s_resize_uart_stb;
+wire  [2:0] wb_m2s_resize_uart_cti;
+wire  [1:0] wb_m2s_resize_uart_bte;
+wire [31:0] wb_s2m_resize_uart_dat;
+wire        wb_s2m_resize_uart_ack;
+wire        wb_s2m_resize_uart_err;
+wire        wb_s2m_resize_uart_rty;
 
 wb_mux
   #(.num_slaves (2),
@@ -82,18 +94,18 @@ wb_mux
     .wbm_ack_o (wb_or1200_d_ack_o),
     .wbm_err_o (wb_or1200_d_err_o),
     .wbm_rty_o (wb_or1200_d_rty_o),
-    .wbs_adr_o ({wb_m2s_or1200_d_mem_adr, wb_uart_adr_o}),
-    .wbs_dat_o ({wb_m2s_or1200_d_mem_dat, wb_uart_dat_o}),
-    .wbs_sel_o ({wb_m2s_or1200_d_mem_sel, wb_uart_sel_o}),
-    .wbs_we_o  ({wb_m2s_or1200_d_mem_we, wb_uart_we_o}),
-    .wbs_cyc_o ({wb_m2s_or1200_d_mem_cyc, wb_uart_cyc_o}),
-    .wbs_stb_o ({wb_m2s_or1200_d_mem_stb, wb_uart_stb_o}),
-    .wbs_cti_o ({wb_m2s_or1200_d_mem_cti, wb_uart_cti_o}),
-    .wbs_bte_o ({wb_m2s_or1200_d_mem_bte, wb_uart_bte_o}),
-    .wbs_dat_i ({wb_s2m_or1200_d_mem_dat, wb_uart_dat_i}),
-    .wbs_ack_i ({wb_s2m_or1200_d_mem_ack, wb_uart_ack_i}),
-    .wbs_err_i ({wb_s2m_or1200_d_mem_err, wb_uart_err_i}),
-    .wbs_rty_i ({wb_s2m_or1200_d_mem_rty, wb_uart_rty_i}));
+    .wbs_adr_o ({wb_m2s_or1200_d_mem_adr, wb_m2s_resize_uart_adr}),
+    .wbs_dat_o ({wb_m2s_or1200_d_mem_dat, wb_m2s_resize_uart_dat}),
+    .wbs_sel_o ({wb_m2s_or1200_d_mem_sel, wb_m2s_resize_uart_sel}),
+    .wbs_we_o  ({wb_m2s_or1200_d_mem_we, wb_m2s_resize_uart_we}),
+    .wbs_cyc_o ({wb_m2s_or1200_d_mem_cyc, wb_m2s_resize_uart_cyc}),
+    .wbs_stb_o ({wb_m2s_or1200_d_mem_stb, wb_m2s_resize_uart_stb}),
+    .wbs_cti_o ({wb_m2s_or1200_d_mem_cti, wb_m2s_resize_uart_cti}),
+    .wbs_bte_o ({wb_m2s_or1200_d_mem_bte, wb_m2s_resize_uart_bte}),
+    .wbs_dat_i ({wb_s2m_or1200_d_mem_dat, wb_s2m_resize_uart_dat}),
+    .wbs_ack_i ({wb_s2m_or1200_d_mem_ack, wb_s2m_resize_uart_ack}),
+    .wbs_err_i ({wb_s2m_or1200_d_mem_err, wb_s2m_resize_uart_err}),
+    .wbs_rty_i ({wb_s2m_or1200_d_mem_rty, wb_s2m_resize_uart_rty}));
 
 wb_arbiter
   #(.num_masters (2))
@@ -124,5 +136,34 @@ wb_arbiter
     .wbs_ack_i (wb_mem_ack_i),
     .wbs_err_i (wb_mem_err_i),
     .wbs_rty_i (wb_mem_rty_i));
+
+wb_data_resize
+  #(.aw  (32),
+    .mdw (32),
+    .sdw (8))
+ wb_data_resize_uart
+   (.wbm_adr_i (wb_m2s_resize_uart_adr),
+    .wbm_dat_i (wb_m2s_resize_uart_dat),
+    .wbm_sel_i (wb_m2s_resize_uart_sel),
+    .wbm_we_i  (wb_m2s_resize_uart_we),
+    .wbm_cyc_i (wb_m2s_resize_uart_cyc),
+    .wbm_stb_i (wb_m2s_resize_uart_stb),
+    .wbm_cti_i (wb_m2s_resize_uart_cti),
+    .wbm_bte_i (wb_m2s_resize_uart_bte),
+    .wbm_dat_o (wb_s2m_resize_uart_dat),
+    .wbm_ack_o (wb_s2m_resize_uart_ack),
+    .wbm_err_o (wb_s2m_resize_uart_err),
+    .wbm_rty_o (wb_s2m_resize_uart_rty),
+    .wbs_adr_o (wb_uart_adr_o),
+    .wbs_dat_o (wb_uart_dat_o),
+    .wbs_we_o  (wb_uart_we_o),
+    .wbs_cyc_o (wb_uart_cyc_o),
+    .wbs_stb_o (wb_uart_stb_o),
+    .wbs_cti_o (wb_uart_cti_o),
+    .wbs_bte_o (wb_uart_bte_o),
+    .wbs_dat_i (wb_uart_dat_i),
+    .wbs_ack_i (wb_uart_ack_i),
+    .wbs_err_i (wb_uart_err_i),
+    .wbs_rty_i (wb_uart_rty_i));
 
 endmodule
