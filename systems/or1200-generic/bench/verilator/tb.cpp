@@ -47,6 +47,7 @@ void parseArgs(int argc, char **argv);
 
 unsigned int timeout;
 char *elf_file_name;
+char *bin_file_name;
 bool vcd_enabled;
 char *vcd_name;
 
@@ -57,7 +58,7 @@ int main(int argc, char **argv, char **env)
 	int i;
 	unsigned int t = 0;
 	int size;
-	uint8_t *bin_file;
+	uint8_t *bin_data;
 	bool dump = false;
 	VerilatedVcdC* tfp;
 	uint32_t insn = 0;
@@ -73,14 +74,36 @@ int main(int argc, char **argv, char **env)
 
 	if (elf_file_name) {
 		printf("Loading %s\n",elf_file_name);
-		bin_file = load_elf_file(elf_file_name, &size);
-		if (bin_file == NULL) {
+		bin_data = load_elf_file(elf_file_name, &size);
+		if (bin_data == NULL) {
 			printf("Error loading elf file\n");
 			exit(1);
 		}
 
 		for (int i = 0; i < size; i += 4)
-			top->v->wb_bfm_memory0->mem[i / 4] = read_32(bin_file, i);
+			top->v->wb_bfm_memory0->mem[i/4] = read_32(bin_data, i);
+	}
+
+	if (bin_file_name) {
+		printf("Loading %s\n", bin_file_name);
+		FILE *bin_file = fopen(bin_file_name, "rb");
+
+		if (bin_file == NULL) {
+			printf("Error opening bin file\n");
+			exit(1);
+		}
+		fseek(bin_file, 0, SEEK_END);
+		size = ftell(bin_file);
+		rewind(bin_file);
+		bin_data = (uint8_t *)malloc(size);
+		if (fread(bin_data, 1, size, bin_file) != size) {
+			printf("Error reading bin file\n");
+			exit(1);
+		}
+
+		for (int i=0; i <size;i+=4) {
+			top->v->wb_bfm_memory0->mem[i/4] = read_32(bin_data, i);
+		}
 	}
 
 	top->wb_clk_i = 0;
@@ -145,7 +168,11 @@ void parseArgs(int argc, char **argv)
 			timeout = strtod(argv[++i], NULL);
 		} else if (strcmp(argv[i], "--elf-load") == 0) {
 			elf_file_name = argv[++i];
-		} else if ((strcmp(argv[i], "-v") == 0) ||
+		} else if (strcmp(argv[i], "--bin-load") == 0) {
+			bin_file_name = argv[++i];
+		} else if ((strcmp(argv[i], "-d") == 0) ||
+			   (strcmp(argv[i], "--vcdfile") == 0) ||
+			   (strcmp(argv[i], "-v") == 0) ||
 			   (strcmp(argv[i], "--vcd") == 0)) {
 			vcd_enabled = true;
 			if (((i + 1) < argc) && (argv[i+1][0] != '-'))
@@ -176,6 +203,7 @@ void parseArgs(int argc, char **argv)
 			printf("  -h, --help\t\tPrint this help message\n");
 			printf("\nSimulation control:\n");
 			printf("  --elf-load <file> \tLoad program from ELF <file>\n");
+			printf("  --bin-load <file> \tLoad program from binary <file>\n");
 			printf("  --timeout <val> \tStop the sim at <val> ns\n");
 			printf("\nVCD generation:\n");
 			printf("  -v, --vcd [<file>]\tEnable and save VCD to <file>\n");
