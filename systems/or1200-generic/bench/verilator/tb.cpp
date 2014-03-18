@@ -61,6 +61,7 @@ int main(int argc, char **argv, char **env)
 	bool dump = false;
 	VerilatedVcdC* tfp;
 	uint32_t insn = 0;
+	uint32_t ex_pc = 0;
 
 	Verilated::commandArgs(argc, argv);
 
@@ -115,6 +116,7 @@ int main(int argc, char **argv, char **env)
 		top->wb_clk_i = !top->wb_clk_i;
 
 		insn = top->v->or1200_top0->or1200_cpu->or1200_ctrl->wb_insn;
+		ex_pc = top->v->or1200_top0->or1200_cpu->or1200_except->ex_pc;
 
 		if (insn == (0x15000000 | NOP_EXIT)) {
 			printf("Success! Got NOP_EXIT. Exiting (%u)\n", t);
@@ -128,6 +130,7 @@ int main(int argc, char **argv, char **env)
 		t++;
 	}
 
+	printf("Simulation ended at PC = %08x, t = %d\n", ex_pc, t);
 	tfp->close();
 	free(vcd_name);
 	exit(0);
