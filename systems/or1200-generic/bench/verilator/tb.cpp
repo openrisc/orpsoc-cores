@@ -45,7 +45,7 @@ void INThandler(int signal)
 
 void parseArgs(int argc, char **argv);
 
-int timeout;
+unsigned int timeout;
 char *elf_file_name;
 bool vcd_enabled;
 char *vcd_name;
@@ -55,7 +55,7 @@ unsigned long dump_start, dump_end;
 int main(int argc, char **argv, char **env)
 {
 	int i;
-	int t = 0;
+	unsigned int t = 0;
 	int size;
 	uint8_t *bin_file;
 	bool dump = false;
