@@ -12,10 +12,13 @@
  */
 
 #include <stdint.h>
+#include <signal.h>
 #include <elf-loader.h>
 
 #include "Vorpsoc_top__Syms.h"
 #include "verilated_vcd_c.h"
+
+static bool done;
 
 #define NOP_NOP			0x0000      /* Normal nop instruction */
 #define NOP_EXIT		0x0001      /* End of simulation */
@@ -34,41 +37,73 @@
 
 #define VCD_DEFAULT_NAME	"../sim.vcd"
 
+void INThandler(int signal)
+{
+	printf("\nCaught ctrl-c\n");
+	done = true;
+}
+
 void parseArgs(int argc, char **argv);
 
-int timeout;
+unsigned int timeout;
 char *elf_file_name;
+char *bin_file_name;
 bool vcd_enabled;
 char *vcd_name;
 
-bool dump_all;
 unsigned long dump_start, dump_end;
 
 int main(int argc, char **argv, char **env)
 {
 	int i;
-	int t = 0;
+	unsigned int t = 0;
 	int size;
-	uint8_t *bin_file;
+	uint8_t *bin_data;
 	bool dump = false;
 	VerilatedVcdC* tfp;
 	uint32_t insn = 0;
+	uint32_t ex_pc = 0;
 
 	Verilated::commandArgs(argc, argv);
 
 	Vorpsoc_top* top = new Vorpsoc_top;
 
+	signal(SIGINT, INThandler);
+
 	parseArgs(argc, argv);
 
 	if (elf_file_name) {
 		printf("Loading %s\n",elf_file_name);
-		bin_file = load_elf_file(elf_file_name, &size);
-		if (bin_file == NULL) {
+		bin_data = load_elf_file(elf_file_name, &size);
+		if (bin_data == NULL) {
 			printf("Error loading elf file\n");
 			exit(1);
 		}
+
 		for (int i = 0; i < size; i += 4)
-			top->v->wb_bfm_memory0->mem[i / 4] = read_32(bin_file, i);
+			top->v->wb_bfm_memory0->mem[i/4] = read_32(bin_data, i);
+	}
+
+	if (bin_file_name) {
+		printf("Loading %s\n", bin_file_name);
+		FILE *bin_file = fopen(bin_file_name, "rb");
+
+		if (bin_file == NULL) {
+			printf("Error opening bin file\n");
+			exit(1);
+		}
+		fseek(bin_file, 0, SEEK_END);
+		size = ftell(bin_file);
+		rewind(bin_file);
+		bin_data = (uint8_t *)malloc(size);
+		if (fread(bin_data, 1, size, bin_file) != size) {
+			printf("Error reading bin file\n");
+			exit(1);
+		}
+
+		for (int i=0; i <size;i+=4) {
+			top->v->wb_bfm_memory0->mem[i/4] = read_32(bin_data, i);
+		}
 	}
 
 	top->wb_clk_i = 0;
@@ -81,29 +116,20 @@ int main(int argc, char **argv, char **env)
 		tfp->open(vcd_name);
 	}
 
-	if (dump_all)
-		printf("VCD dump started (%u)\n", t);
+	while (!done) {
 
-	while (1) {
-
-		if (vcd_enabled) {
-			if (dump_start &&  t >= dump_start) {
-				if (t == dump_start)
-					printf("VCD dump started (%u)\n", t);
-				dump = true;
-			}
-			if (dump_all)
-				dump = true;
-			if (!dump_all && !dump_start && dump_end)
-				dump = true;
-			if (dump_end && t >= dump_end) {
-				if (t == dump_end)
-					printf("VCD dump stopped (%u)\n", t);
-				dump = false;
-			}
+		if (dump_end && t >= dump_end) {
 			if (dump)
-				tfp->dump(t);
+				printf("VCD dump stopped (%u)\n", t);
+			dump = false;
+		} else if (vcd_enabled && t >= dump_start) {
+			if (!dump)
+				printf("VCD dump started (%u)\n", t);
+			dump = true;
 		}
+
+		if (dump)
+			tfp->dump(t);
 
 		top->eval();
 
@@ -113,19 +139,25 @@ int main(int argc, char **argv, char **env)
 		top->wb_clk_i = !top->wb_clk_i;
 
 		insn = top->v->or1200_top0->or1200_cpu->or1200_ctrl->wb_insn;
+		ex_pc = top->v->or1200_top0->or1200_cpu->or1200_except->ex_pc;
 
 		if (insn == (0x15000000 | NOP_EXIT)) {
 			printf("Success! Got NOP_EXIT. Exiting (%u)\n", t);
-			break;
+			done = true;
 		}
 
 		if (timeout && t > timeout) {
 			printf("Timeout reached (%u)\n", t);
-			break;
+			done = true;
+		}
+		if (Verilated::gotFinish()) {
+			printf("Caught $finish()\n");
+			done = true;
 		}
 		t++;
 	}
 
+	printf("Simulation ended at PC = %08x, t = %d\n", ex_pc, t);
 	tfp->close();
 	free(vcd_name);
 	exit(0);
@@ -134,81 +166,51 @@ int main(int argc, char **argv, char **env)
 void parseArgs(int argc, char **argv)
 {
 	int i = 1;
+
 	while (i < argc) {
-
 		if (strcmp(argv[i], "--timeout") == 0) {
-			timeout = strtod(argv[i], NULL);
-			i++;
-			continue;
-		}
-/*
-		if ((strcmp(argv[i], "-q") == 0) || (strcmp(argv[i], "--quiet") == 0)) {
-			quiet = true;
-			i++;
-			continue
-		}
-*/
-		if (strcmp(argv[i], "--or1k-elf-load") == 0) {
-			i++;
-			elf_file_name = argv[i++];
-			continue;
-		}
-
-		if ((strcmp(argv[i], "-d") == 0) || (strcmp(argv[i], "--vcdfile") == 0) ||
-		    (strcmp(argv[i], "-v") == 0) || (strcmp(argv[i], "--vcd") == 0)) {
+			timeout = strtod(argv[++i], NULL);
+		} else if (strcmp(argv[i], "--elf-load") == 0) {
+			elf_file_name = argv[++i];
+		} else if (strcmp(argv[i], "--bin-load") == 0) {
+			bin_file_name = argv[++i];
+		} else if ((strcmp(argv[i], "-d") == 0) ||
+			   (strcmp(argv[i], "--vcdfile") == 0) ||
+			   (strcmp(argv[i], "-v") == 0) ||
+			   (strcmp(argv[i], "--vcd") == 0)) {
 			vcd_enabled = true;
-			dump_all = true;
-			if ((i + 1 < argc) && (argv[i + 1][0] != '-')) {
-					vcd_name = strdup(argv[i + 1]);
-					i++;
-			} else
+			if (((i + 1) < argc) && (argv[i+1][0] != '-'))
+				vcd_name = strdup(argv[++i]);
+			else
 				vcd_name = strdup(VCD_DEFAULT_NAME);
-			i++;
-			continue;
-		}
-
-		if ((strcmp(argv[i], "-s") == 0) || (strcmp(argv[i], "--vcdstart") == 0)) {
-			dump_start = strtod(argv[i + 1], NULL);
-			dump_all = false;
-			i++;
-			continue;
-		}
-
-
-		if ((strcmp(argv[i], "-t") == 0) || (strcmp(argv[i], "--vcdstop") == 0)) {
-			dump_end = strtod(argv[i + 1], NULL);
-			dump_all = false;
-			i++;
-			continue;
-		}
-
+		} else if ((strcmp(argv[i], "-s") == 0) ||
+			   (strcmp(argv[i], "--vcdstart") == 0)) {
+			dump_start = strtod(argv[++i], NULL);
+		} else if ((strcmp(argv[i], "-t") == 0) ||
+			   (strcmp(argv[i], "--vcdstop") == 0)) {
+			dump_end = strtod(argv[++i], NULL);
 #ifdef JTAG_DEBUG
-		if ((strcmp(argv[i], "-r") == 0) || (strcmp(argv[i], "--rsp") == 0)) {
+		} else if ((strcmp(argv[i], "-r") == 0) ||
+			 (strcmp(argv[i], "--rsp") == 0)) {
 			rsp_server_enabled = true;
-			if (i + 1 < argc)
-				if (argv[i + 1][0] != '-') {
-				rsp_server_port = atoi(argv[i + 1]);
-				i++;
+			if (++i < argc)
+				if (argv[i][0] != '-') {
+				rsp_server_port = atoi(argv[i]);
 			}
-			i++;
-			continue;
-		}
 #endif
-
-		if ((strcmp(argv[i], "-h") == 0) || (strcmp(argv[i], "--help") == 0)) {
+		} else if ((strcmp(argv[i], "-h") == 0) ||
+			   (strcmp(argv[i], "--help") == 0)) {
 			printf("Usage: %s [options]\n", argv[0]);
-			printf("\n  ORPSoCv3 cycle accurate model\n");
-			printf("  For details visit http://opencores.org/openrisc,orpsocv2\n");
+			printf("\n  or1200-generic cycle accurate model\n");
 			printf("\n");
 			printf("Options:\n");
 			printf("  -h, --help\t\tPrint this help message\n");
-			printf("  -q, --quiet\t\tDisable all except UART print out\n");
 			printf("\nSimulation control:\n");
-			printf("  -f, --program <file> \tLoad program from OR32 ELF <file>\n");
+			printf("  --elf-load <file> \tLoad program from ELF <file>\n");
+			printf("  --bin-load <file> \tLoad program from binary <file>\n");
 			printf("  --timeout <val> \tStop the sim at <val> ns\n");
 			printf("\nVCD generation:\n");
-			printf("  -v, --vcdon\t\tEnable VCD generation\n");
-			printf("  -d, --vcdfile <file>\tEnable and save VCD to <file>\n");
+			printf("  -v, --vcd [<file>]\tEnable and save VCD to <file>\n");
 			printf("  -s, --vcdstart <val>\tEnable and delay VCD generation until <val> ns\n");
 			printf("  -t, --vcdstop <val> \tEnable and terminate VCD generation at <val> ns\n");
 #ifdef JTAG_DEBUG
