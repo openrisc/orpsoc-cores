@@ -150,6 +150,10 @@ int main(int argc, char **argv, char **env)
 			printf("Timeout reached (%u)\n", t);
 			done = true;
 		}
+		if (Verilated::gotFinish()) {
+			printf("Caught $finish()\n");
+			done = true;
+		}
 		t++;
 	}
 
