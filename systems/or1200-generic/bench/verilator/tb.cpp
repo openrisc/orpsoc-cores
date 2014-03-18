@@ -12,10 +12,13 @@
  */
 
 #include <stdint.h>
+#include <signal.h>
 #include <elf-loader.h>
 
 #include "Vorpsoc_top__Syms.h"
 #include "verilated_vcd_c.h"
+
+static bool done;
 
 #define NOP_NOP			0x0000      /* Normal nop instruction */
 #define NOP_EXIT		0x0001      /* End of simulation */
@@ -33,6 +36,12 @@
 #define RESET_TIME		2
 
 #define VCD_DEFAULT_NAME	"../sim.vcd"
+
+void INThandler(int signal)
+{
+	printf("\nCaught ctrl-c\n");
+	done = true;
+}
 
 void parseArgs(int argc, char **argv);
 
@@ -56,6 +65,8 @@ int main(int argc, char **argv, char **env)
 	Verilated::commandArgs(argc, argv);
 
 	Vorpsoc_top* top = new Vorpsoc_top;
+
+	signal(SIGINT, INThandler);
 
 	parseArgs(argc, argv);
 
@@ -107,12 +118,12 @@ int main(int argc, char **argv, char **env)
 
 		if (insn == (0x15000000 | NOP_EXIT)) {
 			printf("Success! Got NOP_EXIT. Exiting (%u)\n", t);
-			break;
+			done = true;
 		}
 
 		if (timeout && t > timeout) {
 			printf("Timeout reached (%u)\n", t);
-			break;
+			done = true;
 		}
 		t++;
 	}
