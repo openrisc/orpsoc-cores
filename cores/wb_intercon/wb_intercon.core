@@ -3,6 +3,7 @@ CAPI=1
 description = Wishbone Bus Interconnect utilities
 depend =
  verilog-arbiter
+ verilog_utils
  vlog_tb_utils
  wb_bfm
 simulators = icarus modelsim
