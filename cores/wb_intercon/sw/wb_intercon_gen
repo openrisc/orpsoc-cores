@@ -244,9 +244,8 @@ class WbIntercon:
                 self.template_writer.add(Wire(wirename, p.width))
                 template_ports += [Port(portname, wirename)]
 
-            if len(master.slaves) > 1:
-                self._gen_mux(master)
-            
+            self._gen_mux(master)
+
         for slave in self.slaves.values():
             for p in WB_MASTER_PORTS:
                 portname = 'wb_{slave}_{port}_o'.format(slave=slave.name, port=p.name)
