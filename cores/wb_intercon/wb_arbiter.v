@@ -70,16 +70,16 @@ module wb_arbiter
    input 		       wbs_rty_i);
 
 
+`include "verilog_utils.vh"
+
 ///////////////////////////////////////////////////////////////////////////////
 // Parameters
 ///////////////////////////////////////////////////////////////////////////////
 
    wire [num_masters-1:0]     grant;
-   wire [$clog2(num_masters)-1:0]      master_sel;
+   wire [`clog2(num_masters)-1:0]      master_sel;
    wire 		      active;
 
-   wire [$clog2(num_masters)-1:0] master_sel_int [0:num_masters-1];
-   
    arbiter
      #(.NUM_PORTS (num_masters))
    arbiter0
@@ -89,18 +89,8 @@ module wb_arbiter
       .grant (grant),
       .active (active));
 
-   genvar 			  idx;
-   
-   assign master_sel_int[0] = 0;
-   
-   generate
-      for(idx=1; idx<num_masters ; idx=idx+1) begin : select_mux
-	 assign master_sel_int[idx] = grant[idx] ? idx : master_sel_int[idx-1];
-      end
-   endgenerate
-   
-   assign master_sel = master_sel_int[num_masters-1];
-   
+   assign master_sel = ff1(grant, num_masters);
+
    //Mux active master
    assign wbs_adr_o = wbm_adr_i[master_sel*aw+:aw];
    assign wbs_dat_o = wbm_dat_i[master_sel*dw+:dw];
