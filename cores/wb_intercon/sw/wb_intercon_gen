@@ -165,10 +165,7 @@ class WbIntercon:
 
         name_list = []
         for m in slave.masters:
-            if len(m.slaves) == 1:
-                name_list += ['wb_' + m.name + '_{0}_{1}']
-            else:
-                name_list += ['wb_{dir}'+ m.name + '_' + s + '_{0}']
+            name_list += ['wb_{dir}'+ m.name + '_' + s + '_{0}']
         for p in WB_MASTER_PORTS:
             ports += [Port('wbm_'+p.name+'_i', '{' + ', '.join(name_list).format(p.name, 'i', dir='m2s_')+'}')]
         for p in WB_SLAVE_PORTS:
@@ -215,13 +212,12 @@ class WbIntercon:
     def write(self, file):
         #Declare wires. Only conections between muxes and arbiters need explicit wires
         for key, value in self.masters.items():
-            if len(value.slaves)>1:
-                for slave in value.slaves:
-                    if len(slave.masters)>1:
-                        for p in WB_MASTER_PORTS:
-                            self.verilog_writer.add(Wire('wb_m2s_{0}_{1}_{2}'.format(key, slave.name, p.name), p.width))
-                        for p in WB_SLAVE_PORTS:
-                            self.verilog_writer.add(Wire('wb_s2m_{0}_{1}_{2}'.format(key, slave.name, p.name), p.width))
+            for slave in value.slaves:
+                if len(slave.masters)>1:
+                    for p in WB_MASTER_PORTS:
+                        self.verilog_writer.add(Wire('wb_m2s_{0}_{1}_{2}'.format(key, slave.name, p.name), p.width))
+                    for p in WB_SLAVE_PORTS:
+                        self.verilog_writer.add(Wire('wb_s2m_{0}_{1}_{2}'.format(key, slave.name, p.name), p.width))
 
         self.verilog_writer.add(ModulePort('wb_clk_i', 'input'))
         self.verilog_writer.add(ModulePort('wb_rst_i', 'input'))
