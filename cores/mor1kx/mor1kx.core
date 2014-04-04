@@ -45,6 +45,11 @@ include_files =
  rtl/verilog/mor1kx-defines.v
  rtl/verilog/mor1kx-sprs.v
 
+tb_src_files = bench/verilog/mor1kx_monitor.v
+
+[plusargs]
+trace_enable = bool "Enable trace"
+trace_to_screen = bool "Output trace to screen"
 
 [provider]
 name = github
