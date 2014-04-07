@@ -1,0 +1,9 @@
+The easiest way to flash your FPGA bitstream is to use a NiosII system:
+
+flash_img.sof is a NiosII system with a CFI flash controller at address 0x4000000.
+We can use Altera tools to flash our image at that address:
+
+export PATH=$PATH:$(your_path_to_nios2eds)/nios2eds/bin/
+nios2-configure-sof flash_img.sof
+java -jar $(your_path_to_nios2eds)/nios2eds/bin/sof2flash.jar --activeparallel --offset=0x20000 --input=neek.sof --output=neek.flash
+nios2-flash-programmer --base=0x4000000 neek.flash
