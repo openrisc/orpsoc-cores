@@ -1,0 +1,26 @@
+CAPI=1
+[main]
+description = Wishbone RAM with selectable backends
+
+simulators = icarus modelsim
+
+depend = wb_bfm
+[verilog]
+src_files =
+ rtl/verilog/wb_funcs.v
+ rtl/verilog/wb_ram.v
+ rtl/verilog/wb_ram_generic.v
+
+tb_private_src_files = bench/wb_ram_tb.v
+
+[simulator]
+toplevel = wb_ram_tb
+
+[icarus]
+depend = vlog_tb_utils
+
+[modelsim]
+depend = vlog_tb_utils
+
+[plusargs]
+transactions = int "Number of wishbone transactions"

@@ -10,8 +10,9 @@ tb_src_files =
  wb_bfm_slave.v
  wb_bfm_memory.v
  wb_bfm_transactor.v
+include_files = wb_bfm_params.v
 tb_private_src_files = bench/wb_master.v bench/wb_bfm_tb.v
-tb_include_files = wb_bfm_params.v wb_bfm_common.v
+tb_include_files = wb_bfm_common.v
 
 [simulator]
 toplevel=wb_bfm_tb
