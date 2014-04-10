@@ -6,7 +6,6 @@ description = "TCP/IP controlled VPI JTAG Interface"
 tb_src_files = jtag_vpi.v
 
 [vpi]
-name = jtag_vpi
 src_files = jtag_vpi.c
 
 [plusargs]

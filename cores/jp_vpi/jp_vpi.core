@@ -7,7 +7,6 @@ description = Debug interface GDB server
 tb_src_files = verilog/vpi_debug_module.v
 
 [vpi]
-name = jp_vpi
 src_files =
  c/jp_vpi.c
  c/rsp-rtl_sim.c
