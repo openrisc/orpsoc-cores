@@ -1,0 +1,14 @@
+CAPI=1
+[main]
+description = "Micron 256Mb DDR-SDRAM Verilog model"
+
+[verilog]
+src_files =
+ ddr.v
+include_files =
+ ddr_parameters.vh
+
+[provider]
+name = url
+url = http://www.micron.com/~/media/Documents/Products/Sim%%20Model/DRAM/DRAM/3924256Mb_ddr.zip
+filetype = zip

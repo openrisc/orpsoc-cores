@@ -1,0 +1,22 @@
+--- a/ddr_parameters.vh	2014-04-17 11:25:48.477620132 +0200
++++ b/ddr_parameters.vh	2014-04-17 11:29:23.387934219 +0200
+@@ -89,7 +89,8 @@
+     parameter tRP              =    20.0; // tRP    ns    Precharge command period
+     parameter tRRD             =    15.0; // tRRD   ns    Active bank a to Active bank b command time
+     parameter tWR              =    15.0; // tWR    ns    Write recovery time
+-`else `define sg75                        //              Timing Parameters for -75 (CL = 2.5)
++`else                                     //              Timing Parameters for -75 (CL = 2.5)
++`define sg75
+     parameter tCK              =     7.5; // tCK    ns    Nominal Clock Cycle Time
+     parameter tDQSQ            =     0.5; // tDQSQ  ns    DQS-DQ skew, DQS to last DQ valid, per group, per access
+     parameter tMRD             =    15.0; // tMRD   ns    Load Mode Register command cycle time
+@@ -117,7 +118,8 @@
+     parameter DQS_BITS         =       1; // Set this parameter to control how many DQS bits are used
+     parameter DM_BITS          =       1; // Set this parameter to control how many DM bits are used
+     parameter COL_BITS         =      10; // Set this parameter to control how many Column bits are used
+-`else `define x16
++`else
++`define x16
+     parameter ADDR_BITS        =      13; // Set this parameter to control how many Address bits are used
+     parameter DQ_BITS          =      16; // Set this parameter to control how many Data bits are used
+     parameter DQS_BITS         =       2; // Set this parameter to control how many DQS bits are used
