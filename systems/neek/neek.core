@@ -1,0 +1,165 @@
+CAPI=1
+[main]
+depend =
+ wb_intercon
+ or1200
+ uart16550
+ elf-loader
+ vlog_tb_utils
+ wiredelay
+ adv_debug_sys
+ mor1kx
+ gpio
+ altera_virtual_jtag
+
+###########################################
+#              SIMULATORS                 #
+###########################################
+
+simulators =
+ modelsim
+
+###########################################
+#            VHDL SOURCE FILES            #
+###########################################
+
+[vhdl]
+
+#-------------------------------------
+# Comment this for simulation
+#-------------------------------------
+
+src_files =
+ rtl/verilog/wb_altera_ddr_ctrl/rtl/verilog/ddr_ctrl_ip/ddr_ctrl_ip_phy_alt_mem_phy_seq.vhd
+
+###########################################
+#          VERILOG SOURCE FILES           #
+###########################################
+
+[verilog]
+
+src_files =
+
+#-------------------------------------
+# Clock and resets generation
+#-------------------------------------
+ rtl/verilog/clkgen.v
+ backend/rtl/verilog/pll.v
+
+#-------------------------------------
+# Top file
+#-------------------------------------
+ rtl/verilog/orpsoc_top.v
+
+#-------------------------------------
+# System interconnections
+#-------------------------------------
+ rtl/verilog/wb_intercon.v
+
+#-------------------------------------
+# Very simple ROM
+#-------------------------------------
+ rtl/verilog/rom.v
+
+#-------------------------------------
+# Altera DDR Controller IP
+# ------------------------------------
+ rtl/verilog/wb_altera_ddr_ctrl/rtl/verilog/ddr_ctrl_ip/ddr_ctrl_ip_alt_mem_ddrx_controller_top.v
+ rtl/verilog/wb_altera_ddr_ctrl/rtl/verilog/ddr_ctrl_ip/alt_mem_ddrx_controller.v
+ rtl/verilog/wb_altera_ddr_ctrl/rtl/verilog/ddr_ctrl_ip/alt_mem_ddrx_addr_cmd.v
+ rtl/verilog/wb_altera_ddr_ctrl/rtl/verilog/ddr_ctrl_ip/alt_mem_ddrx_addr_cmd_wrap.v
+ rtl/verilog/wb_altera_ddr_ctrl/rtl/verilog/ddr_ctrl_ip/alt_mem_ddrx_controller_st_top.v
+ rtl/verilog/wb_altera_ddr_ctrl/rtl/verilog/ddr_ctrl_ip/alt_mem_ddrx_ddr2_odt_gen.v
+ rtl/verilog/wb_altera_ddr_ctrl/rtl/verilog/ddr_ctrl_ip/alt_mem_ddrx_ddr3_odt_gen.v
+ rtl/verilog/wb_altera_ddr_ctrl/rtl/verilog/ddr_ctrl_ip/alt_mem_ddrx_lpddr2_addr_cmd.v
+ rtl/verilog/wb_altera_ddr_ctrl/rtl/verilog/ddr_ctrl_ip/alt_mem_ddrx_odt_gen.v
+ rtl/verilog/wb_altera_ddr_ctrl/rtl/verilog/ddr_ctrl_ip/alt_mem_ddrx_rdwr_data_tmg.v
+ rtl/verilog/wb_altera_ddr_ctrl/rtl/verilog/ddr_ctrl_ip/alt_mem_ddrx_arbiter.v
+ rtl/verilog/wb_altera_ddr_ctrl/rtl/verilog/ddr_ctrl_ip/alt_mem_ddrx_burst_gen.v
+ rtl/verilog/wb_altera_ddr_ctrl/rtl/verilog/ddr_ctrl_ip/alt_mem_ddrx_cmd_gen.v
+ rtl/verilog/wb_altera_ddr_ctrl/rtl/verilog/ddr_ctrl_ip/alt_mem_ddrx_csr.v
+ rtl/verilog/wb_altera_ddr_ctrl/rtl/verilog/ddr_ctrl_ip/alt_mem_ddrx_buffer.v
+ rtl/verilog/wb_altera_ddr_ctrl/rtl/verilog/ddr_ctrl_ip/alt_mem_ddrx_buffer_manager.v
+ rtl/verilog/wb_altera_ddr_ctrl/rtl/verilog/ddr_ctrl_ip/alt_mem_ddrx_burst_tracking.v
+ rtl/verilog/wb_altera_ddr_ctrl/rtl/verilog/ddr_ctrl_ip/alt_mem_ddrx_dataid_manager.v
+ rtl/verilog/wb_altera_ddr_ctrl/rtl/verilog/ddr_ctrl_ip/alt_mem_ddrx_fifo.v
+ rtl/verilog/wb_altera_ddr_ctrl/rtl/verilog/ddr_ctrl_ip/alt_mem_ddrx_list.v
+ rtl/verilog/wb_altera_ddr_ctrl/rtl/verilog/ddr_ctrl_ip/alt_mem_ddrx_rdata_path.v
+ rtl/verilog/wb_altera_ddr_ctrl/rtl/verilog/ddr_ctrl_ip/alt_mem_ddrx_wdata_path.v
+ rtl/verilog/wb_altera_ddr_ctrl/rtl/verilog/ddr_ctrl_ip/alt_mem_ddrx_define.iv
+ rtl/verilog/wb_altera_ddr_ctrl/rtl/verilog/ddr_ctrl_ip/alt_mem_ddrx_ecc_decoder.v
+ rtl/verilog/wb_altera_ddr_ctrl/rtl/verilog/ddr_ctrl_ip/alt_mem_ddrx_ecc_decoder_32_syn.v
+ rtl/verilog/wb_altera_ddr_ctrl/rtl/verilog/ddr_ctrl_ip/alt_mem_ddrx_ecc_decoder_64_syn.v
+ rtl/verilog/wb_altera_ddr_ctrl/rtl/verilog/ddr_ctrl_ip/alt_mem_ddrx_ecc_encoder.v
+ rtl/verilog/wb_altera_ddr_ctrl/rtl/verilog/ddr_ctrl_ip/alt_mem_ddrx_ecc_encoder_32_syn.v
+ rtl/verilog/wb_altera_ddr_ctrl/rtl/verilog/ddr_ctrl_ip/alt_mem_ddrx_ecc_encoder_64_syn.v
+ rtl/verilog/wb_altera_ddr_ctrl/rtl/verilog/ddr_ctrl_ip/alt_mem_ddrx_ecc_encoder_decoder_wrapper.v
+ rtl/verilog/wb_altera_ddr_ctrl/rtl/verilog/ddr_ctrl_ip/alt_mem_ddrx_input_if.v
+ rtl/verilog/wb_altera_ddr_ctrl/rtl/verilog/ddr_ctrl_ip/alt_mem_ddrx_mm_st_converter.v
+ rtl/verilog/wb_altera_ddr_ctrl/rtl/verilog/ddr_ctrl_ip/alt_mem_ddrx_rank_timer.v
+ rtl/verilog/wb_altera_ddr_ctrl/rtl/verilog/ddr_ctrl_ip/alt_mem_ddrx_sideband.v
+ rtl/verilog/wb_altera_ddr_ctrl/rtl/verilog/ddr_ctrl_ip/alt_mem_ddrx_tbp.v
+ rtl/verilog/wb_altera_ddr_ctrl/rtl/verilog/ddr_ctrl_ip/alt_mem_ddrx_timing_param.v
+ rtl/verilog/wb_altera_ddr_ctrl/rtl/verilog/ddr_ctrl_ip/ddr_ctrl_ip_controller_phy.v
+ rtl/verilog/wb_altera_ddr_ctrl/rtl/verilog/ddr_ctrl_ip/ddr_ctrl_ip_phy_alt_mem_phy.v
+ rtl/verilog/wb_altera_ddr_ctrl/rtl/verilog/ddr_ctrl_ip/ddr_ctrl_ip_phy_alt_mem_phy_pll.v
+
+#-------------------------------------
+# Comment this for simulation
+#-------------------------------------
+
+ rtl/verilog/wb_altera_ddr_ctrl/rtl/verilog/ddr_ctrl_ip/ddr_ctrl_ip_phy_alt_mem_phy_seq_wrapper.v
+ rtl/verilog/wb_altera_ddr_ctrl/rtl/verilog/ddr_ctrl_ip/ddr_ctrl_ip.v
+ rtl/verilog/wb_altera_ddr_ctrl/rtl/verilog/ddr_ctrl_ip/ddr_ctrl_ip_phy.v
+
+#------------------------------------------------------
+# Multiport DDR Controller IP (on top of Altera DDR IP)
+# -----------------------------------------------------
+ rtl/verilog/wb_altera_ddr_ctrl/rtl/verilog/bufram.v
+ rtl/verilog/wb_altera_ddr_ctrl/rtl/verilog/ddr_ctrl_wrapper.v
+ rtl/verilog/wb_altera_ddr_ctrl/rtl/verilog/dpram_altera.v
+ rtl/verilog/wb_altera_ddr_ctrl/rtl/verilog/dpram_generic.v
+ rtl/verilog/wb_altera_ddr_ctrl/rtl/verilog/dual_clock_fifo.v
+ rtl/verilog/wb_altera_ddr_ctrl/rtl/verilog/wb_ddr_ctrl.v
+ rtl/verilog/wb_altera_ddr_ctrl/rtl/verilog/wb_port_arbiter.v
+ rtl/verilog/wb_altera_ddr_ctrl/rtl/verilog/wb_port.v
+
+#-------------------------------------
+# Simulation specific source files
+#-------------------------------------
+
+tb_private_src_files = 
+ bench/orpsoc_tb.v
+ bench/uart_decoder.v
+ bench/ddr_model/ddr.v
+ rtl/verilog/wb_altera_ddr_ctrl/rtl/verilog/ddr_ctrl_ip/altera_primitives.v
+ rtl/verilog/wb_altera_ddr_ctrl/rtl/verilog/ddr_ctrl_ip/cycloneiii_atoms.v
+ rtl/verilog/wb_altera_ddr_ctrl/rtl/verilog/ddr_ctrl_ip/sgate.v
+ rtl/verilog/wb_altera_ddr_ctrl/rtl/verilog/ddr_ctrl_ip/altera_mf.v
+ rtl/verilog/wb_altera_ddr_ctrl/rtl/verilog/ddr_ctrl_ip/220model.v
+ rtl/verilog/wb_altera_ddr_ctrl/rtl/verilog/ddr_ctrl_ip/ddr_ctrl_ip_phy_alt_mem_phy_seq_wrapper.vo
+ rtl/verilog/wb_altera_ddr_ctrl/rtl/verilog/ddr_ctrl_ip/ddr_ctrl_ip_sim.v
+ rtl/verilog/wb_altera_ddr_ctrl/rtl/verilog/ddr_ctrl_ip/ddr_ctrl_ip_phy.v
+
+#-------------------------------------
+# Verilog include files
+#-------------------------------------
+
+include_files =
+ rtl/verilog/include/or1200_defines.v
+ rtl/verilog/include/orpsoc-defines.v
+ rtl/verilog/include/timescale.v
+ rtl/verilog/include/uart_defines.v
+ rtl/verilog/include/wb_intercon.vh
+ rtl/verilog/wb_altera_ddr_ctrl/rtl/verilog/ddr_ctrl_ip/alt_mem_ddrx_define.iv
+ rtl/verilog/wb_altera_ddr_ctrl/rtl/verilog/ddr_ctrl_ip/alt_mem_phy_defines.v
+ bench/ddr_model/ddr_parameters.vh
+ rtl/verilog/include/test-defines.v
+
+###########################################
+#          SIMULATORS OPTIONS             #
+###########################################
+
+[modelsim]
+vlog_options = +define+SIM +define+MODELSIM_SIM +define+sg5B +define+x16 +define+FULL_MEM
+vsim_options = -L altera_mf_ver -L altera_mf
