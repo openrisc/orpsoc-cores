@@ -36,7 +36,7 @@ bool VerilatorTbUtils::doCycle() {
   }
 
   if (vcdDumping)
-    tfp->dump(t);
+    tfp->dump((vluint64_t)t);
 
   if(timeout && t >= timeout) {
     printf("Timeout reached\n");
