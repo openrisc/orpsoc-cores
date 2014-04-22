@@ -1,0 +1,7 @@
+Xilinx DDR2 controller with Wishbone interface
+
+This is a Xilinx technology-dependent DDR2 memory controller, based on a 
+controller from Xilinx's memory interface generator (MIG)
+
+It performes conversion from the wishbone interface to the native userport
+interface of the MIG and vice versa.
