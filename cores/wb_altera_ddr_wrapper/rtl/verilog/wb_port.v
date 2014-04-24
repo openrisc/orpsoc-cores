@@ -214,14 +214,20 @@ dual_clock_fifo #(
 	.empty_o	(wrfifo_empty)
 );
 
+	reg	read_done_wb;
+	reg	read_done_r;
+
 	//
 	// WB clock domain
 	//
 	always @(posedge wb_clk)
-		if (read_done)
-			read_done_ack <= 1'b1;
-		else
-			read_done_ack <= 1'b0;
+		if (wb_rst) begin
+			read_done_r <= 1'b0;
+			read_done_wb <= 1'b0;
+		end else begin
+			read_done_r  <= read_done;
+			read_done_wb <= read_done_r;
+		end
 
 	always @(posedge wb_clk)
 		if (wb_rst) begin
@@ -269,6 +275,9 @@ dual_clock_fifo #(
 
 					wb_state <= WRITE;
 				end
+
+				if (read_done_wb)
+					wb_state <= IDLE;
 			end
 
 			READ: begin
@@ -282,7 +291,7 @@ dual_clock_fifo #(
 
 			REFILL: begin
 				buf_adr <= wb_adr[31:BUF_WIDTH+2];
-				if (read_done) begin
+				if (read_done_wb) begin
 					read_req_wb <= 1'b0;
 					wb_state <= IDLE;
 				end
@@ -380,6 +389,7 @@ dual_clock_fifo #(
 
 			WAIT_LATENCY: begin
 				if (!read_req_sdram) begin
+					read_done <= 1'b0;
 					sdram_state <= IDLE;
 				end
 			end
@@ -388,9 +398,6 @@ dual_clock_fifo #(
 				sdram_state <= IDLE;
 			end
 			endcase
-
-			if (read_done_ack)
-				read_done <= 1'b0;
 		end
 	end
 endmodule
