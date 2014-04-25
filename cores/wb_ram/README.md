@@ -14,7 +14,7 @@ aw    | Address width        | clog2(depth)              |
 
 Test bench
 ----------
-wb_ram comes with a self-checking test bench that uses the [wb_bfm_transactor](../wb_bfm/rtl/verilog/wb_bfm_transactor.v) from [wb_bfm](../wb_bfm).
+wb_ram comes with a self-checking test bench that uses the [wb_bfm_transactor](../wb_bfm/wb_bfm_transactor.v) from [wb_bfm](../wb_bfm).
 
 TODO
 ----
