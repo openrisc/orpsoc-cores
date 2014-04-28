@@ -1,0 +1,33 @@
+CAPI=1
+[main]
+description = "Dual core mor1kx simulation environment"
+depend =
+ mmuart
+ mor1kx
+ ram_wb
+ uart16550
+ vlog_tb_utils
+ verilator_tb_utils
+ wb_bfm
+ wb_intercon
+
+simulators = icarus modelsim
+
+[verilog]
+src_files =
+ rtl/verilog/orpsoc_top.v
+ rtl/verilog/wb_bus_b3.v
+ rtl/verilog/wb_interconnect_arb_rr.v
+ bench/verilog/wb_uart_wrapper.v
+tb_private_src_files =
+ bench/verilog/uart16550_model.v
+ bench/verilog/orpsoc_tb.v
+include_files =
+ bench/verilog/include/test-defines.v
+ bench/verilog/include/uart_defines.v
+ bench/verilog/include/timescale.v
+
+[verilator]
+verilator_options = -Wno-fatal --trace
+tb_toplevel   = bench/verilator/tb.cpp
+top_module    = orpsoc_top
