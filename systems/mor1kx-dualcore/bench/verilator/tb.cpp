@@ -18,7 +18,7 @@
 
 #include "Vorpsoc_top__Syms.h"
 
-static bool done;
+static int done;
 
 #define NOP_NOP			0x0000      /* Normal nop instruction */
 #define NOP_EXIT		0x0001      /* End of simulation */
@@ -68,11 +68,46 @@ static int parse_args(int argc, char **argv, VerilatorTbUtils* tbUtils)
 	return argp_parse(&argp, argc, argv, 0, 0, tbUtils);
 }
 
+class TraceExecMonitor {
+public:
+  unsigned int id;
+  bool self_done;
+  VerilatorTbUtils* tbUtils;
+  uint32_t *insn;
+  uint32_t *pc;
+  Vorpsoc_top_mor1kx_cpu_cappuccino__pi5 *cpu;
+  char printstring[256];
+  int printstringpos;
+
+  TraceExecMonitor() : printstringpos(0), self_done(false) {}
+
+  void eval() {
+    if (!self_done) {
+      if (*insn == (0x15000000 | NOP_EXIT)) {
+	printf("[%lu] Success! Got NOP_EXIT (%lu)\n", id,
+	       tbUtils->getTime());
+	done++; self_done = true;
+      } else if (*insn == (0x15000000 | NOP_EXIT_SILENT)) {
+	printf("[%lu] Success! Got NOP_EXIT_SILENT (%lu)\n", id,
+	       tbUtils->getTime());
+	done++; self_done = true;
+      } else if (*insn == (0x15000000 | NOP_PUTC)) {
+	char c = cpu->get_gpr(3) & 0xff;
+	printstring[printstringpos++] = c;
+	if (c == '\n') {
+	  printstring[printstringpos] = 0;
+	  printf("%s", printstring);
+	  printstringpos = 0;
+	}
+      }
+    }
+  }
+
+};
+
+
 int main(int argc, char **argv, char **env)
 {
-	uint32_t insn = 0;
-	uint32_t ex_pc = 0;
-
 	Verilated::commandArgs(argc, argv);
 
 	Vorpsoc_top* top = new Vorpsoc_top;
@@ -88,7 +123,22 @@ int main(int argc, char **argv, char **env)
 
 	top->trace(tbUtils->tfp, 99);
 
-	while (tbUtils->doCycle() && !done) {
+	TraceExecMonitor trace0;
+	trace0.id = 0;
+	trace0.tbUtils = tbUtils;
+	trace0.pc = &top->v->traceport_exec_pc[0];
+	trace0.insn = &top->v->traceport_exec_insn[0];
+	trace0.cpu = top->v->mor1kx0->mor1kx_cpu->cappuccino__DOT__mor1kx_cpu;
+	TraceExecMonitor trace1;
+	trace1.id = 1;
+	trace1.tbUtils = tbUtils;
+	trace1.pc = &top->v->traceport_exec_pc[1];
+	trace1.insn = &top->v->traceport_exec_insn[1];
+	trace1.cpu = top->v->mor1kx1->mor1kx_cpu->cappuccino__DOT__mor1kx_cpu;
+	
+	done = 0;
+
+	while (tbUtils->doCycle() && !(done==2)) {
 		if (tbUtils->getTime() > RESET_TIME)
 			top->wb_rst_i = 0;
 
@@ -96,18 +146,14 @@ int main(int argc, char **argv, char **env)
 
 		top->wb_clk_i = !top->wb_clk_i;
 
-		insn = top->v->mor1kx0->mor1kx_cpu->monitor_execute_insn;
-		ex_pc = top->v->mor1kx0->mor1kx_cpu->monitor_execute_pc;
+		top->eval();
+		trace0.eval();
+		trace1.eval();
 
-		if (insn == (0x15000000 | NOP_EXIT)) {
-			printf("Success! Got NOP_EXIT. Exiting (%lu)\n",
-			       tbUtils->getTime());
-			done = true;
-		}
+		top->wb_clk_i = !top->wb_clk_i;
 	}
 
-	printf("Simulation ended at PC = %08x (%lu)\n",
-	       ex_pc, tbUtils->getTime());
+	printf("Simulation ended (%lu)\n", tbUtils->getTime());
 
 	delete tbUtils;
 	exit(0);

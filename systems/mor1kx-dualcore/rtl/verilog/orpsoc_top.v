@@ -11,12 +11,12 @@ localparam wb_dw = 32;
 localparam MEM_SIZE_BITS = 23;
 
 
-   wire        traceport_exec_valid[0:1];
-   wire [31:0] traceport_exec_pc[0:1];
-   wire [31:0] traceport_exec_insn[0:1];
-   wire [31:0] traceport_exec_wbdata[0:1];
-   wire [4:0]  traceport_exec_wbreg[0:1];
-   wire        traceport_exec_wben[0:1];
+   wire        traceport_exec_valid[0:1] /* verilator public */;
+   wire [31:0] traceport_exec_pc[0:1] /* verilator public */;
+   wire [31:0] traceport_exec_insn[0:1] /* verilator public */;
+   wire [31:0] traceport_exec_wbdata[0:1] /* verilator public */;
+   wire [4:0]  traceport_exec_wbreg[0:1] /* verilator public */;
+   wire        traceport_exec_wben[0:1] /*verilator public*/;
    
 
 ////////////////////////////////////////////////////////////////////////
