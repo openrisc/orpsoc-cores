@@ -10,6 +10,9 @@ depend =
  verilator_tb_utils
  wb_bfm
  wb_intercon
+ jtag_vpi
+ jtag_tap
+ adv_debug_sys
 
 simulators = icarus modelsim
 
@@ -26,6 +29,9 @@ include_files =
  bench/verilog/include/uart_defines.v
  bench/verilog/include/timescale.v
  bench/verilog/wb_intercon.vh
+
+[icarus]
+iverilog_options = -DSIM
 
 [verilator]
 verilator_options = -Wno-fatal --trace
