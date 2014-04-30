@@ -4,6 +4,30 @@ module orpsoc_tb;
 
    vlog_tb_utils vlog_tb_utils0();
 
+    ////////////////////////////////////////////////////////////////////////
+    //
+    // JTAG VPI interface
+    //
+    ////////////////////////////////////////////////////////////////////////
+
+    wire tms;
+    wire tck;
+    wire tdi;
+    wire tdo;
+
+    reg enable_jtag_vpi;
+    initial enable_jtag_vpi = $test$plusargs("enable_jtag_vpi");
+
+    jtag_vpi jtag_vpi0
+    (
+        .tms		(tms),
+        .tck		(tck),
+        .tdi		(tdi),
+        .tdo		(tdo),
+        .enable		(enable_jtag_vpi),
+        .init_done	(orpsoc_tb.dut.wb_rst)
+    );
+
    ////////////////////////////////////////////////////////////////////////
    //
    // ELF program loading
@@ -32,11 +56,11 @@ module orpsoc_tb;
    // Clock and reset generation
    // 
    ////////////////////////////////////////////////////////////////////////
-   reg wb_clk = 1;
-   reg wb_rst = 1;
+   reg syst_clk = 1;
+   reg syst_rst = 1;
 
-   always #5 wb_clk <= ~wb_clk;
-   initial #100 wb_rst <= 0;
+   always #5 syst_clk <= ~syst_clk;
+   initial #100 syst_rst <= 0;
 
    ////////////////////////////////////////////////////////////////////////
    //
@@ -53,7 +77,11 @@ module orpsoc_tb;
    orpsoc_top
      #(.UART_SIM (1))
    dut
-     (.wb_clk_i (wb_clk),
-      .wb_rst_i (wb_rst));
+     (.wb_clk_i (syst_clk),
+      .wb_rst_i (syst_rst),
+      .tms_pad_i (tms),
+      .tck_pad_i (tck),
+      .tdi_pad_i (tdi),
+      .tdo_pad_o (tdo));
 
 endmodule
