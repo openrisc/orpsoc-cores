@@ -10,7 +10,7 @@ depend =
  jtag_vpi
  mor1kx
  or1200
- or1k-elf-loader
+ elf-loader
  uart16550
  vlog_tb_utils
  wb_intercon

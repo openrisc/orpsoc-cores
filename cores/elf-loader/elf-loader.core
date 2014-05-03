@@ -3,10 +3,14 @@ CAPI=1
 description = "Generic ELF loader"
 
 [vpi]
-name = elf_loader
 src_files = elf-loader.c vpi_wrapper.c
 include_files = elf-loader.h
 libs = -lelf
+
+[verilator]
+src_files     = elf-loader.c
+include_files = elf-loader.h
+libs          = -lelf
 
 [plusargs]
 elf-load = file ELF file to preload to memory

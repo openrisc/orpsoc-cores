@@ -25,18 +25,6 @@ module orpsoc_top
 
    `include "wb_intercon.vh"
 
-   wire [31:0]                wb_m2s_uart8_adr;
-   wire [7:0] 		      wb_m2s_uart8_dat;
-   wire 		      wb_m2s_uart8_we;
-   wire 		      wb_m2s_uart8_cyc;
-   wire 		      wb_m2s_uart8_stb;
-   wire [2:0] 		      wb_m2s_uart8_cti;
-   wire [1:0] 		      wb_m2s_uart8_bte;
-   wire [7:0] 		      wb_s2m_uart8_dat;
-   wire 		      wb_s2m_uart8_ack;
-   wire 		      wb_s2m_uart8_err;
-   wire 		      wb_s2m_uart8_rty;
-
    ////////////////////////////////////////////////////////////////////////
    //
    // or1200
@@ -141,37 +129,6 @@ module orpsoc_top
       .wb_err_o (wb_s2m_mem_err),
       .wb_rty_o (wb_s2m_mem_rty));
    
-   ////////////////////////////////////////////////////////////////////////
-   //
-   // UART
-   // 
-   ////////////////////////////////////////////////////////////////////////
-   wb_data_resize wb_data_resize_uart0
-   (//Wishbone Master interface
-    .wbm_adr_i (wb_m2s_uart_adr),
-    .wbm_dat_i (wb_m2s_uart_dat),
-    .wbm_sel_i (wb_m2s_uart_sel),
-    .wbm_we_i  (wb_m2s_uart_we ),
-    .wbm_cyc_i (wb_m2s_uart_cyc),
-    .wbm_stb_i (wb_m2s_uart_stb),
-    .wbm_cti_i (wb_m2s_uart_cti),
-    .wbm_bte_i (wb_m2s_uart_bte),
-    .wbm_dat_o (wb_s2m_uart_dat),
-    .wbm_ack_o (wb_s2m_uart_ack),
-    .wbm_err_o (wb_s2m_uart_err),
-    .wbm_rty_o (wb_s2m_uart_rty),
-    // Wishbone Slave interface
-    .wbs_adr_o (wb_m2s_uart8_adr),
-    .wbs_dat_o (wb_m2s_uart8_dat),
-    .wbs_we_o  (wb_m2s_uart8_we ),
-    .wbs_cyc_o (wb_m2s_uart8_cyc),
-    .wbs_stb_o (wb_m2s_uart8_stb),
-    .wbs_cti_o (wb_m2s_uart8_cti),
-    .wbs_bte_o (wb_m2s_uart8_bte),
-    .wbs_dat_i (wb_s2m_uart8_dat),
-    .wbs_ack_i (wb_s2m_uart8_ack),
-    .wbs_err_i (wb_s2m_uart8_err),
-    .wbs_rty_i (wb_s2m_uart8_rty));
 
    wb_uart_wrapper
      #(.DEBUG (0),
@@ -183,17 +140,17 @@ module orpsoc_top
       .wb_rst_i (wb_rst_i),
       .rx       (1'b0),
       .tx       (uart),
-      .wb_adr_i	(wb_m2s_uart8_adr),
-      .wb_dat_i	(wb_m2s_uart8_dat),
-      .wb_we_i	(wb_m2s_uart8_we),
-      .wb_cyc_i	(wb_m2s_uart8_cyc),
-      .wb_stb_i	(wb_m2s_uart8_stb),
-      .wb_cti_i	(wb_m2s_uart8_cti),
-      .wb_bte_i	(wb_m2s_uart8_bte),
-      .wb_dat_o	(wb_s2m_uart8_dat),
-      .wb_ack_o	(wb_s2m_uart8_ack),
-      .wb_err_o (wb_s2m_uart8_err),
-      .wb_rty_o (wb_s2m_uart8_rty));
+      .wb_adr_i	(wb_m2s_uart_adr),
+      .wb_dat_i	(wb_m2s_uart_dat),
+      .wb_we_i	(wb_m2s_uart_we),
+      .wb_cyc_i	(wb_m2s_uart_cyc),
+      .wb_stb_i	(wb_m2s_uart_stb),
+      .wb_cti_i	(wb_m2s_uart_cti),
+      .wb_bte_i	(wb_m2s_uart_bte),
+      .wb_dat_o	(wb_s2m_uart_dat),
+      .wb_ack_o	(wb_s2m_uart_ack),
+      .wb_err_o (wb_s2m_uart_err),
+      .wb_rty_o (wb_s2m_uart_rty));
 
    `ifdef VERILATOR
    wire [7:0] 				  uart_rx_data;

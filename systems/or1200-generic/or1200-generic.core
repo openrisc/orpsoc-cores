@@ -4,10 +4,10 @@ description = "Minimal OR1200 simulation environment"
 depend = 
  mmuart
  or1200
- or1k-elf-loader
  ram_wb
  uart16550
  vlog_tb_utils
+ verilator_tb_utils
  wb_bfm
  wb_intercon
 
@@ -29,6 +29,5 @@ include_files =
 
 [verilator]
 verilator_options = -Wno-fatal --trace
-src_files     = bench/verilator/or1k-elf-loader.c
-include_files = bench/verilator/or1k-elf-loader.h
 tb_toplevel   = bench/verilator/tb.cpp
+top_module    = orpsoc_top

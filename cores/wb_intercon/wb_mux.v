@@ -50,6 +50,12 @@
 //////////////////////////////////////////////////////////////////////
 
 module wb_mux
+  #(parameter dw = 32,        // Data width
+    parameter aw = 32,        // Address width
+    parameter num_slaves = 2, // Number of slaves
+    parameter [num_slaves*aw-1:0] MATCH_ADDR = 0,
+    parameter [num_slaves*aw-1:0] MATCH_MASK = 0)
+   
    (input                      wb_clk_i,
     input 		       wb_rst_i,
 
@@ -79,22 +85,17 @@ module wb_mux
     input [num_slaves-1:0]     wbs_ack_i,
     input [num_slaves-1:0]     wbs_err_i,
     input [num_slaves-1:0]     wbs_rty_i);
-      
-   parameter dw = 32;        // Data width
-   parameter aw = 32;        // Address width
-   parameter num_slaves = 2; // Number of slaves
-   parameter [num_slaves*aw-1:0] MATCH_ADDR = 0;
-   parameter [num_slaves*aw-1:0] MATCH_MASK = 0;
-   
-   
+
+`include "verilog_utils.vh"
+
 ///////////////////////////////////////////////////////////////////////////////
 // Master/slave connection
 ///////////////////////////////////////////////////////////////////////////////
 
-   reg  			 wbm_err;
-   wire [$clog2(num_slaves)-1:0] slave_sel;
-   wire [$clog2(num_slaves)-1:0] slave_sel_int [0:num_slaves-1];
+   localparam slave_sel_bits = num_slaves > 1 ? `clog2(num_slaves) : 1;
 
+   reg  			 wbm_err;
+   wire [slave_sel_bits-1:0] 	 slave_sel;
    wire [num_slaves-1:0] 	 match;
 
    genvar 			 idx;
@@ -105,13 +106,7 @@ module wb_mux
       end
    endgenerate
 
-   assign slave_sel_int[0] = 0;
-   generate
-      for(idx=1; idx<num_slaves ; idx=idx+1) begin : select_mux
-	 assign slave_sel_int[idx] = match[idx] ? idx : slave_sel_int[idx-1];
-      end
-   endgenerate
-   assign slave_sel = slave_sel_int[num_slaves-1];
+   assign slave_sel = ff1(match, num_slaves);
 
    always @(posedge wb_clk_i)
      wbm_err <= wbm_cyc_i & !(|match);

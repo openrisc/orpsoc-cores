@@ -45,8 +45,8 @@
 #include "Vorpsoc_top.h"
 #include <verilated_vcd_c.h>
 
-#include "OrpsocAccess.h"
-#include "MemoryLoad.h"
+//#include "OrpsocAccess.h"
+//#include "MemoryLoad.h"
 
 #include "ResetSC.h" 
 
@@ -145,17 +145,17 @@ int sc_main(int argc, char *argv[])
 	char *program_file;	// Old char* style for program name
 
 	// Verilator accessor
-	OrpsocAccess *accessor;
+	//OrpsocAccess *accessor;
 
 	// Modules
 	Vorpsoc_top *orpsoc;	// Verilated ORPSoC
 
-	MemoryLoad *memoryload;	// Memory loader
+	//MemoryLoad *memoryload;	// Memory loader
 
 	ResetSC *reset;		// Generate a RESET signal
 
 #ifdef MONITOR
-	Or1200MonitorSC *monitor;	// Handle l.nop x instructions
+	//Or1200MonitorSC *monitor;	// Handle l.nop x instructions
 #endif
 
 #ifdef JTAG_DEBUG
@@ -169,12 +169,12 @@ int sc_main(int argc, char *argv[])
 	// Instantiate the Verilator model, VCD trace handler and accessor
 	orpsoc = new Vorpsoc_top("orpsoc");
 
-	accessor = new OrpsocAccess(orpsoc);
+	//accessor = new OrpsocAccess(orpsoc);
 
-	memoryload = new MemoryLoad(accessor);
+	//memoryload = new MemoryLoad(accessor);
 
 #ifdef MONITOR
-	monitor = new Or1200MonitorSC("monitor", accessor, memoryload,
+	//monitor = new Or1200MonitorSC("monitor", accessor, memoryload,
 				      argc, argv);
 #endif
 
@@ -398,12 +398,12 @@ int sc_main(int argc, char *argv[])
 		if (!gQuiet)
 			cout << "* Loading program from " << program_file << 
 				endl;
-		if (memoryload->loadcode(program_file, 0, 0) < 0) {
+		//if (memoryload->loadcode(program_file, 0, 0) < 0) {
 			cout << "* Error: executable file " << program_file <<
 			    " not loaded" << endl;
 			goto finish_up;
 			
-		}
+			//}
 	} else			
 	{
 		/* No ELF file specified, default is to load from  VMEM file */
@@ -411,7 +411,7 @@ int sc_main(int argc, char *argv[])
 			cout <<
 			    "* Loading memory with image from default file, sram.vmem"
 			    << endl;
-		accessor->do_ram_readmemh();
+		//accessor->do_ram_readmemh();
 	}
 
 	gSimRunning = 1;
@@ -448,7 +448,7 @@ int sc_main(int argc, char *argv[])
 					// gSimRunning value changed by the
 					// monitor when sim should finish.
 #ifndef MONITOR
-					instruction = accessor->getWbInsn();
+				  //instruction = accessor->getWbInsn();
 					if (instruction == NOP_EXIT) {gSimRunning = 0;} 
 					//else if (instruction == 0x15000004) { character = accessor->getGpr(3); std::cout << (char)character << std::flush;}
 #endif
@@ -538,12 +538,12 @@ finish_up:
 
 
 #ifdef MONITOR
-	delete monitor;
+//	delete monitor;
 #endif
 
 	delete reset;
 
-	delete accessor;
+//delete accessor;
 
 	//delete trace;
 

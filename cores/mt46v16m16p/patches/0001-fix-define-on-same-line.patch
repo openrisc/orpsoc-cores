@@ -1,0 +1,12 @@
+--- a/ddr.v	2014-04-16 22:42:09.351160666 +0200
++++ b/ddr.v	2014-04-16 22:42:05.258183201 +0200
+@@ -1411,7 +1411,8 @@
+         specparam tIS              =   0.900; // tIS    ns    Input Setup Time
+         specparam tDQSH            =   2.625; // tDQSH  ns    DQS input High Pulse Width = 0.35*tCK
+         specparam tDQSL            =   2.625; // tDQSL  ns    DQS input Low Pulse Width = 0.35*tCK
+-`else `define sg75Z                           //              specparams for -75Z (CL = 2)
++`else
++`define sg75Z                                 //              specparams for -75Z (CL = 2)
+         specparam tDSS             =     1.5; // tDSS   ns    DQS falling edge to CLK rising (setup time) = 0.2*tCK
+         specparam tDSH             =     1.5; // tDSH   ns    DQS falling edge from CLK rising (hold time) = 0.2*tCK
+         specparam tIH              =   0.900; // tIH    ns    Input Hold Time

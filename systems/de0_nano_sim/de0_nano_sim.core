@@ -5,7 +5,7 @@ depend =
  gpio
  jtag_tap
  mor1kx
- or1200
+# or1200
  elf-loader
  uart16550
  vlog_tb_utils
@@ -39,10 +39,10 @@ verilator_options = -Wno-fatal --trace
 src_files = 
  bench/verilator/ResetSC.cpp
  bench/verilator/JtagServerSC.cpp
- bench/verilator/Or1200MonitorSC.cpp
+# bench/verilator/Or1200MonitorSC.cpp
  bench/verilator/UartSC.cpp
- bench/verilator/OrpsocAccess.cpp
- bench/verilator/MemoryLoad.cpp
+# bench/verilator/OrpsocAccess.cpp
+# bench/verilator/MemoryLoad.cpp
  bench/verilator/elf-loader.c
 
 include_files = 
@@ -53,9 +53,9 @@ include_files =
  bench/verilator/UartSC.h
  bench/verilator/JtagServerSC.h
  bench/verilator/UartSC.h
- bench/verilator/OrpsocAccess.h
- bench/verilator/Or1200MonitorSC.h
- bench/verilator/MemoryLoad.h
+# bench/verilator/OrpsocAccess.h
+# bench/verilator/Or1200MonitorSC.h
+# bench/verilator/MemoryLoad.h
  bench/verilator/elf-loader.h
 
 define_files = de0_nano_sim/rtl/verilog/include/orpsoc-defines.v
