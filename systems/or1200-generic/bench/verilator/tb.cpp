@@ -14,11 +14,13 @@
 #include <stdint.h>
 #include <signal.h>
 #include <argp.h>
+#include <jtag_vpi.h>
 #include <verilator_tb_utils.h>
 
 #include "Vorpsoc_top__Syms.h"
 
 static bool done;
+static bool jtag_enabled;
 
 #define NOP_NOP			0x0000      /* Normal nop instruction */
 #define NOP_EXIT		0x0001      /* End of simulation */
@@ -47,6 +49,9 @@ static int parse_opt(int key, char *arg, struct argp_state *state)
 	case ARGP_KEY_INIT:
 		state->child_inputs[0] = state->input;
 		break;
+	case 'j':
+		jtag_enabled = 1;
+		break;
 	// Add parsing of custom options here
 	}
 
@@ -56,6 +61,7 @@ static int parse_opt(int key, char *arg, struct argp_state *state)
 static int parse_args(int argc, char **argv, VerilatorTbUtils* tbUtils)
 {
 	struct argp_option options[] = {
+		{ "jtag-vpi-enable", 'j', 0, 0, "Enable openocd JTAG client, opt. specify PORT" },
 		// Add custom options here
 		{ 0 }
 	};
@@ -73,13 +79,22 @@ int main(int argc, char **argv, char **env)
 	uint32_t insn = 0;
 	uint32_t ex_pc = 0;
 
+	int tck = 0;
+	int tms = 0;
+	int tdi = 0;
+
 	Verilated::commandArgs(argc, argv);
 
 	Vorpsoc_top* top = new Vorpsoc_top;
 	VerilatorTbUtils* tbUtils =
 		new VerilatorTbUtils(top->v->wb_bfm_memory0->mem);
 
+	VerilatorJTAG* jtag = new VerilatorJTAG(10);
+
 	parse_args(argc, argv, tbUtils);
+
+	if (jtag_enabled)
+		jtag->init_jtag_server(5555);
 
 	signal(SIGINT, INThandler);
 
@@ -95,6 +110,13 @@ int main(int argc, char **argv, char **env)
 		top->eval();
 
 		top->wb_clk_i = !top->wb_clk_i;
+
+		top->tck_pad_i = tck;
+		top->tms_pad_i = tms;
+		top->tdi_pad_i = tdi;
+
+		if (jtag_enabled)
+			jtag->doJTAG(tbUtils->getTime(), &tms, &tdi, &tck, top->tdo_pad_o);
 
 		insn = top->v->or1200_top0->or1200_cpu->or1200_ctrl->wb_insn;
 		ex_pc = top->v->or1200_top0->or1200_cpu->or1200_except->ex_pc;
