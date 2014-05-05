@@ -4,6 +4,7 @@
 #include <stdint.h>
 #include <verilated.h>
 #include <verilated_vcd_c.h>
+#include "jtagServer.h"
 
 extern struct argp verilator_tb_utils_argp;
 
@@ -14,7 +15,11 @@ public:
 
   VerilatedVcdC* tfp;
 
+  VerilatorJtagServer* jtag;
+
   bool doCycle();
+
+  bool doJTAG(uint8_t *tms, uint8_t *tdi, uint8_t *tck, uint8_t tdo);
 
   uint64_t getTime() { return t; }
 
@@ -24,8 +29,8 @@ public:
   uint64_t getVcdDumpStop() { return vcdDumpStop; }
   char *getVcdFileName() { return vcdFileName; }
 
-  bool getRspServerEnable() { return rspServerEnable; }
-  int getRspServerPort() { return rspServerPort; }
+  bool getJtagEnable() { return jtagEnable; }
+  int getJtagPort() { return jtagPort; }
 
   static int parseOpts(int key, char *arg, struct argp_state *state);
 
@@ -40,8 +45,8 @@ private:
   char *vcdFileName;
   bool vcdDumping;
 
-  bool rspServerEnable;
-  int rspServerPort;
+  bool jtagEnable;
+  int jtagPort;
 
   uint32_t *mem;
 
