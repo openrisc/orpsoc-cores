@@ -5,5 +5,5 @@ depend = elf-loader
 
 [verilator]
 source_type = CPP
-src_files = verilator_tb_utils.cpp
-include_files = verilator_tb_utils.h
+src_files = verilator_tb_utils.cpp jtagServer.cpp
+include_files = verilator_tb_utils.h jtagServer.h
