@@ -10,11 +10,10 @@ depend =
  verilator_tb_utils
  wb_bfm
  wb_intercon
- jtag_vpi
  jtag_tap
  adv_debug_sys
 
-simulators = icarus modelsim
+simulators = icarus modelsim verilator
 
 [verilog]
 src_files =

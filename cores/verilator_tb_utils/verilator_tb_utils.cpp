@@ -10,9 +10,11 @@
 
 VerilatorTbUtils::VerilatorTbUtils(uint32_t *mem)
   : mem(mem), t(0), timeout(0), vcdDump(false), vcdDumpStart(0), vcdDumpStop(0),
-    vcdFileName((char *)VCD_DEFAULT_NAME), rspServerEnable(false),
-    rspServerPort(0) {
+    vcdFileName((char *)VCD_DEFAULT_NAME), jtagEnable(false),
+    jtagPort(5555) {
   tfp = new VerilatedVcdC;
+
+  jtag = new VerilatorJTAG(10);
 
   Verilated::traceEverOn(true);
 }
@@ -99,6 +101,11 @@ bool VerilatorTbUtils::loadBin(char *fileName) {
   return true;
 }
 
+bool VerilatorTbUtils::doJTAG(uint8_t *tms, uint8_t *tdi, uint8_t *tck, uint8_t tdo) {
+  jtag->doJTAG(t, tms, tdi, tck, tdo);
+  return true;
+}
+
 #define OPT_TIMEOUT 512
 #define OPT_ELFLOAD 513
 #define OPT_BINLOAD 514
@@ -113,7 +120,7 @@ static struct argp_option options[] = {
   { "vcdstart", 's', "VAL", 0, "Delay VCD generation until VAL" },
   { "vcdstop", 't', "VAL", 0, "Terminate VCD generation at VAL" },
   { 0, 0, 0, 0, "Remote debugging:", 3 },
-  { "rsp", 'r', "PORT", OPTION_ARG_OPTIONAL, "Enable RSP debugging server, opt. specify PORT" },
+  { "jtag-vpi-enable", 'j', "PORT", OPTION_ARG_OPTIONAL, "Enable openocd JTAG client, opt. specify PORT" },
   { 0 },
 };
 
@@ -150,10 +157,11 @@ int VerilatorTbUtils::parseOpts(int key, char *arg, struct argp_state *state) {
     tbUtils->vcdDumpStop = strtol(arg, NULL, 10);
     break;
 
-  case 'r':
-      tbUtils->rspServerEnable = true;
+  case 'j':
+      tbUtils->jtagEnable = true;
       if (arg)
-        tbUtils->rspServerPort = atoi(arg);
+        tbUtils->jtagPort = atoi(arg);
+      tbUtils->jtag->init_jtag_server(tbUtils->jtagPort);
     break;
 
   default:
