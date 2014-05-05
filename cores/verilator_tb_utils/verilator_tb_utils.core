@@ -1,7 +1,7 @@
 CAPI=1
 [main]
 description = "Verilator test bench utility class"
-depend = elf-loader
+depend = elf-loader jtag_vpi
 
 [verilator]
 source_type = CPP
