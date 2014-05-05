@@ -5,6 +5,11 @@ description = "TCP/IP controlled VPI JTAG Interface"
 [verilog]
 tb_src_files = jtag_vpi.v
 
+[verilator]
+source_type = CPP
+src_files = jtag_vpi.cpp
+include_files = jtag_vpi.h
+
 [vpi]
 src_files = jtag_vpi.c
 
