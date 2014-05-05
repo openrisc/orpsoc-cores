@@ -96,6 +96,8 @@ int main(int argc, char **argv, char **env)
 
 		top->wb_clk_i = !top->wb_clk_i;
 
+		tbUtils->doJTAG(&top->tms_pad_i, &top->tdi_pad_i, &top->tck_pad_i, top->tdo_pad_o);
+
 		insn = top->v->or1200_top0->or1200_cpu->or1200_ctrl->wb_insn;
 		ex_pc = top->v->or1200_top0->or1200_cpu->or1200_except->ex_pc;
 
