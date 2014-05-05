@@ -1,0 +1,11 @@
+CAPI=1
+[main]
+description = "bridge from Wishbone to CSR bus"
+
+[verilog]
+src_files = csrbrg.v
+
+[provider]
+name = url
+url = https://raw.githubusercontent.com/m-labs/milkymist/master/cores/csrbrg/rtl/csrbrg.v
+filetype = simple
