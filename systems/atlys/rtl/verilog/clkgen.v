@@ -75,7 +75,14 @@ IBUFG sys_clk_in_ibufg (
 
 
 // DCM providing main system/Wishbone clock
-DCM_SP dcm0 (
+DCM_SP #(
+	// Generate 266 MHz from CLKFX
+	.CLKFX_MULTIPLY	(8),
+	.CLKFX_DIVIDE	(3),
+
+	// Generate 50 MHz from CLKDV
+	.CLKDV_DIVIDE	(2.0)
+) dcm0 (
 	// Outputs
 	.CLK0		(dcm0_clk0_prebufg),
 	.CLK180		(),
@@ -133,13 +140,6 @@ PLL_BASE #(
 	.CLKIN		(dcm0_clk90_prebufg),
 	.RST		(async_rst_o)
 );
-
-// Generate 266 MHz from CLKFX
-defparam    dcm0.CLKFX_MULTIPLY    = 8;
-defparam    dcm0.CLKFX_DIVIDE      = 3;
-
-// Generate 50 MHz from CLKDV
-defparam    dcm0.CLKDV_DIVIDE      = 2.0;
 
 BUFG dcm0_clk0_bufg
        (// Outputs
