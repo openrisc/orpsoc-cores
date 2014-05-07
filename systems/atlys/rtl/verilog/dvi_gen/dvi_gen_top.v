@@ -75,12 +75,9 @@ module dvi_gen_top (
 
   wire          pwrup;
 
-  BUFIO2 #(.DIVIDE_BYPASS("FALSE"), .DIVIDE(2))
-  sysclk_div (.DIVCLK(clk50m), .IOCLK(), .SERDESSTROBE(), .I(dvi_clk_i));
-  
+  assign clk50m = dvi_clk_i;
   BUFG clk50m_bufgbufg (.I(clk50m), .O(clk50m_bufg));
 
-  
   wire pclk_lckd;
   wire RSTBTN;
   // transform rst button into active high
