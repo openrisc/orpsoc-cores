@@ -369,6 +369,12 @@ TIMEGRP "bramra" = FFS(dvi_gen0/enc0/pixel2x/ra<*>);
 TIMESPEC "TS_ramdo" = FROM "bramgrp" TO "fddbgrp" TS_PCLK;
 TIMESPEC "TS_ramra" = FROM "bramra" TO "fddbgrp" TS_PCLK;
 
+TIMESPEC TS_clk50mbufg_to_wb_clk = FROM "TNM_CLK50M" TO "wb_clk" TIG;
+TIMESPEC TS_wb_clk_to_clk50mbufg = FROM "wb_clk" TO "TNM_CLK50M" TIG;
+
+TIMESPEC TS_pclk_to_wb_clk = FROM "TNM_PCLK" TO "wb_clk" TIG;
+TIMESPEC TS_wb_clk_to_pclk = FROM "wb_clk" TO "TNM_PCLK" TIG;
+
 # VGA constraints
 
 
