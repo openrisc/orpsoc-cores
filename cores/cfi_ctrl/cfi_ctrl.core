@@ -1,0 +1,14 @@
+CAPI=1
+[main]
+description = Common Flash Interface (CFI) controller
+
+[verilog]
+src_files =
+ rtl/verilog/cfi_ctrl.v
+ rtl/verilog/cfi_ctrl_engine.v
+
+[provider]
+name = opencores
+repo_name = cfi_ctrl
+repo_root = trunk
+revision = 2
