@@ -69,7 +69,6 @@ module wb_port_arbiter #(
 	wire				wbp_ack_o[WB_PORTS-1:0];
 
 	wire				wb_cycle[WB_PORTS-1:0];
-	reg				wb_cycle_r[WB_PORTS-1:0];
 
 	wire [31:0]			p_adr_i[WB_PORTS-1:0];
 	wire [31:0]			p_adr_o[WB_PORTS-1:0];
@@ -110,9 +109,6 @@ module wb_port_arbiter #(
 		assign p_adr_i[i] = adr_i;
 		assign p_dat_i[i] = dat_i;
 		assign p_ack_i[i] = ack_i & port_sel[i];
-
-		always @(posedge wb_clk)
-			wb_cycle_r[i] <= wb_cycle[i];
 
 		wb_port #(
 			.BUF_WIDTH	(BUF_WIDTH[i*3+2:i*3])
@@ -218,9 +214,8 @@ module wb_port_arbiter #(
 			p_bufw_dat[k] <= 0;
 			p_bufw_sel[k] <= 0;
 			for (j = 0; j < WB_PORTS; j=j+1) begin
-				if (j!=k & wb_cycle[j] &
-				    !wb_cycle_r[j] & wb_we_i[j]) begin
-					p_bufw_we[k]  <= 1'b1;
+				if (j!=k & wb_cycle[j] & wb_we_i[j]) begin
+					p_bufw_we[k]  <= wbp_ack_o[j];
 					p_bufw_adr[k] <= wbp_adr_i[j];
 					p_bufw_dat[k] <= wbp_dat_i[j];
 					p_bufw_sel[k] <= wbp_sel_i[j];
