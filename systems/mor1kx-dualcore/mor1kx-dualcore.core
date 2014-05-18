@@ -3,6 +3,7 @@ CAPI=1
 description = "Dual core mor1kx simulation environment"
 depend =
  mmuart
+ ipi
  mor1kx
  ram_wb
  uart16550
