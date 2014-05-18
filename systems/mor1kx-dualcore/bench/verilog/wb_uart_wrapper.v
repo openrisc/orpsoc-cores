@@ -5,7 +5,7 @@ module wb_uart_wrapper
    input 	wb_clk_i,
    input 	wb_rst_i,
    // Inputs
-   input [31:0]	wb_adr_i,
+   input [31:0] wb_adr_i,
    input [7:0] 	wb_dat_i,
    input 	wb_we_i,
    input 	wb_cyc_i,
@@ -17,8 +17,9 @@ module wb_uart_wrapper
    output 	wb_ack_o,
    output 	wb_err_o,
    output 	wb_rty_o,
-   input        rx,
-   output       tx);
+   output 	int_o,
+   input 	rx,
+   output 	tx);
 
    generate
       if(SIM) begin : uart_model
@@ -40,6 +41,7 @@ module wb_uart_wrapper
 	    .wb_rty_o (wb_rty_o));
 
 	 assign tx = 1'b0;
+         assign int_o = 1'b0;
       end else begin : uart16550
 	 uart_top
 	   #(.uart_data_width (8),
@@ -56,7 +58,7 @@ module wb_uart_wrapper
 	    .wb_stb_i  (wb_stb_i),
 	    .wb_dat_o  (wb_dat_o),
 	    .wb_ack_o  (wb_ack_o),
-	    .int_o     (),
+	    .int_o     (int_o),
 	    .srx_pad_i (rx),
 	    .stx_pad_o (tx),
 	    .rts_pad_o (),
