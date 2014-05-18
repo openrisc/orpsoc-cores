@@ -329,6 +329,23 @@ ram_wb_b3 #(
         .wb_rty_o       (wb_s2m_mem_rty)
 );
 
+wire uart_irq;
+
+wire [31:0] wb8_m2s_uart_adr;
+wire [1:0] wb8_m2s_uart_bte;
+wire [2:0] wb8_m2s_uart_cti;
+wire wb8_m2s_uart_cyc;
+wire [7:0] wb8_m2s_uart_dat;
+wire wb8_m2s_uart_stb;
+wire wb8_m2s_uart_we;
+wire [7:0] wb8_s2m_uart_dat;
+wire wb8_s2m_uart_ack;
+wire wb8_s2m_uart_err;
+wire wb8_s2m_uart_rty;
+
+assign wb8_s2m_uart_err = 0;
+assign wb8_s2m_uart_rty = 0;
+
 wb_uart_wrapper #(
         .DEBUG  (0),
         .SIM    (UART_SIM)
@@ -338,18 +355,51 @@ wb_uart_wrapper #(
         .wb_rst_i       (wb_rst_i),
         .rx             (1'b0),
         .tx             (uart),
-        .wb_adr_i       (wb_m2s_uart_adr),
-        .wb_dat_i       (wb_m2s_uart_dat),
-        .wb_we_i        (wb_m2s_uart_we),
-        .wb_cyc_i       (wb_m2s_uart_cyc),
-        .wb_stb_i       (wb_m2s_uart_stb),
-        .wb_cti_i       (wb_m2s_uart_cti),
-        .wb_bte_i       (wb_m2s_uart_bte),
-        .wb_dat_o       (wb_s2m_uart_dat),
-        .wb_ack_o       (wb_s2m_uart_ack),
-        .wb_err_o       (wb_s2m_uart_err),
-        .wb_rty_o       (wb_s2m_uart_rty)
+        .int_o          (uart_irq),
+        .wb_adr_i       (wb8_m2s_uart_adr),
+        .wb_dat_i       (wb8_m2s_uart_dat),
+        .wb_we_i        (wb8_m2s_uart_we),
+        .wb_cyc_i       (wb8_m2s_uart_cyc),
+        .wb_stb_i       (wb8_m2s_uart_stb),
+        .wb_cti_i       (wb8_m2s_uart_cti),
+        .wb_bte_i       (wb8_m2s_uart_bte),
+        .wb_dat_o       (wb8_s2m_uart_dat),
+        .wb_ack_o       (wb8_s2m_uart_ack),
+        .wb_err_o       (wb8_s2m_uart_err),
+        .wb_rty_o       (wb8_s2m_uart_rty)
 );
+
+// 32-bit to 8-bit wishbone bus resize
+wb_data_resize
+wb_data_resize_uart0
+       (
+	// Wishbone Master interface
+	.wbm_adr_i(wb_m2s_uart_adr),
+	.wbm_dat_i(wb_m2s_uart_dat),
+	.wbm_sel_i(wb_m2s_uart_sel),
+	.wbm_we_i(wb_m2s_uart_we ),
+	.wbm_cyc_i(wb_m2s_uart_cyc),
+	.wbm_stb_i(wb_m2s_uart_stb),
+	.wbm_cti_i(wb_m2s_uart_cti),
+	.wbm_bte_i(wb_m2s_uart_bte),
+	.wbm_dat_o(wb_s2m_uart_dat),
+	.wbm_ack_o(wb_s2m_uart_ack),
+	.wbm_err_o(wb_s2m_uart_err),
+	.wbm_rty_o(wb_s2m_uart_rty),
+	// Wishbone Slave interface
+	.wbs_adr_o(wb8_m2s_uart_adr),
+	.wbs_dat_o(wb8_m2s_uart_dat),
+	.wbs_we_o (wb8_m2s_uart_we ),
+	.wbs_cyc_o(wb8_m2s_uart_cyc),
+	.wbs_stb_o(wb8_m2s_uart_stb),
+	.wbs_cti_o(wb8_m2s_uart_cti),
+	.wbs_bte_o(wb8_m2s_uart_bte),
+	.wbs_dat_i(wb8_s2m_uart_dat),
+	.wbs_ack_i(wb8_s2m_uart_ack),
+	.wbs_err_i(wb8_s2m_uart_err),
+	.wbs_rty_i(wb8_s2m_uart_rty)
+);
+
 
 `ifdef VERILATOR
 wire [7:0]      uart_rx_data;
