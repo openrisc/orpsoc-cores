@@ -1,0 +1,7 @@
+CAPI=1
+[main]
+description = Inter-Processor Interrupt core
+
+[verilog]
+src_files =
+ rtl/verilog/ipi.v
