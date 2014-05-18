@@ -8,7 +8,7 @@ module orpsoc_top #(
 localparam wb_aw = 32;
 localparam wb_dw = 32;
 
-localparam MEM_SIZE_BITS = 23;
+localparam MEM_SIZE_BITS = 25;
 
 
    wire        traceport_exec_valid[0:1] /* verilator public */;
@@ -91,10 +91,10 @@ wire wb_rst = wb_rst_i;
    wb_bus_b3
      #(.MASTERS (4),
        .SLAVES  (2),
-       .S0_RANGE_WIDTH (9),
-       .S0_RANGE_MATCH (9'h0),
        .S1_RANGE_WIDTH (29),
        .S1_RANGE_MATCH (29'hff800000))
+       .S0_RANGE_WIDTH (7),
+       .S0_RANGE_MATCH (7'h0),
    u_bus (/*AUTOINST*/
           // Outputs
           .m_dat_o                      ({wbm_dat_i[3], wbm_dat_i[2], wbm_dat_i[1], wbm_dat_i[0]}), // Templated
