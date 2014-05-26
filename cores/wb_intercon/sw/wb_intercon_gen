@@ -246,14 +246,22 @@ class WbIntercon:
             for p in WB_MASTER_PORTS:
                 portname = 'wb_{slave}_{port}_o'.format(slave=slave.name, port=p.name)
                 wirename = 'wb_m2s_{slave}_{port}'.format(slave=slave.name, port=p.name)
-                self.verilog_writer.add(ModulePort(portname, 'output', p.width))
-                self.template_writer.add(Wire(wirename, p.width))
+                if p.name == 'dat':
+                    self.verilog_writer.add(ModulePort(portname, 'output', int(slave.datawidth)))
+                    self.template_writer.add(Wire(wirename, int(slave.datawidth)))
+                else:
+                    self.verilog_writer.add(ModulePort(portname, 'output', p.width))
+                    self.template_writer.add(Wire(wirename, p.width))                  
                 template_ports += [Port(portname, wirename)]
             for p in WB_SLAVE_PORTS:
                 portname = 'wb_{slave}_{port}_i'.format(slave=slave.name, port=p.name)
                 wirename = 'wb_s2m_{slave}_{port}'.format(slave=slave.name, port=p.name)
-                self.verilog_writer.add(ModulePort(portname, 'input', p.width))
-                self.template_writer.add(Wire(wirename, p.width))
+                if p.name == 'dat':
+                    self.verilog_writer.add(ModulePort(portname, 'input', int(slave.datawidth)))
+                    self.template_writer.add(Wire(wirename, int(slave.datawidth)))
+                else:
+                    self.verilog_writer.add(ModulePort(portname, 'input', p.width))
+                    self.template_writer.add(Wire(wirename, p.width))
                 template_ports += [Port(portname, wirename)]
             if int(slave.datawidth) < 32:
                 for p in WB_MASTER_PORTS:
