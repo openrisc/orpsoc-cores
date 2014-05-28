@@ -20,6 +20,8 @@ VerilatorTbUtils::VerilatorTbUtils(uint32_t *mem)
 }
 
 VerilatorTbUtils::~VerilatorTbUtils() {
+    if (vcdDumping)
+      tfp->close();
 }
 
 bool VerilatorTbUtils::doJTAG(uint8_t *tms, uint8_t *tdi, uint8_t *tck, uint8_t tdo) {
