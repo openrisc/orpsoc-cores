@@ -504,33 +504,21 @@ wb_sdram_ctrl0 (
 
 wire	uart0_irq;
 
-wire [31:0]	wb8_m2s_uart0_adr;
-wire [1:0]	wb8_m2s_uart0_bte;
-wire [2:0]	wb8_m2s_uart0_cti;
-wire		wb8_m2s_uart0_cyc;
-wire [7:0]	wb8_m2s_uart0_dat;
-wire		wb8_m2s_uart0_stb;
-wire		wb8_m2s_uart0_we;
-wire [7:0] 	wb8_s2m_uart0_dat;
-wire		wb8_s2m_uart0_ack;
-wire		wb8_s2m_uart0_err;
-wire		wb8_s2m_uart0_rty;
-
-assign	wb8_s2m_uart0_err = 0;
-assign	wb8_s2m_uart0_rty = 0;
+assign	wb_s2m_uart0_err = 0;
+assign	wb_s2m_uart0_rty = 0;
 
 uart_top uart16550_0 (
 	// Wishbone slave interface
 	.wb_clk_i	(wb_clk),
 	.wb_rst_i	(wb_rst),
-	.wb_adr_i	(wb8_m2s_uart0_adr[uart0_aw-1:0]),
-	.wb_dat_i	(wb8_m2s_uart0_dat),
-	.wb_we_i	(wb8_m2s_uart0_we),
-	.wb_stb_i	(wb8_m2s_uart0_stb),
-	.wb_cyc_i	(wb8_m2s_uart0_cyc),
+	.wb_adr_i	(wb_m2s_uart0_adr[uart0_aw-1:0]),
+	.wb_dat_i	(wb_m2s_uart0_dat),
+	.wb_we_i	(wb_m2s_uart0_we),
+	.wb_stb_i	(wb_m2s_uart0_stb),
+	.wb_cyc_i	(wb_m2s_uart0_cyc),
 	.wb_sel_i	(4'b0), // Not used in 8-bit mode
-	.wb_dat_o	(wb8_s2m_uart0_dat),
-	.wb_ack_o	(wb8_s2m_uart0_ack),
+	.wb_dat_o	(wb_s2m_uart0_dat),
+	.wb_ack_o	(wb_s2m_uart0_ack),
 
 	// Outputs
 	.int_o		(uart0_irq),
@@ -546,36 +534,6 @@ uart_top uart16550_0 (
 	.dcd_pad_i	(1'b0)
 );
 
-// 32-bit to 8-bit wishbone bus resize
-wb_data_resize wb_data_resize_uart0 (
-	// Wishbone Master interface
-	.wbm_adr_i	(wb_m2s_uart0_adr),
-	.wbm_dat_i	(wb_m2s_uart0_dat),
-	.wbm_sel_i	(wb_m2s_uart0_sel),
-	.wbm_we_i	(wb_m2s_uart0_we ),
-	.wbm_cyc_i	(wb_m2s_uart0_cyc),
-	.wbm_stb_i	(wb_m2s_uart0_stb),
-	.wbm_cti_i	(wb_m2s_uart0_cti),
-	.wbm_bte_i	(wb_m2s_uart0_bte),
-	.wbm_dat_o	(wb_s2m_uart0_dat),
-	.wbm_ack_o	(wb_s2m_uart0_ack),
-	.wbm_err_o	(wb_s2m_uart0_err),
-	.wbm_rty_o	(wb_s2m_uart0_rty),
-
-	// Wishbone Slave interface
-	.wbs_adr_o	(wb8_m2s_uart0_adr),
-	.wbs_dat_o	(wb8_m2s_uart0_dat),
-	.wbs_we_o 	(wb8_m2s_uart0_we ),
-	.wbs_cyc_o	(wb8_m2s_uart0_cyc),
-	.wbs_stb_o	(wb8_m2s_uart0_stb),
-	.wbs_cti_o	(wb8_m2s_uart0_cti),
-	.wbs_bte_o	(wb8_m2s_uart0_bte),
-	.wbs_dat_i	(wb8_s2m_uart0_dat),
-	.wbs_ack_i	(wb8_s2m_uart0_ack),
-	.wbs_err_i	(wb8_s2m_uart0_err),
-	.wbs_rty_i	(wb8_s2m_uart0_rty)
-);
-
 ////////////////////////////////////////////////////////////////////////
 //
 // GPIO 0
@@ -585,18 +543,6 @@ wb_data_resize wb_data_resize_uart0 (
 wire [7:0]	gpio0_in;
 wire [7:0]	gpio0_out;
 wire [7:0]	gpio0_dir;
-
-wire [31:0]	wb8_m2s_gpio0_adr;
-wire [1:0]	wb8_m2s_gpio0_bte;
-wire [2:0]	wb8_m2s_gpio0_cti;
-wire		wb8_m2s_gpio0_cyc;
-wire [7:0]	wb8_m2s_gpio0_dat;
-wire		wb8_m2s_gpio0_stb;
-wire		wb8_m2s_gpio0_we;
-wire [7:0] 	wb8_s2m_gpio0_dat;
-wire		wb8_s2m_gpio0_ack;
-wire		wb8_s2m_gpio0_err;
-wire		wb8_s2m_gpio0_rty;
 
 // Tristate logic for IO
 // 0 = input, 1 = output
@@ -615,50 +561,20 @@ gpio gpio0 (
 	.gpio_dir_o	(gpio0_dir),
 
 	// Wishbone slave interface
-	.wb_adr_i	(wb8_m2s_gpio0_adr[0]),
-	.wb_dat_i	(wb8_m2s_gpio0_dat),
-	.wb_we_i	(wb8_m2s_gpio0_we),
-	.wb_cyc_i	(wb8_m2s_gpio0_cyc),
-	.wb_stb_i	(wb8_m2s_gpio0_stb),
-	.wb_cti_i	(wb8_m2s_gpio0_cti),
-	.wb_bte_i	(wb8_m2s_gpio0_bte),
-	.wb_dat_o	(wb8_s2m_gpio0_dat),
-	.wb_ack_o	(wb8_s2m_gpio0_ack),
-	.wb_err_o	(wb8_s2m_gpio0_err),
-	.wb_rty_o	(wb8_s2m_gpio0_rty),
+	.wb_adr_i	(wb_m2s_gpio0_adr[0]),
+	.wb_dat_i	(wb_m2s_gpio0_dat),
+	.wb_we_i	(wb_m2s_gpio0_we),
+	.wb_cyc_i	(wb_m2s_gpio0_cyc),
+	.wb_stb_i	(wb_m2s_gpio0_stb),
+	.wb_cti_i	(wb_m2s_gpio0_cti),
+	.wb_bte_i	(wb_m2s_gpio0_bte),
+	.wb_dat_o	(wb_s2m_gpio0_dat),
+	.wb_ack_o	(wb_s2m_gpio0_ack),
+	.wb_err_o	(wb_s2m_gpio0_err),
+	.wb_rty_o	(wb_s2m_gpio0_rty),
 
 	.wb_clk		(wb_clk),
 	.wb_rst		(wb_rst)
-);
-
-// 32-bit to 8-bit wishbone bus resize
-wb_data_resize wb_data_resize_gpio0 (
-	// Wishbone Master interface
-	.wbm_adr_i	(wb_m2s_gpio0_adr),
-	.wbm_dat_i	(wb_m2s_gpio0_dat),
-	.wbm_sel_i	(wb_m2s_gpio0_sel),
-	.wbm_we_i	(wb_m2s_gpio0_we ),
-	.wbm_cyc_i	(wb_m2s_gpio0_cyc),
-	.wbm_stb_i	(wb_m2s_gpio0_stb),
-	.wbm_cti_i	(wb_m2s_gpio0_cti),
-	.wbm_bte_i	(wb_m2s_gpio0_bte),
-	.wbm_dat_o	(wb_s2m_gpio0_dat),
-	.wbm_ack_o	(wb_s2m_gpio0_ack),
-	.wbm_err_o	(wb_s2m_gpio0_err),
-	.wbm_rty_o	(wb_s2m_gpio0_rty),
-
-	// Wishbone Slave interface
-	.wbs_adr_o	(wb8_m2s_gpio0_adr),
-	.wbs_dat_o	(wb8_m2s_gpio0_dat),
-	.wbs_we_o	(wb8_m2s_gpio0_we ),
-	.wbs_cyc_o	(wb8_m2s_gpio0_cyc),
-	.wbs_stb_o	(wb8_m2s_gpio0_stb),
-	.wbs_cti_o	(wb8_m2s_gpio0_cti),
-	.wbs_bte_o	(wb8_m2s_gpio0_bte),
-	.wbs_dat_i	(wb8_s2m_gpio0_dat),
-	.wbs_ack_i	(wb8_s2m_gpio0_ack),
-	.wbs_err_i	(wb8_s2m_gpio0_err),
-	.wbs_rty_i	(wb8_s2m_gpio0_rty)
 );
 
 ////////////////////////////////////////////////////////////////////////
