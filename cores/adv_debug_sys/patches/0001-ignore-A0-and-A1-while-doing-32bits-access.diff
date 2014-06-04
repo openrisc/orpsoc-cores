@@ -1,0 +1,35 @@
+--- adv_debug_sys/rtl/verilog/adbg_jsp_biu.v	2014-06-04 16:20:53.698915691 +0200
++++ adv_debug_sys/rtl/verilog/adbg_jsp_biu.v	2014-06-04 16:19:20.800783332 +0200
+@@ -455,10 +455,12 @@
+    wire [7:0]  reg_mcr;
+    wire [7:0]  reg_msr;
+    wire [7:0]  reg_scr;
++   wire        fifo_access;
+ 
+    // Create handshake signals to/from the FIFOs
+-   assign      wb_rd = wb_cyc_i & wb_stb_i & (~wb_we_i) & wb_sel_i[3] & (wb_adr_i[1:0] == 2'b00) & (~reg_dlab_bit);
+-   assign      wb_wr = wb_cyc_i & wb_stb_i & wb_we_i & wb_sel_i[3] & (wb_adr_i[1:0] == 2'b00) & (~reg_dlab_bit);
++   assign      fifo_access = !wb_adr_i[2] & wb_sel_i[3];
++   assign      wb_rd = wb_cyc_i & wb_stb_i & (~wb_we_i) & fifo_access & (~reg_dlab_bit);
++   assign      wb_wr = wb_cyc_i & wb_stb_i & wb_we_i & fifo_access & (~reg_dlab_bit);
+    assign      wb_ack_o = wb_fifo_ack | wb_reg_ack;
+    assign      wb_err_o = 1'b0;
+     
+@@ -473,11 +475,12 @@
+    assign      reg_lsr = {1'b0, rd_fifo_not_full, rd_fifo_not_full, 4'b0000, wr_fifo_not_empty};   
+    
+    // Create enable bits for the 16550 registers that we actually implement
+-   assign      reg_dlab_bit_wren = wb_cyc_i & wb_stb_i & wb_we_i & wb_sel_i[0] & (wb_adr_i[2:0] == 3'b011);
+-   assign      reg_ier_wren = wb_cyc_i & wb_stb_i & wb_we_i & wb_sel_i[2] & (wb_adr_i[2:0] == 3'b001) & (~reg_dlab_bit);
+-   assign      reg_iir_rden = wb_cyc_i & wb_stb_i & (~wb_we_i) & wb_sel_i[1] & (wb_adr_i[2:0] == 3'b010);
+-   assign      wb_reg_ack = wb_cyc_i & wb_stb_i & (|wb_sel_i[3:0]) & (reg_dlab_bit | (wb_adr_i[2:0] != 3'b000));
+-   assign      reg_fcr_wren = wb_cyc_i & wb_stb_i & wb_we_i & wb_sel_i[1] & (wb_adr_i[2:0] == 3'b010);
++   assign      reg_dlab_bit_wren = wb_cyc_i & wb_stb_i & wb_we_i & wb_sel_i[0] & (wb_adr_i[2] == 1'b0);
++   assign      reg_ier_wren = wb_cyc_i & wb_stb_i & wb_we_i & wb_sel_i[2] & (wb_adr_i[2] == 1'b0) & (~reg_dlab_bit);
++   assign      reg_iir_rden = wb_cyc_i & wb_stb_i & (~wb_we_i) & wb_sel_i[1] & (wb_adr_i[2] == 1'b0);
++   assign      wb_reg_ack = wb_cyc_i & wb_stb_i & (|wb_sel_i[3:0]) & (reg_dlab_bit | !fifo_access);
++   assign      reg_fcr_wren = wb_cyc_i & wb_stb_i & wb_we_i & wb_sel_i[1] & (wb_adr_i[2] == 1'b0);
++
+    assign      rcvr_fifo_rst = reg_fcr_wren & wb_dat_i[9];
+    assign      xmit_fifo_rst = reg_fcr_wren & wb_dat_i[10];
+    
