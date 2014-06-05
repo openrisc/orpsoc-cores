@@ -26,6 +26,7 @@ src_files =
  backend/rtl/verilog/pll.v
  rtl/verilog/rom.v
  rtl/verilog/wb_intercon.v
+ rtl/verilog/wb_intercon_dbg.v
 
 tb_private_src_files =
  bench/orpsoc_tb.v
@@ -36,3 +37,4 @@ include_files =
  rtl/verilog/include/timescale.v
  rtl/verilog/include/uart_defines.v
  rtl/verilog/wb_intercon.vh
+ rtl/verilog/wb_intercon_dbg.vh
