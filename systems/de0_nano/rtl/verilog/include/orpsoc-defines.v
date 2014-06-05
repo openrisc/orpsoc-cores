@@ -51,5 +51,4 @@
 `define SPI2
 `define RAM_WB
 `define INTGEN
-`define BOOTROM
 // end of included module defines - keep this comment line here

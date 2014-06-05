@@ -41,7 +41,6 @@
 `include "orpsoc-defines.v"
 
 module orpsoc_top #(
-	parameter	rom0_aw = 6,
 	parameter	uart0_aw = 3,
         parameter       HV1_SADR = 8'h45,
         parameter       i2c0_wb_adr_width = 3,
@@ -450,27 +449,30 @@ adbg_top dbg_if0 (
 //
 ////////////////////////////////////////////////////////////////////////
 
-assign	wb_s2m_rom0_err = 1'b0;
-assign	wb_s2m_rom0_rty = 1'b0;
+   localparam WB_RAM_MEM_DEPTH = 128;
+   
+wb_ram
+  #(.depth (WB_RAM_MEM_DEPTH),
+    .aw ($clog2(WB_RAM_MEM_DEPTH)),
+    .memfile ("../src/de0_nano/sw/clear_r3_and_jump_to_0x100.vh"))
+   wb_ram0
+     (//Wishbone Master interface
+      .wb_clk_i (wb_clk),
+      .wb_rst_i (wb_rst),
+      .wb_adr_i	(wb_m2s_rom0_adr[$clog2(WB_RAM_MEM_DEPTH)-1:0]),
+      .wb_dat_i	(wb_m2s_rom0_dat),
+      .wb_sel_i	(wb_m2s_rom0_sel),
+      .wb_we_i	(wb_m2s_rom0_we),
+      .wb_cyc_i	(wb_m2s_rom0_cyc),
+      .wb_stb_i	(wb_m2s_rom0_stb),
+      .wb_cti_i	(wb_m2s_rom0_cti),
+      .wb_bte_i	(wb_m2s_rom0_bte),
+      .wb_dat_o	(wb_s2m_rom0_dat),
+      .wb_ack_o	(wb_s2m_rom0_ack),
+      .wb_err_o (wb_s2m_rom0_err));
 
-`ifdef BOOTROM
-rom #(.addr_width(rom0_aw))
-rom0 (
-	.wb_clk		(wb_clk),
-	.wb_rst		(wb_rst),
-	.wb_adr_i	(wb_m2s_rom0_adr[(rom0_aw + 2) - 1 : 2]),
-	.wb_cyc_i	(wb_m2s_rom0_cyc),
-	.wb_stb_i	(wb_m2s_rom0_stb),
-	.wb_cti_i	(wb_m2s_rom0_cti),
-	.wb_bte_i	(wb_m2s_rom0_bte),
-	.wb_dat_o	(wb_s2m_rom0_dat),
-	.wb_ack_o	(wb_s2m_rom0_ack)
-);
-`else
-assign	wb_s2m_rom0_dat_o = 0;
-assign	wb_s2m_rom0_ack_o = 0;
-`endif
-
+   assign wb_s2m_rom0_rty = 1'b0;
+  
 ////////////////////////////////////////////////////////////////////////
 //
 // SDRAM Memory Controller
