@@ -5,6 +5,7 @@ description = Micron 256Mb SDRAM Verilog model
 [verilog]
 src_files =
  mt48lc16m16a2.v
+ mt48lc16m16a2_wrapper.v
 
 [provider]
 name = url
