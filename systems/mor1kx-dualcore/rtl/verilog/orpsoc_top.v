@@ -80,6 +80,19 @@ wire wb_rst = wb_rst_i;
    wire        wb_s2m_ipi_err;
    wire        wb_s2m_ipi_rty;
 
+   wire [31:0] wb_m2s_tc_adr;
+   wire [31:0] wb_m2s_tc_dat;
+   wire [3:0]  wb_m2s_tc_sel;
+   wire        wb_m2s_tc_we;
+   wire        wb_m2s_tc_cyc;
+   wire        wb_m2s_tc_stb;
+   wire [2:0]  wb_m2s_tc_cti;
+   wire [1:0]  wb_m2s_tc_bte;
+   wire [31:0] wb_s2m_tc_dat;
+   wire        wb_s2m_tc_ack;
+   wire        wb_s2m_tc_err;
+   wire        wb_s2m_tc_rty;
+
 ////////////////////////////////////////////////////////////////////////
 //
 // Bus
@@ -94,35 +107,37 @@ wire wb_rst = wb_rst_i;
     .rst_i (wb_rst),
     .m_\(.*\)_i ({wbm_\1_o[3], wbm_\1_o[2], wbm_\1_o[1], wbm_\1_o[0]}),
     .m_\(.*\)_o ({wbm_\1_i[3], wbm_\1_i[2], wbm_\1_i[1], wbm_\1_i[0]}),
-    .s_\(.*\)_i ({wb_s2m_ipi_\1, wb_s2m_uart_\1, wb_s2m_mem_\1}),
-    .s_\(.*\)_o ({wb_m2s_ipi_\1, wb_m2s_uart_\1, wb_m2s_mem_\1}),
+    .s_\(.*\)_i ({wb_s2m_tc_\1, wb_s2m_ipi_\1, wb_s2m_uart_\1, wb_s2m_mem_\1}),
+    .s_\(.*\)_o ({wb_m2s_tc_\1, wb_m2s_ipi_\1, wb_m2s_uart_\1, wb_m2s_mem_\1}),
     .bus_hold (1'b0),
     .bus_hold_ack (),
     .snoop_adr_o (snoop_adr),
     .snoop_en_o  (snoop_en));*/
    wb_bus_b3
      #(.MASTERS (4),
-       .SLAVES  (3),
+       .SLAVES  (4),
        .S0_RANGE_WIDTH (7),
        .S0_RANGE_MATCH (7'h0),
        .S1_RANGE_WIDTH (16),
        .S1_RANGE_MATCH (16'h9000),
        .S2_RANGE_WIDTH (16),
-       .S2_RANGE_MATCH (16'h9800))
+       .S2_RANGE_MATCH (16'h9800),
+       .S3_RANGE_WIDTH (16),
+       .S3_RANGE_MATCH (16'h9900))
    u_bus (/*AUTOINST*/
 	  // Outputs
 	  .m_dat_o			({wbm_dat_i[3], wbm_dat_i[2], wbm_dat_i[1], wbm_dat_i[0]}), // Templated
 	  .m_ack_o			({wbm_ack_i[3], wbm_ack_i[2], wbm_ack_i[1], wbm_ack_i[0]}), // Templated
 	  .m_err_o			({wbm_err_i[3], wbm_err_i[2], wbm_err_i[1], wbm_err_i[0]}), // Templated
 	  .m_rty_o			({wbm_rty_i[3], wbm_rty_i[2], wbm_rty_i[1], wbm_rty_i[0]}), // Templated
-	  .s_adr_o			({wb_m2s_ipi_adr, wb_m2s_uart_adr, wb_m2s_mem_adr}), // Templated
-	  .s_dat_o			({wb_m2s_ipi_dat, wb_m2s_uart_dat, wb_m2s_mem_dat}), // Templated
-	  .s_cyc_o			({wb_m2s_ipi_cyc, wb_m2s_uart_cyc, wb_m2s_mem_cyc}), // Templated
-	  .s_stb_o			({wb_m2s_ipi_stb, wb_m2s_uart_stb, wb_m2s_mem_stb}), // Templated
-	  .s_sel_o			({wb_m2s_ipi_sel, wb_m2s_uart_sel, wb_m2s_mem_sel}), // Templated
-	  .s_we_o			({wb_m2s_ipi_we, wb_m2s_uart_we, wb_m2s_mem_we}), // Templated
-	  .s_cti_o			({wb_m2s_ipi_cti, wb_m2s_uart_cti, wb_m2s_mem_cti}), // Templated
-	  .s_bte_o			({wb_m2s_ipi_bte, wb_m2s_uart_bte, wb_m2s_mem_bte}), // Templated
+	  .s_adr_o			({wb_m2s_tc_adr, wb_m2s_ipi_adr, wb_m2s_uart_adr, wb_m2s_mem_adr}), // Templated
+	  .s_dat_o			({wb_m2s_tc_dat, wb_m2s_ipi_dat, wb_m2s_uart_dat, wb_m2s_mem_dat}), // Templated
+	  .s_cyc_o			({wb_m2s_tc_cyc, wb_m2s_ipi_cyc, wb_m2s_uart_cyc, wb_m2s_mem_cyc}), // Templated
+	  .s_stb_o			({wb_m2s_tc_stb, wb_m2s_ipi_stb, wb_m2s_uart_stb, wb_m2s_mem_stb}), // Templated
+	  .s_sel_o			({wb_m2s_tc_sel, wb_m2s_ipi_sel, wb_m2s_uart_sel, wb_m2s_mem_sel}), // Templated
+	  .s_we_o			({wb_m2s_tc_we, wb_m2s_ipi_we, wb_m2s_uart_we, wb_m2s_mem_we}), // Templated
+	  .s_cti_o			({wb_m2s_tc_cti, wb_m2s_ipi_cti, wb_m2s_uart_cti, wb_m2s_mem_cti}), // Templated
+	  .s_bte_o			({wb_m2s_tc_bte, wb_m2s_ipi_bte, wb_m2s_uart_bte, wb_m2s_mem_bte}), // Templated
 	  .snoop_adr_o			(snoop_adr),		 // Templated
 	  .snoop_en_o			(snoop_en),		 // Templated
 	  .bus_hold_ack			(),			 // Templated
@@ -137,10 +152,10 @@ wire wb_rst = wb_rst_i;
 	  .m_we_i			({wbm_we_o[3], wbm_we_o[2], wbm_we_o[1], wbm_we_o[0]}), // Templated
 	  .m_cti_i			({wbm_cti_o[3], wbm_cti_o[2], wbm_cti_o[1], wbm_cti_o[0]}), // Templated
 	  .m_bte_i			({wbm_bte_o[3], wbm_bte_o[2], wbm_bte_o[1], wbm_bte_o[0]}), // Templated
-	  .s_dat_i			({wb_s2m_ipi_dat, wb_s2m_uart_dat, wb_s2m_mem_dat}), // Templated
-	  .s_ack_i			({wb_s2m_ipi_ack, wb_s2m_uart_ack, wb_s2m_mem_ack}), // Templated
-	  .s_err_i			({wb_s2m_ipi_err, wb_s2m_uart_err, wb_s2m_mem_err}), // Templated
-	  .s_rty_i			({wb_s2m_ipi_rty, wb_s2m_uart_rty, wb_s2m_mem_rty}), // Templated
+	  .s_dat_i			({wb_s2m_tc_dat, wb_s2m_ipi_dat, wb_s2m_uart_dat, wb_s2m_mem_dat}), // Templated
+	  .s_ack_i			({wb_s2m_tc_ack, wb_s2m_ipi_ack, wb_s2m_uart_ack, wb_s2m_mem_ack}), // Templated
+	  .s_err_i			({wb_s2m_tc_err, wb_s2m_ipi_err, wb_s2m_uart_err, wb_s2m_mem_err}), // Templated
+	  .s_rty_i			({wb_s2m_tc_rty, wb_s2m_ipi_rty, wb_s2m_uart_rty, wb_s2m_mem_rty}), // Templated
 	  .bus_hold			(1'b0));			 // Templated
    
 ////////////////////////////////////////////////////////////////////////
@@ -466,6 +481,24 @@ ipi #(
 
 	// Per-core Interrupt output
 	.irq		(ipi_irq)
+);
+
+tc tc  (
+	.clk		(wb_clk_i),
+	.rst		(wb_rst_i),
+	// Wishbone slave interface
+	.wb_adr_i	(wb_m2s_tc_adr),
+	.wb_dat_i	(wb_m2s_tc_dat),
+	.wb_sel_i	(wb_m2s_tc_sel),
+	.wb_we_i	(wb_m2s_tc_we),
+	.wb_cyc_i	(wb_m2s_tc_cyc),
+	.wb_stb_i	(wb_m2s_tc_stb),
+	.wb_cti_i	(wb_m2s_tc_cti),
+	.wb_bte_i	(wb_m2s_tc_bte),
+	.wb_dat_o	(wb_s2m_tc_dat),
+	.wb_ack_o	(wb_s2m_tc_ack),
+	.wb_err_o	(wb_s2m_tc_err),
+	.wb_rty_o	(wb_s2m_tc_rty)
 );
 
 ////////////////////////////////////////////////////////////////////////
