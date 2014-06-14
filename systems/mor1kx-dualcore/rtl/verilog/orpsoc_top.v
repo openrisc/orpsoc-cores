@@ -459,14 +459,14 @@ always @(posedge wb_clk_i)
 
 `endif
 
-wire [1:0] ipi_irq;
+wire [0:1] ipi_irq;
 ipi #(
 	.NUM_CORES	(2)
 ) ipi  (
+	.clk		(wb_clk_i),
+	.rst		(wb_rst_i),
 	// Wishbone slave interface
-	.wb_clk		(wb_clk_i),
-	.wb_rst		(wb_rst_i),
-	.wb_adr_i	(wb_m2s_ipi_adr[17:0]),
+	.wb_adr_i	(wb_m2s_ipi_adr[16:0]),
 	.wb_dat_i	(wb_m2s_ipi_dat),
 	.wb_sel_i	(wb_m2s_ipi_sel),
 	.wb_we_i	(wb_m2s_ipi_we),
@@ -506,12 +506,16 @@ tc tc  (
 // CPU Interrupt assignments
 //
 ////////////////////////////////////////////////////////////////////////
-assign or1k_irq[0][31:3] = 0;
+assign or1k_irq[0][31] = 0;
+assign or1k_irq[0][30:3] = 0;
 assign or1k_irq[0][2] = uart_irq;
-assign or1k_irq[0][1] = 0;
-assign or1k_irq[0][0] = ipi_irq[0];
+assign or1k_irq[0][1] = ipi_irq[0];
+assign or1k_irq[0][0] = 0;
 
-assign or1k_irq[1] = 0;
-assign or1k_irq[1][0] = ipi_irq[1];
+assign or1k_irq[1][31] = 0;
+assign or1k_irq[1][30:3] = 0;
+assign or1k_irq[1][2] = uart_irq;
+assign or1k_irq[1][1] = ipi_irq[1];
+assign or1k_irq[1][0] = 0;
 
 endmodule
