@@ -23,13 +23,16 @@
  * WORK, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+//
+// Inter-Processor Interrupt handling core
+//
 module ipi #(
 	parameter NUM_CORES = 2
 )(
+	input 			   clk,
+	input 			   rst,
 	// Wishbone slave interface
-	input 			   wb_clk,
-	input 			   wb_rst,
-	input [17:0] 		   wb_adr_i,
+	input [16:0] 		   wb_adr_i,
 	input [31:0] 		   wb_dat_i,
 	input [3:0] 		   wb_sel_i,
 	input 			   wb_we_i,
@@ -71,42 +74,37 @@ reg [31:0] control [0:NUM_CORES-1];
 reg [29:0] status [0:NUM_CORES-1];
 
 // Write logic
-always @(posedge wb_clk) begin
-	if (wb_ack_o & wb_we_i & (wb_adr_i[3:2] == CONTROL)) begin
-		control[wb_adr_i[17:4]] <= wb_dat_i;
+integer i;
+always @(posedge clk) begin
+	if (rst) begin
+		irq <= 0;
+		for (i = 0; i < NUM_CORES; i=i+1) begin
+			control[i] <= 0;
+			status[i] <= 0;
+		end
+	end else if (wb_ack_o & wb_we_i & (wb_adr_i[2] == CONTROL)) begin
+		control[wb_adr_i[16:3]] <= wb_dat_i;
 
 		if (wb_dat_i[CTRL_IRQ_GEN]) begin
 			irq[wb_dat_i[29:16]] <= 1;
 			status[wb_dat_i[29:16]][15:0] <= wb_dat_i[15:0];
-			status[wb_dat_i[29:16]][29:16] <= wb_adr_i[17:4];
+			status[wb_dat_i[29:16]][29:16] <= wb_adr_i[16:3];
 		end
 
 		if (wb_dat_i[CTRL_IRQ_ACK])
-			irq[wb_adr_i[17:4]] <= 0;
+			irq[wb_adr_i[16:3]] <= 0;
 	end
 end
 
 // Read logic
-always @(posedge wb_clk) begin
-	if (wb_cyc_i & wb_stb_i & !wb_we_i) begin
-		case (wb_adr_i[3:2])
-		CONTROL: begin
-			wb_dat_o <= control[wb_adr_i[17:4]];
-		end
-		STATUS: begin
-			wb_dat_o <= {1'b0, irq[wb_adr_i[17:4]],
-				     status[wb_adr_i[17:4]]};
-		end
-		endcase
-	end
-end
+assign wb_dat_o = (wb_adr_i[2] == CONTROL) ? control[wb_adr_i[16:3]] :
+		  {1'b0, irq[wb_adr_i[16:3]], status[wb_adr_i[16:3]]};
 
 // Ack logic
-always @(posedge wb_clk)
+always @(posedge clk)
 	wb_ack_o <= wb_cyc_i & wb_stb_i & !wb_ack_o;
 
 assign wb_err_o = 0;
 assign wb_rty_o = 0;
-
 
 endmodule
