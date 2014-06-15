@@ -158,178 +158,10 @@ clkgen clkgen0 (
 // Wishbone interconnect
 //
 ////////////////////////////////////////////////////////////////////////
-localparam NUM_WB_MASTERS = 5;
-wire [31:0] wbm_adr_o [0:NUM_WB_MASTERS-1];
-wire [31:0] wbm_dat_o [0:NUM_WB_MASTERS-1];
-wire [3:0]  wbm_sel_o [0:NUM_WB_MASTERS-1];
-wire        wbm_we_o [0:NUM_WB_MASTERS-1];
-wire        wbm_cyc_o [0:NUM_WB_MASTERS-1];
-wire        wbm_stb_o [0:NUM_WB_MASTERS-1];
-wire [2:0]  wbm_cti_o [0:NUM_WB_MASTERS-1];
-wire [1:0]  wbm_bte_o [0:NUM_WB_MASTERS-1];
+`include "wb_intercon.vh"
 
-wire [31:0] wbm_dat_i [0:NUM_WB_MASTERS-1];
-wire        wbm_ack_i [0:NUM_WB_MASTERS-1];
-wire        wbm_err_i [0:NUM_WB_MASTERS-1];
-wire        wbm_rty_i [0:NUM_WB_MASTERS-1];
-
-wire [31:0] wb_m2s_dbg_adr;
-wire [31:0] wb_m2s_dbg_dat;
-wire [3:0]  wb_m2s_dbg_sel;
-wire        wb_m2s_dbg_we;
-wire        wb_m2s_dbg_cyc;
-wire        wb_m2s_dbg_stb;
-wire [2:0]  wb_m2s_dbg_cti;
-wire [1:0]  wb_m2s_dbg_bte;
-wire [31:0] wb_s2m_dbg_dat;
-wire        wb_s2m_dbg_ack;
-wire        wb_s2m_dbg_err;
-wire        wb_s2m_dbg_rty;
-
-assign wbm_adr_o[4] = wb_m2s_dbg_adr;
-assign wbm_dat_o[4] = wb_m2s_dbg_dat;
-assign wbm_sel_o[4] = wb_m2s_dbg_sel;
-assign wbm_we_o[4] = wb_m2s_dbg_we;
-assign wbm_cyc_o[4] = wb_m2s_dbg_cyc;
-assign wbm_stb_o[4] = wb_m2s_dbg_stb;
-assign wbm_cti_o[4] = wb_m2s_dbg_cti;
-assign wbm_bte_o[4] = wb_m2s_dbg_bte;
-
-assign wb_s2m_dbg_dat = wbm_dat_i[4];
-assign wb_s2m_dbg_ack = wbm_ack_i[4];
-assign wb_s2m_dbg_err = wbm_err_i[4];
-assign wb_s2m_dbg_rty = wbm_rty_i[4];
-
-wire [31:0] wb_m2s_sdram_ibus_adr;
-wire [31:0] wb_m2s_sdram_ibus_dat;
-wire [3:0]  wb_m2s_sdram_ibus_sel;
-wire        wb_m2s_sdram_ibus_we;
-wire        wb_m2s_sdram_ibus_cyc;
-wire        wb_m2s_sdram_ibus_stb;
-wire [2:0]  wb_m2s_sdram_ibus_cti;
-wire [1:0]  wb_m2s_sdram_ibus_bte;
-wire [31:0] wb_s2m_sdram_ibus_dat;
-wire        wb_s2m_sdram_ibus_ack;
-wire        wb_s2m_sdram_ibus_err;
-wire        wb_s2m_sdram_ibus_rty;
-
-wire [31:0] wb_m2s_sdram_dbus_adr;
-wire [31:0] wb_m2s_sdram_dbus_dat;
-wire [3:0]  wb_m2s_sdram_dbus_sel;
-wire        wb_m2s_sdram_dbus_we;
-wire        wb_m2s_sdram_dbus_cyc;
-wire        wb_m2s_sdram_dbus_stb;
-wire [2:0]  wb_m2s_sdram_dbus_cti;
-wire [1:0]  wb_m2s_sdram_dbus_bte;
-wire [31:0] wb_s2m_sdram_dbus_dat;
-wire        wb_s2m_sdram_dbus_ack;
-wire        wb_s2m_sdram_dbus_err;
-wire        wb_s2m_sdram_dbus_rty;
-
-wire [31:0] wb_m2s_uart0_adr;
-wire [31:0] wb_m2s_uart0_dat;
-wire [3:0]  wb_m2s_uart0_sel;
-wire        wb_m2s_uart0_we;
-wire        wb_m2s_uart0_cyc;
-wire        wb_m2s_uart0_stb;
-wire [2:0]  wb_m2s_uart0_cti;
-wire [1:0]  wb_m2s_uart0_bte;
-wire [31:0] wb_s2m_uart0_dat;
-wire        wb_s2m_uart0_ack;
-wire        wb_s2m_uart0_err;
-wire        wb_s2m_uart0_rty;
-
-wire [31:0] wb_m2s_ipi_adr;
-wire [31:0] wb_m2s_ipi_dat;
-wire [3:0]  wb_m2s_ipi_sel;
-wire        wb_m2s_ipi_we;
-wire        wb_m2s_ipi_cyc;
-wire        wb_m2s_ipi_stb;
-wire [2:0]  wb_m2s_ipi_cti;
-wire [1:0]  wb_m2s_ipi_bte;
-wire [31:0] wb_s2m_ipi_dat;
-wire        wb_s2m_ipi_ack;
-wire        wb_s2m_ipi_err;
-wire        wb_s2m_ipi_rty;
-
-wire [31:0] wb_m2s_tc_adr;
-wire [31:0] wb_m2s_tc_dat;
-wire [3:0]  wb_m2s_tc_sel;
-wire        wb_m2s_tc_we;
-wire        wb_m2s_tc_cyc;
-wire        wb_m2s_tc_stb;
-wire [2:0]  wb_m2s_tc_cti;
-wire [1:0]  wb_m2s_tc_bte;
-wire [31:0] wb_s2m_tc_dat;
-wire        wb_s2m_tc_ack;
-wire        wb_s2m_tc_err;
-wire        wb_s2m_tc_rty;
-
-////////////////////////////////////////////////////////////////////////
-//
-// Bus
-//
-////////////////////////////////////////////////////////////////////////
-
-   wire [31:0] snoop_adr;
-   wire        snoop_en;
-
-   /* wb_bus_b3 AUTO_TEMPLATE (
-    .clk_i (wb_clk),
-    .rst_i (wb_rst),
-    .m_\(.*\)_i ({wbm_\1_o[4], wbm_\1_o[3], wbm_\1_o[2], wbm_\1_o[1], wbm_\1_o[0]}),
-    .m_\(.*\)_o ({wbm_\1_i[4], wbm_\1_i[3], wbm_\1_i[2], wbm_\1_i[1], wbm_\1_i[0]}),
-    .s_\(.*\)_i ({wb_s2m_tc_\1, wb_s2m_ipi_\1, wb_s2m_uart0_\1, wb_s2m_sdram_dbus_\1}),
-    .s_\(.*\)_o ({wb_m2s_tc_\1, wb_m2s_ipi_\1, wb_m2s_uart0_\1, wb_m2s_sdram_dbus_\1}),
-    .bus_hold (1'b0),
-    .bus_hold_ack (),
-    .snoop_adr_o (snoop_adr),
-    .snoop_en_o  (snoop_en),
-    );*/
-   wb_bus_b3
-     #(.MASTERS (NUM_WB_MASTERS),
-       .SLAVES  (4),
-       .S0_RANGE_WIDTH (7),
-       .S0_RANGE_MATCH (7'h0),
-       .S1_RANGE_WIDTH (16),
-       .S1_RANGE_MATCH (16'h9000),
-       .S2_RANGE_WIDTH (16),
-       .S2_RANGE_MATCH (16'h9800),
-       .S3_RANGE_WIDTH (16),
-       .S3_RANGE_MATCH (16'h9900))
-   u_bus (/*AUTOINST*/
-	  // Outputs
-	  .m_dat_o			({wbm_dat_i[4], wbm_dat_i[3], wbm_dat_i[2], wbm_dat_i[1], wbm_dat_i[0]}), // Templated
-	  .m_ack_o			({wbm_ack_i[4], wbm_ack_i[3], wbm_ack_i[2], wbm_ack_i[1], wbm_ack_i[0]}), // Templated
-	  .m_err_o			({wbm_err_i[4], wbm_err_i[3], wbm_err_i[2], wbm_err_i[1], wbm_err_i[0]}), // Templated
-	  .m_rty_o			({wbm_rty_i[4], wbm_rty_i[3], wbm_rty_i[2], wbm_rty_i[1], wbm_rty_i[0]}), // Templated
-	  .s_adr_o			({wb_m2s_tc_adr, wb_m2s_ipi_adr, wb_m2s_uart0_adr, wb_m2s_sdram_dbus_adr}), // Templated
-	  .s_dat_o			({wb_m2s_tc_dat, wb_m2s_ipi_dat, wb_m2s_uart0_dat, wb_m2s_sdram_dbus_dat}), // Templated
-	  .s_cyc_o			({wb_m2s_tc_cyc, wb_m2s_ipi_cyc, wb_m2s_uart0_cyc, wb_m2s_sdram_dbus_cyc}), // Templated
-	  .s_stb_o			({wb_m2s_tc_stb, wb_m2s_ipi_stb, wb_m2s_uart0_stb, wb_m2s_sdram_dbus_stb}), // Templated
-	  .s_sel_o			({wb_m2s_tc_sel, wb_m2s_ipi_sel, wb_m2s_uart0_sel, wb_m2s_sdram_dbus_sel}), // Templated
-	  .s_we_o			({wb_m2s_tc_we, wb_m2s_ipi_we, wb_m2s_uart0_we, wb_m2s_sdram_dbus_we}), // Templated
-	  .s_cti_o			({wb_m2s_tc_cti, wb_m2s_ipi_cti, wb_m2s_uart0_cti, wb_m2s_sdram_dbus_cti}), // Templated
-	  .s_bte_o			({wb_m2s_tc_bte, wb_m2s_ipi_bte, wb_m2s_uart0_bte, wb_m2s_sdram_dbus_bte}), // Templated
-	  .snoop_adr_o			(snoop_adr),		 // Templated
-	  .snoop_en_o			(snoop_en),		 // Templated
-	  .bus_hold_ack			(),			 // Templated
-	  // Inputs
-	  .clk_i			(wb_clk),		 // Templated
-	  .rst_i			(wb_rst),		 // Templated
-	  .m_adr_i			({wbm_adr_o[4], wbm_adr_o[3], wbm_adr_o[2], wbm_adr_o[1], wbm_adr_o[0]}), // Templated
-	  .m_dat_i			({wbm_dat_o[4], wbm_dat_o[3], wbm_dat_o[2], wbm_dat_o[1], wbm_dat_o[0]}), // Templated
-	  .m_cyc_i			({wbm_cyc_o[4], wbm_cyc_o[3], wbm_cyc_o[2], wbm_cyc_o[1], wbm_cyc_o[0]}), // Templated
-	  .m_stb_i			({wbm_stb_o[4], wbm_stb_o[3], wbm_stb_o[2], wbm_stb_o[1], wbm_stb_o[0]}), // Templated
-	  .m_sel_i			({wbm_sel_o[4], wbm_sel_o[3], wbm_sel_o[2], wbm_sel_o[1], wbm_sel_o[0]}), // Templated
-	  .m_we_i			({wbm_we_o[4], wbm_we_o[3], wbm_we_o[2], wbm_we_o[1], wbm_we_o[0]}), // Templated
-	  .m_cti_i			({wbm_cti_o[4], wbm_cti_o[3], wbm_cti_o[2], wbm_cti_o[1], wbm_cti_o[0]}), // Templated
-	  .m_bte_i			({wbm_bte_o[4], wbm_bte_o[3], wbm_bte_o[2], wbm_bte_o[1], wbm_bte_o[0]}), // Templated
-	  .s_dat_i			({wb_s2m_tc_dat, wb_s2m_ipi_dat, wb_s2m_uart0_dat, wb_s2m_sdram_dbus_dat}), // Templated
-	  .s_ack_i			({wb_s2m_tc_ack, wb_s2m_ipi_ack, wb_s2m_uart0_ack, wb_s2m_sdram_dbus_ack}), // Templated
-	  .s_err_i			({wb_s2m_tc_err, wb_s2m_ipi_err, wb_s2m_uart0_err, wb_s2m_sdram_dbus_err}), // Templated
-	  .s_rty_i			({wb_s2m_tc_rty, wb_s2m_ipi_rty, wb_s2m_uart0_rty, wb_s2m_sdram_dbus_rty}), // Templated
-	  .bus_hold			(1'b0));			 // Templated
+wire [31:0] snoop_adr;
+wire        snoop_en;
 
 `ifdef SIM
 ////////////////////////////////////////////////////////////////////////
@@ -408,15 +240,14 @@ altera_virtual_jtag jtag_tap0 (
 //
 ////////////////////////////////////////////////////////////////////////
 
-   wire [31:0] or1k_irq [0:1];
-   wire        or1k_clk;
-   wire        or1k_rst;
+wire [31:0] or1k_irq [0:1];
+wire        or1k_clk;
+wire        or1k_rst;
 
-   assign or1k_clk = wb_clk;
-   assign or1k_rst = wb_rst | or1k_dbg_rst;
+assign or1k_clk = wb_clk;
+assign or1k_rst = wb_rst | or1k_dbg_rst;
 
-mor1kx
-      #(
+mor1kx #(
 	.FEATURE_DEBUGUNIT              ("ENABLED"),
 	.FEATURE_CMOV                   ("ENABLED"),
 	.FEATURE_INSTRUCTIONCACHE       ("ENABLED"),
@@ -438,40 +269,40 @@ mor1kx
 	.IBUS_WB_TYPE                   ("B3_REGISTERED_FEEDBACK"),
 	.DBUS_WB_TYPE                   ("B3_REGISTERED_FEEDBACK"),
 	.OPTION_CPU0                    ("CAPPUCCINO"),
-	.OPTION_RESET_PC                (32'h00000100))
-mor1kx0
-       (
-	.iwbm_adr_o                     (wbm_adr_o[0]),
-	.iwbm_stb_o                     (wbm_stb_o[0]),
-	.iwbm_cyc_o                     (wbm_cyc_o[0]),
-	.iwbm_sel_o                     (wbm_sel_o[0]),
-	.iwbm_we_o                      (wbm_we_o[0]),
-	.iwbm_cti_o                     (wbm_cti_o[0]),
-	.iwbm_bte_o                     (wbm_bte_o[0]),
-	.iwbm_dat_o                     (wbm_dat_o[0]),
-	.dwbm_adr_o                     (wbm_adr_o[1]),
-	.dwbm_stb_o                     (wbm_stb_o[1]),
-	.dwbm_cyc_o                     (wbm_cyc_o[1]),
-	.dwbm_sel_o                     (wbm_sel_o[1]),
-	.dwbm_we_o                      (wbm_we_o[1]),
-	.dwbm_cti_o                     (wbm_cti_o[1]),
-	.dwbm_bte_o                     (wbm_bte_o[1]),
-	.dwbm_dat_o                     (wbm_dat_o[1]),
+	.OPTION_RESET_PC                (32'h00000100)
+) mor1kx0 (
+	.iwbm_adr_o			(wb_m2s_or1k0_i_adr),
+	.iwbm_stb_o			(wb_m2s_or1k0_i_stb),
+	.iwbm_cyc_o			(wb_m2s_or1k0_i_cyc),
+	.iwbm_sel_o			(wb_m2s_or1k0_i_sel),
+	.iwbm_we_o			(wb_m2s_or1k0_i_we),
+	.iwbm_cti_o			(wb_m2s_or1k0_i_cti),
+	.iwbm_bte_o			(wb_m2s_or1k0_i_bte),
+	.iwbm_dat_o			(wb_m2s_or1k0_i_dat),
 
-	.clk                            (or1k_clk),
-	.rst                            (or1k_rst),
+	.dwbm_adr_o			(wb_m2s_or1k0_d_adr),
+	.dwbm_stb_o			(wb_m2s_or1k0_d_stb),
+	.dwbm_cyc_o			(wb_m2s_or1k0_d_cyc),
+	.dwbm_sel_o			(wb_m2s_or1k0_d_sel),
+	.dwbm_we_o			(wb_m2s_or1k0_d_we ),
+	.dwbm_cti_o			(wb_m2s_or1k0_d_cti),
+	.dwbm_bte_o			(wb_m2s_or1k0_d_bte),
+	.dwbm_dat_o			(wb_m2s_or1k0_d_dat),
 
-	.iwbm_err_i                     (wbm_err_i[0]),
-	.iwbm_ack_i                     (wbm_ack_i[0]),
-	.iwbm_dat_i                     (wbm_dat_i[0]),
-	.iwbm_rty_i                     (wbm_rty_i[0]),
+	.clk				(or1k_clk),
+	.rst				(or1k_rst),
 
-	.dwbm_err_i                     (wbm_err_i[1]),
-	.dwbm_ack_i                     (wbm_ack_i[1]),
-	.dwbm_dat_i                     (wbm_dat_i[1]),
-	.dwbm_rty_i                     (wbm_rty_i[1]),
+	.iwbm_err_i			(wb_s2m_or1k0_i_err),
+	.iwbm_ack_i			(wb_s2m_or1k0_i_ack),
+	.iwbm_dat_i			(wb_s2m_or1k0_i_dat),
+	.iwbm_rty_i			(wb_s2m_or1k0_i_rty),
 
-	.irq_i                          (or1k_irq[0]),
+	.dwbm_err_i			(wb_s2m_or1k0_d_err),
+	.dwbm_ack_i			(wb_s2m_or1k0_d_ack),
+	.dwbm_dat_i			(wb_s2m_or1k0_d_dat),
+	.dwbm_rty_i			(wb_s2m_or1k0_d_rty),
+
+	.irq_i				(or1k_irq[0]),
 
 	.du_addr_i                      (16'b0),
 	.du_stb_i                       (1'b0),
@@ -496,8 +327,7 @@ mor1kx0
 	.traceport_exec_wben_o   (traceport_exec_wben[0])
 );
 
-mor1kx
-      #(
+mor1kx #(
 	.FEATURE_DEBUGUNIT              ("ENABLED"),
 	.FEATURE_CMOV                   ("ENABLED"),
 	.FEATURE_INSTRUCTIONCACHE       ("ENABLED"),
@@ -519,41 +349,40 @@ mor1kx
 	.IBUS_WB_TYPE                   ("B3_REGISTERED_FEEDBACK"),
 	.DBUS_WB_TYPE                   ("B3_REGISTERED_FEEDBACK"),
 	.OPTION_CPU0                    ("CAPPUCCINO"),
-	.OPTION_RESET_PC                (32'h00000100))
-mor1kx1
-       (
-	.iwbm_adr_o                     (wbm_adr_o[2]),
-	.iwbm_stb_o                     (wbm_stb_o[2]),
-	.iwbm_cyc_o                     (wbm_cyc_o[2]),
-	.iwbm_sel_o                     (wbm_sel_o[2]),
-	.iwbm_we_o                      (wbm_we_o[2]),
-	.iwbm_cti_o                     (wbm_cti_o[2]),
-	.iwbm_bte_o                     (wbm_bte_o[2]),
-	.iwbm_dat_o                     (wbm_dat_o[2]),
+	.OPTION_RESET_PC                (32'h00000100)
+) mor1kx1 (
+	.iwbm_adr_o			(wb_m2s_or1k1_i_adr),
+	.iwbm_stb_o			(wb_m2s_or1k1_i_stb),
+	.iwbm_cyc_o			(wb_m2s_or1k1_i_cyc),
+	.iwbm_sel_o			(wb_m2s_or1k1_i_sel),
+	.iwbm_we_o			(wb_m2s_or1k1_i_we),
+	.iwbm_cti_o			(wb_m2s_or1k1_i_cti),
+	.iwbm_bte_o			(wb_m2s_or1k1_i_bte),
+	.iwbm_dat_o			(wb_m2s_or1k1_i_dat),
 
-	.dwbm_adr_o                     (wbm_adr_o[3]),
-	.dwbm_stb_o                     (wbm_stb_o[3]),
-	.dwbm_cyc_o                     (wbm_cyc_o[3]),
-	.dwbm_sel_o                     (wbm_sel_o[3]),
-	.dwbm_we_o                      (wbm_we_o[3]),
-	.dwbm_cti_o                     (wbm_cti_o[3]),
-	.dwbm_bte_o                     (wbm_bte_o[3]),
-	.dwbm_dat_o                     (wbm_dat_o[3]),
+	.dwbm_adr_o			(wb_m2s_or1k1_d_adr),
+	.dwbm_stb_o			(wb_m2s_or1k1_d_stb),
+	.dwbm_cyc_o			(wb_m2s_or1k1_d_cyc),
+	.dwbm_sel_o			(wb_m2s_or1k1_d_sel),
+	.dwbm_we_o			(wb_m2s_or1k1_d_we ),
+	.dwbm_cti_o			(wb_m2s_or1k1_d_cti),
+	.dwbm_bte_o			(wb_m2s_or1k1_d_bte),
+	.dwbm_dat_o			(wb_m2s_or1k1_d_dat),
 
-	.clk                            (or1k_clk),
-	.rst                            (or1k_rst),
+	.clk				(or1k_clk),
+	.rst				(or1k_rst),
 
-	.iwbm_err_i                     (wbm_err_i[2]),
-	.iwbm_ack_i                     (wbm_ack_i[2]),
-	.iwbm_dat_i                     (wbm_dat_i[2]),
-	.iwbm_rty_i                     (wbm_rty_i[2]),
+	.iwbm_err_i			(wb_s2m_or1k1_i_err),
+	.iwbm_ack_i			(wb_s2m_or1k1_i_ack),
+	.iwbm_dat_i			(wb_s2m_or1k1_i_dat),
+	.iwbm_rty_i			(wb_s2m_or1k1_i_rty),
 
-	.dwbm_err_i                     (wbm_err_i[3]),
-	.dwbm_ack_i                     (wbm_ack_i[3]),
-	.dwbm_dat_i                     (wbm_dat_i[3]),
-	.dwbm_rty_i                     (wbm_rty_i[3]),
+	.dwbm_err_i			(wb_s2m_or1k1_d_err),
+	.dwbm_ack_i			(wb_s2m_or1k1_d_ack),
+	.dwbm_dat_i			(wb_s2m_or1k1_d_dat),
+	.dwbm_rty_i			(wb_s2m_or1k1_d_rty),
 
-	.irq_i                          (or1k_irq[1]),
+	.irq_i				(or1k_irq[1]),
 
 	.du_addr_i                      (16'b0),
 	.du_stb_i                       (1'b0),
@@ -676,6 +505,9 @@ assign	wb_s2m_sdram_ibus_rty = 0;
 assign	wb_s2m_sdram_dbus_err = 0;
 assign	wb_s2m_sdram_dbus_rty = 0;
 
+assign snoop_adr = wb_m2s_sdram_dbus_adr;
+assign snoop_en = wb_s2m_sdram_dbus_ack & wb_m2s_sdram_dbus_we;
+
 wb_sdram_ctrl #(
 `ifndef SIM
 	.TECHNOLOGY			("ALTERA"),
@@ -732,33 +564,18 @@ wb_sdram_ctrl0 (
 
 wire	uart0_irq;
 
-wire [31:0]	wb8_m2s_uart0_adr;
-wire [1:0]	wb8_m2s_uart0_bte;
-wire [2:0]	wb8_m2s_uart0_cti;
-wire		wb8_m2s_uart0_cyc;
-wire [7:0]	wb8_m2s_uart0_dat;
-wire		wb8_m2s_uart0_stb;
-wire		wb8_m2s_uart0_we;
-wire [7:0] 	wb8_s2m_uart0_dat;
-wire		wb8_s2m_uart0_ack;
-wire		wb8_s2m_uart0_err;
-wire		wb8_s2m_uart0_rty;
-
-assign	wb8_s2m_uart0_err = 0;
-assign	wb8_s2m_uart0_rty = 0;
-
 uart_top uart16550_0 (
 	// Wishbone slave interface
 	.wb_clk_i	(wb_clk),
 	.wb_rst_i	(wb_rst),
-	.wb_adr_i	(wb8_m2s_uart0_adr[uart0_aw-1:0]),
-	.wb_dat_i	(wb8_m2s_uart0_dat),
-	.wb_we_i	(wb8_m2s_uart0_we),
-	.wb_stb_i	(wb8_m2s_uart0_stb),
-	.wb_cyc_i	(wb8_m2s_uart0_cyc),
+	.wb_adr_i	(wb_m2s_uart0_adr[uart0_aw-1:0]),
+	.wb_dat_i	(wb_m2s_uart0_dat),
+	.wb_we_i	(wb_m2s_uart0_we),
+	.wb_stb_i	(wb_m2s_uart0_stb),
+	.wb_cyc_i	(wb_m2s_uart0_cyc),
 	.wb_sel_i	(4'b0), // Not used in 8-bit mode
-	.wb_dat_o	(wb8_s2m_uart0_dat),
-	.wb_ack_o	(wb8_s2m_uart0_ack),
+	.wb_dat_o	(wb_s2m_uart0_dat),
+	.wb_ack_o	(wb_s2m_uart0_ack),
 
 	// Outputs
 	.int_o		(uart0_irq),
@@ -772,35 +589,6 @@ uart_top uart16550_0 (
 	.dsr_pad_i	(1'b0),
 	.ri_pad_i	(1'b0),
 	.dcd_pad_i	(1'b0)
-);
-
-// 32-bit to 8-bit wishbone bus resize
-wb_data_resize wb_data_resize_uart0 (
-	// Wishbone Master interface
-	.wbm_adr_i	(wb_m2s_uart0_adr),
-	.wbm_dat_i	(wb_m2s_uart0_dat),
-	.wbm_sel_i	(wb_m2s_uart0_sel),
-	.wbm_we_i	(wb_m2s_uart0_we ),
-	.wbm_cyc_i	(wb_m2s_uart0_cyc),
-	.wbm_stb_i	(wb_m2s_uart0_stb),
-	.wbm_cti_i	(wb_m2s_uart0_cti),
-	.wbm_bte_i	(wb_m2s_uart0_bte),
-	.wbm_dat_o	(wb_s2m_uart0_dat),
-	.wbm_ack_o	(wb_s2m_uart0_ack),
-	.wbm_err_o	(wb_s2m_uart0_err),
-	.wbm_rty_o	(wb_s2m_uart0_rty),
-	// Wishbone Slave interface
-	.wbs_adr_o	(wb8_m2s_uart0_adr),
-	.wbs_dat_o	(wb8_m2s_uart0_dat),
-	.wbs_we_o 	(wb8_m2s_uart0_we ),
-	.wbs_cyc_o	(wb8_m2s_uart0_cyc),
-	.wbs_stb_o	(wb8_m2s_uart0_stb),
-	.wbs_cti_o	(wb8_m2s_uart0_cti),
-	.wbs_bte_o	(wb8_m2s_uart0_bte),
-	.wbs_dat_i	(wb8_s2m_uart0_dat),
-	.wbs_ack_i	(wb8_s2m_uart0_ack),
-	.wbs_err_i	(wb8_s2m_uart0_err),
-	.wbs_rty_i	(wb8_s2m_uart0_rty)
 );
 
 `ifdef I2C0

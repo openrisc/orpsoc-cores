@@ -26,9 +26,7 @@ src_files =
  rtl/verilog/orpsoc_top.v
  backend/rtl/verilog/pll.v
  rtl/verilog/rom.v
- rtl/verilog/wb_bus_b3.v
- rtl/verilog/wb_interconnect_arb_rr.v
-; rtl/verilog/wb_intercon.v
+ rtl/verilog/wb_intercon.v
 
 tb_private_src_files =
  bench/orpsoc_tb.v

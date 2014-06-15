@@ -18,13 +18,13 @@ simulators = icarus modelsim
 [verilog]
 src_files =
  rtl/verilog/orpsoc_top.v
- rtl/verilog/wb_bus_b3.v
- rtl/verilog/wb_interconnect_arb_rr.v
+ rtl/verilog/wb_intercon.v
  bench/verilog/wb_uart_wrapper.v
 tb_private_src_files =
  bench/verilog/uart16550_model.v
  bench/verilog/orpsoc_tb.v
 include_files =
+ rtl/verilog/wb_intercon.vh
  bench/verilog/include/test-defines.v
  bench/verilog/include/uart_defines.v
  bench/verilog/include/timescale.v
