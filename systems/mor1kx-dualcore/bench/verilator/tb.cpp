@@ -38,7 +38,7 @@ static int done;
 void INThandler(int signal)
 {
 	printf("\nCaught ctrl-c\n");
-	done = true;
+	done = 2;
 }
 
 static int parse_opt(int key, char *arg, struct argp_state *state)
@@ -75,13 +75,18 @@ public:
   VerilatorTbUtils* tbUtils;
   uint32_t *insn;
   uint32_t *pc;
-  Vorpsoc_top_mor1kx_cpu_cappuccino__pi5 *cpu;
+  unsigned char *valid;
+
+  Vorpsoc_top_mor1kx_cpu_cappuccino__pi6 *cpu;
   char printstring[256];
   int printstringpos;
 
   TraceExecMonitor() : printstringpos(0), self_done(false) {}
 
   void eval() {
+    if (!*valid)
+      return;
+
     if (!self_done) {
       if (*insn == (0x15000000 | NOP_EXIT)) {
 	printf("[%lu] Success! Got NOP_EXIT (%lu)\n", id,
@@ -99,6 +104,17 @@ public:
 	  printf("%s", printstring);
 	  printstringpos = 0;
 	}
+      } else if (*insn == (0x15000000 | NOP_GET_TICKS)) {
+	printf("((%lu) PC = %08x (%lu))\n", id, *pc, tbUtils->getTime());
+#if 0
+      } else if (*insn == (0x15000000 | NOP_REPORT)) {
+/*
+        if (id != 1)
+          return;
+*/
+	printf("report(0x%08x) ((%lu) PC = %08x (%lu))\n",
+	       cpu->get_gpr(3), id, cpu->get_gpr(9), tbUtils->getTime());
+#endif
       }
     }
   }
@@ -129,13 +145,15 @@ int main(int argc, char **argv, char **env)
 	trace0.pc = &top->v->traceport_exec_pc[0];
 	trace0.insn = &top->v->traceport_exec_insn[0];
 	trace0.cpu = top->v->mor1kx0->mor1kx_cpu->cappuccino__DOT__mor1kx_cpu;
+	trace0.valid = &top->v->traceport_exec_valid[0];
 	TraceExecMonitor trace1;
 	trace1.id = 1;
 	trace1.tbUtils = tbUtils;
 	trace1.pc = &top->v->traceport_exec_pc[1];
 	trace1.insn = &top->v->traceport_exec_insn[1];
 	trace1.cpu = top->v->mor1kx1->mor1kx_cpu->cappuccino__DOT__mor1kx_cpu;
-	
+	trace1.valid = &top->v->traceport_exec_valid[1];
+
 	done = 0;
 
 	while (tbUtils->doCycle() && !(done==2)) {
@@ -151,9 +169,44 @@ int main(int argc, char **argv, char **env)
 		trace1.eval();
 
 		top->wb_clk_i = !top->wb_clk_i;
+
+#if 0
+		if (*trace0.pc == 0xc01fe360) {
+			printf("SJK DEBUG: 0) (%lu)\n", tbUtils->getTime());
+		}
+
+#endif
+#if 0
+		if (*trace1.pc == 0xc01fe360) {
+			printf("SJK DEBUG: 1) (%lu)\n", tbUtils->getTime());
+		}
+#endif
+
+#if 1
+		if (*trace0.pc == 0x600) {
+			printf("SJK DEBUG: 0) (%lu), PC=%08x\n",
+			       tbUtils->getTime(), *trace0.pc);
+		}
+
+#endif
+#if 1
+		if (*trace1.pc == 0x600) {
+			printf("SJK DEBUG: 1) (%lu), PC=%08x\n",
+			       tbUtils->getTime(), *trace1.pc);
+		}
+#endif
+
+#if 0
+		if (*trace0.pc == 0x200 ||
+		    *trace1.pc == 0x200) {
+			printf("SJK DEBUG: 0) (%lu)\n", tbUtils->getTime());
+			//done = 2;
+		}
+#endif
 	}
 
-	printf("Simulation ended (%lu)\n", tbUtils->getTime());
+	printf("Simulation ended at PC[0] = %08x, PC[1] = %08x (%lu)\n",
+	       *trace0.pc, *trace1.pc, tbUtils->getTime());
 
 	delete tbUtils;
 	exit(0);
