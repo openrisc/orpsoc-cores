@@ -11,3 +11,9 @@ src_files =
 name = url
 url = http://www.micron.com/~/media/Documents/Products/Sim%%20Model/DRAM/DRAM/4012mt48lc16m16a2.zip
 filetype = zip
+
+[icarus]
+depend = elf-loader wiredelay
+
+[modelsim]
+depend = elf-loader wiredelay

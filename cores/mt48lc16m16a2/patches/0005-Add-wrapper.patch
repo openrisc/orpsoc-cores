@@ -2,8 +2,7 @@ Index: mt48lc16m16a2/mt48lc16m16a2_wrapper.v
 ===================================================================
 --- /dev/null
 +++ mt48lc16m16a2/mt48lc16m16a2_wrapper.v
-@@ -0,0 +1,89 @@
-+`include "timescale.v"
+@@ -0,0 +1,88 @@
 +module mt48lc16m16a2_wrapper
 +  #(parameter TPROP_PCB = 2.0,
 +    parameter ADDR_BITS = 12,
