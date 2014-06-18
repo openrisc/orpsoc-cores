@@ -112,41 +112,9 @@ wire        wb_s2m_resize_uart_err;
 wire        wb_s2m_resize_uart_rty;
 
 wb_mux
-  #(.num_slaves (1),
-    .MATCH_ADDR ({32'h00000000}),
-    .MATCH_MASK ({32'hff800000}))
- wb_mux_or1k_i
-   (.wb_clk_i  (wb_clk_i),
-    .wb_rst_i  (wb_rst_i),
-    .wbm_adr_i (wb_or1k_i_adr_i),
-    .wbm_dat_i (wb_or1k_i_dat_i),
-    .wbm_sel_i (wb_or1k_i_sel_i),
-    .wbm_we_i  (wb_or1k_i_we_i),
-    .wbm_cyc_i (wb_or1k_i_cyc_i),
-    .wbm_stb_i (wb_or1k_i_stb_i),
-    .wbm_cti_i (wb_or1k_i_cti_i),
-    .wbm_bte_i (wb_or1k_i_bte_i),
-    .wbm_dat_o (wb_or1k_i_dat_o),
-    .wbm_ack_o (wb_or1k_i_ack_o),
-    .wbm_err_o (wb_or1k_i_err_o),
-    .wbm_rty_o (wb_or1k_i_rty_o),
-    .wbs_adr_o ({wb_m2s_or1k_i_mem_adr}),
-    .wbs_dat_o ({wb_m2s_or1k_i_mem_dat}),
-    .wbs_sel_o ({wb_m2s_or1k_i_mem_sel}),
-    .wbs_we_o  ({wb_m2s_or1k_i_mem_we}),
-    .wbs_cyc_o ({wb_m2s_or1k_i_mem_cyc}),
-    .wbs_stb_o ({wb_m2s_or1k_i_mem_stb}),
-    .wbs_cti_o ({wb_m2s_or1k_i_mem_cti}),
-    .wbs_bte_o ({wb_m2s_or1k_i_mem_bte}),
-    .wbs_dat_i ({wb_s2m_or1k_i_mem_dat}),
-    .wbs_ack_i ({wb_s2m_or1k_i_mem_ack}),
-    .wbs_err_i ({wb_s2m_or1k_i_mem_err}),
-    .wbs_rty_i ({wb_s2m_or1k_i_mem_rty}));
-
-wb_mux
   #(.num_slaves (2),
     .MATCH_ADDR ({32'h00000000, 32'h90000000}),
-    .MATCH_MASK ({32'hff800000, 32'hfffffff8}))
+    .MATCH_MASK ({32'hfe000000, 32'hfffffff8}))
  wb_mux_or1k_d
    (.wb_clk_i  (wb_clk_i),
     .wb_rst_i  (wb_rst_i),
@@ -178,7 +146,39 @@ wb_mux
 wb_mux
   #(.num_slaves (1),
     .MATCH_ADDR ({32'h00000000}),
-    .MATCH_MASK ({32'hff800000}))
+    .MATCH_MASK ({32'hfe000000}))
+ wb_mux_or1k_i
+   (.wb_clk_i  (wb_clk_i),
+    .wb_rst_i  (wb_rst_i),
+    .wbm_adr_i (wb_or1k_i_adr_i),
+    .wbm_dat_i (wb_or1k_i_dat_i),
+    .wbm_sel_i (wb_or1k_i_sel_i),
+    .wbm_we_i  (wb_or1k_i_we_i),
+    .wbm_cyc_i (wb_or1k_i_cyc_i),
+    .wbm_stb_i (wb_or1k_i_stb_i),
+    .wbm_cti_i (wb_or1k_i_cti_i),
+    .wbm_bte_i (wb_or1k_i_bte_i),
+    .wbm_dat_o (wb_or1k_i_dat_o),
+    .wbm_ack_o (wb_or1k_i_ack_o),
+    .wbm_err_o (wb_or1k_i_err_o),
+    .wbm_rty_o (wb_or1k_i_rty_o),
+    .wbs_adr_o ({wb_m2s_or1k_i_mem_adr}),
+    .wbs_dat_o ({wb_m2s_or1k_i_mem_dat}),
+    .wbs_sel_o ({wb_m2s_or1k_i_mem_sel}),
+    .wbs_we_o  ({wb_m2s_or1k_i_mem_we}),
+    .wbs_cyc_o ({wb_m2s_or1k_i_mem_cyc}),
+    .wbs_stb_o ({wb_m2s_or1k_i_mem_stb}),
+    .wbs_cti_o ({wb_m2s_or1k_i_mem_cti}),
+    .wbs_bte_o ({wb_m2s_or1k_i_mem_bte}),
+    .wbs_dat_i ({wb_s2m_or1k_i_mem_dat}),
+    .wbs_ack_i ({wb_s2m_or1k_i_mem_ack}),
+    .wbs_err_i ({wb_s2m_or1k_i_mem_err}),
+    .wbs_rty_i ({wb_s2m_or1k_i_mem_rty}));
+
+wb_mux
+  #(.num_slaves (1),
+    .MATCH_ADDR ({32'h00000000}),
+    .MATCH_MASK ({32'hfe000000}))
  wb_mux_dbg
    (.wb_clk_i  (wb_clk_i),
     .wb_rst_i  (wb_rst_i),
@@ -206,7 +206,6 @@ wb_mux
     .wbs_ack_i ({wb_s2m_dbg_mem_ack}),
     .wbs_err_i ({wb_s2m_dbg_mem_err}),
     .wbs_rty_i ({wb_s2m_dbg_mem_rty}));
-
 
 wb_arbiter
   #(.num_masters (3))

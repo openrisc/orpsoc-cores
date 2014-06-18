@@ -22,18 +22,6 @@ wire [31:0] wb_s2m_or1k_i_dat;
 wire        wb_s2m_or1k_i_ack;
 wire        wb_s2m_or1k_i_err;
 wire        wb_s2m_or1k_i_rty;
-wire [31:0] wb_m2s_mem_adr;
-wire [31:0] wb_m2s_mem_dat;
-wire  [3:0] wb_m2s_mem_sel;
-wire        wb_m2s_mem_we;
-wire        wb_m2s_mem_cyc;
-wire        wb_m2s_mem_stb;
-wire  [2:0] wb_m2s_mem_cti;
-wire  [1:0] wb_m2s_mem_bte;
-wire [31:0] wb_s2m_mem_dat;
-wire        wb_s2m_mem_ack;
-wire        wb_s2m_mem_err;
-wire        wb_s2m_mem_rty;
 wire [31:0] wb_m2s_dbg_adr;
 wire [31:0] wb_m2s_dbg_dat;
 wire  [3:0] wb_m2s_dbg_sel;
@@ -46,6 +34,18 @@ wire [31:0] wb_s2m_dbg_dat;
 wire        wb_s2m_dbg_ack;
 wire        wb_s2m_dbg_err;
 wire        wb_s2m_dbg_rty;
+wire [31:0] wb_m2s_mem_adr;
+wire [31:0] wb_m2s_mem_dat;
+wire  [3:0] wb_m2s_mem_sel;
+wire        wb_m2s_mem_we;
+wire        wb_m2s_mem_cyc;
+wire        wb_m2s_mem_stb;
+wire  [2:0] wb_m2s_mem_cti;
+wire  [1:0] wb_m2s_mem_bte;
+wire [31:0] wb_s2m_mem_dat;
+wire        wb_s2m_mem_ack;
+wire        wb_s2m_mem_err;
+wire        wb_s2m_mem_rty;
 wire [31:0] wb_m2s_uart_adr;
 wire  [7:0] wb_m2s_uart_dat;
 wire  [3:0] wb_m2s_uart_sel;
@@ -86,18 +86,6 @@ wb_intercon wb_intercon0
     .wb_or1k_i_ack_o (wb_s2m_or1k_i_ack),
     .wb_or1k_i_err_o (wb_s2m_or1k_i_err),
     .wb_or1k_i_rty_o (wb_s2m_or1k_i_rty),
-    .wb_mem_adr_o    (wb_m2s_mem_adr),
-    .wb_mem_dat_o    (wb_m2s_mem_dat),
-    .wb_mem_sel_o    (wb_m2s_mem_sel),
-    .wb_mem_we_o     (wb_m2s_mem_we),
-    .wb_mem_cyc_o    (wb_m2s_mem_cyc),
-    .wb_mem_stb_o    (wb_m2s_mem_stb),
-    .wb_mem_cti_o    (wb_m2s_mem_cti),
-    .wb_mem_bte_o    (wb_m2s_mem_bte),
-    .wb_mem_dat_i    (wb_s2m_mem_dat),
-    .wb_mem_ack_i    (wb_s2m_mem_ack),
-    .wb_mem_err_i    (wb_s2m_mem_err),
-    .wb_mem_rty_i    (wb_s2m_mem_rty),
     .wb_dbg_adr_i    (wb_m2s_dbg_adr),
     .wb_dbg_dat_i    (wb_m2s_dbg_dat),
     .wb_dbg_sel_i    (wb_m2s_dbg_sel),
@@ -110,6 +98,18 @@ wb_intercon wb_intercon0
     .wb_dbg_ack_o    (wb_s2m_dbg_ack),
     .wb_dbg_err_o    (wb_s2m_dbg_err),
     .wb_dbg_rty_o    (wb_s2m_dbg_rty),
+    .wb_mem_adr_o    (wb_m2s_mem_adr),
+    .wb_mem_dat_o    (wb_m2s_mem_dat),
+    .wb_mem_sel_o    (wb_m2s_mem_sel),
+    .wb_mem_we_o     (wb_m2s_mem_we),
+    .wb_mem_cyc_o    (wb_m2s_mem_cyc),
+    .wb_mem_stb_o    (wb_m2s_mem_stb),
+    .wb_mem_cti_o    (wb_m2s_mem_cti),
+    .wb_mem_bte_o    (wb_m2s_mem_bte),
+    .wb_mem_dat_i    (wb_s2m_mem_dat),
+    .wb_mem_ack_i    (wb_s2m_mem_ack),
+    .wb_mem_err_i    (wb_s2m_mem_err),
+    .wb_mem_rty_i    (wb_s2m_mem_rty),
     .wb_uart_adr_o   (wb_m2s_uart_adr),
     .wb_uart_dat_o   (wb_m2s_uart_dat),
     .wb_uart_sel_o   (wb_m2s_uart_sel),

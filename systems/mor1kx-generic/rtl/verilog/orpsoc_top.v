@@ -12,7 +12,7 @@ module orpsoc_top #(
 localparam wb_aw = 32;
 localparam wb_dw = 32;
 
-localparam MEM_SIZE_BITS = 23;
+localparam MEM_SIZE_BITS = 25;
 
 ////////////////////////////////////////////////////////////////////////
 //
