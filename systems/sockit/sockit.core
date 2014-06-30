@@ -1,0 +1,33 @@
+CAPI=1
+[main]
+depend =
+ jtag_tap
+ wb_intercon
+ wb_avalon_bridge
+ adv_debug_sys
+ altera_virtual_jtag
+ mor1kx
+ uart16550
+ elf-loader
+ vlog_tb_utils
+ jtag_vpi
+ ram_wb
+ gpio
+ vga_lcd
+ i2c
+
+simulators =
+ icarus
+
+[verilog]
+src_files =
+ rtl/verilog/clkgen.v
+ rtl/verilog/orpsoc_top.v
+ rtl/verilog/rom.v
+ rtl/verilog/wb_intercon.v
+
+include_files =
+ rtl/verilog/include/orpsoc-defines.v
+ rtl/verilog/include/timescale.v
+ rtl/verilog/include/uart_defines.v
+ rtl/verilog/wb_intercon.vh
