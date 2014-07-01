@@ -35,6 +35,9 @@ static int done;
 
 #define RESET_TIME		2
 
+#define SR_ICE	(1 << 4)
+#define SR_DCE	(1 << 3)
+
 void INThandler(int signal)
 {
 	printf("\nCaught ctrl-c\n");
@@ -77,7 +80,8 @@ public:
   uint32_t *pc;
   unsigned char *valid;
 
-  Vorpsoc_top_mor1kx_cpu_cappuccino__pi6 *cpu;
+  Vorpsoc_top_mor1kx_cpu_cappuccino__pi5 *cpu;
+//  Vorpsoc_top_mor1kx_cpu_cappuccino__pi6 *cpu;
   char printstring[256];
   int printstringpos;
 
@@ -156,25 +160,72 @@ int main(int argc, char **argv, char **env)
 
 	done = 0;
 
+	uint32_t cpu0_sr, cpu1_sr, cpu0_sr_last, cpu1_sr_last;
+
 	while (tbUtils->doCycle() && !(done==2)) {
 		if (tbUtils->getTime() > RESET_TIME)
 			top->wb_rst_i = 0;
 
 		top->eval();
-
 		top->wb_clk_i = !top->wb_clk_i;
 
 		top->eval();
 		trace0.eval();
 		trace1.eval();
 
+#if 0
+		cpu0_sr = trace0.cpu->mor1kx_ctrl_cappuccino->spr_sr;
+		cpu1_sr = trace1.cpu->mor1kx_ctrl_cappuccino->spr_sr;
+
+		if ((cpu0_sr & SR_ICE) && !(cpu0_sr_last & SR_ICE))
+			printf("ICACHE enabled on cpu0 (%lu), PC=%08x\n",
+			       tbUtils->getTime(), *trace0.pc);
+
+		if (!(cpu0_sr & SR_ICE) && (cpu0_sr_last & SR_ICE))
+			printf("ICACHE disabled on cpu0 (%lu), PC=%08x\n",
+			       tbUtils->getTime(), *trace0.pc);
+
+		if ((cpu0_sr & SR_DCE) && !(cpu0_sr_last & SR_DCE))
+			printf("DCACHE enabled on cpu0 (%lu), PC=%08x\n",
+			       tbUtils->getTime(), *trace0.pc);
+
+		if (!(cpu0_sr & SR_DCE) && (cpu0_sr_last & SR_DCE))
+			printf("DCACHE disabled on cpu0 (%lu), PC=%08x\n",
+			       tbUtils->getTime(), *trace0.pc);
+
+		if ((cpu1_sr & SR_ICE) && !(cpu1_sr_last & SR_ICE))
+			printf("ICACHE enabled on cpu1 (%lu), PC=%08x\n",
+			       tbUtils->getTime(), *trace1.pc);
+
+		if (!(cpu1_sr & SR_ICE) && (cpu1_sr_last & SR_ICE))
+			printf("ICACHE disabled on cpu1 (%lu), PC=%08x\n",
+			       tbUtils->getTime(), *trace1.pc);
+
+		if ((cpu1_sr & SR_DCE) && !(cpu1_sr_last & SR_DCE))
+			printf("DCACHE enabled on cpu1 (%lu), PC=%08x\n",
+			       tbUtils->getTime(), *trace1.pc);
+
+		if (!(cpu1_sr & SR_DCE) && (cpu1_sr_last & SR_DCE))
+			printf("DCACHE disabled on cpu1 (%lu), PC=%08x\n",
+			       tbUtils->getTime(), *trace1.pc);
+
+		cpu0_sr_last = cpu0_sr;
+		cpu1_sr_last = cpu1_sr;
+#endif
+
 		top->wb_clk_i = !top->wb_clk_i;
 
 #if 0
-		if (*trace0.pc == 0xc01fe360) {
-			printf("SJK DEBUG: 0) (%lu)\n", tbUtils->getTime());
+		if (*trace0.pc == 0xc0007cc8) {
+			printf("SJK DEBUG: 0) (%lu), PC=%08x\n",
+			       tbUtils->getTime(), *trace0.pc);
 		}
 
+		if (*trace1.pc == 0x04) {
+			printf("SJK DEBUG: 1) (%lu), PC=%08x\n",
+			       tbUtils->getTime(), *trace1.pc);
+			done=2;
+		}
 #endif
 #if 0
 		if (*trace1.pc == 0xc01fe360) {
@@ -182,15 +233,15 @@ int main(int argc, char **argv, char **env)
 		}
 #endif
 
-#if 1
-		if (*trace0.pc == 0x600) {
+#if 0
+		if (*trace0.pc == 0x200) {
 			printf("SJK DEBUG: 0) (%lu), PC=%08x\n",
 			       tbUtils->getTime(), *trace0.pc);
 		}
 
 #endif
-#if 1
-		if (*trace1.pc == 0x600) {
+#if 0
+		if (*trace1.pc == 0x200) {
 			printf("SJK DEBUG: 1) (%lu), PC=%08x\n",
 			       tbUtils->getTime(), *trace1.pc);
 		}
