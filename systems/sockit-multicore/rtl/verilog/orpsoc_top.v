@@ -189,6 +189,13 @@ module orpsoc_top (
 
 parameter	IDCODE_VALUE=32'h14951185;
 
+wire        traceport_exec_valid[0:1] /* verilator public */;
+wire [31:0] traceport_exec_pc[0:1] /* verilator public */;
+wire [31:0] traceport_exec_insn[0:1] /* verilator public */;
+wire [31:0] traceport_exec_wbdata[0:1] /* verilator public */;
+wire [4:0]  traceport_exec_wbreg[0:1] /* verilator public */;
+wire        traceport_exec_wben[0:1] /*verilator public*/;
+
 ////////////////////////////////////////////////////////////////////////
 //
 // Modules interconnections
@@ -781,6 +788,7 @@ mor1kx #(
 	.FEATURE_DEBUGUNIT("ENABLED"),
 	.FEATURE_CMOV("ENABLED"),
 	.FEATURE_INSTRUCTIONCACHE("ENABLED"),
+	.FEATURE_MULTICORE("ENABLED"),
 	.OPTION_ICACHE_BLOCK_WIDTH(5),
 	.OPTION_ICACHE_SET_WIDTH(8),
 	.OPTION_ICACHE_WAYS(2),
@@ -795,6 +803,8 @@ mor1kx #(
 	.FEATURE_DMMU("ENABLED"),
 	.OPTION_DMMU_SET_WIDTH(7),
 	.OPTION_PIC_TRIGGER("LEVEL"),
+
+	.FEATURE_TRACEPORT_EXEC("ENABLED"),
 
 	.IBUS_WB_TYPE("B3_REGISTERED_FEEDBACK"),
 	.DBUS_WB_TYPE("B3_REGISTERED_FEEDBACK"),
@@ -848,13 +858,20 @@ mor1kx #(
 
 	.snoop_adr_i(snoop_adr),
 	.snoop_en_i(snoop_en)
+	,
+	.traceport_exec_valid_o(traceport_exec_valid[0]),
+	.traceport_exec_pc_o(traceport_exec_pc[0]),
+	.traceport_exec_insn_o(traceport_exec_insn[0]),
+	.traceport_exec_wbdata_o(traceport_exec_wbdata[0]),
+	.traceport_exec_wbreg_o(traceport_exec_wbreg[0]),
+	.traceport_exec_wben_o(traceport_exec_wben[0])
 );
 
 mor1kx #(
 	.FEATURE_DEBUGUNIT("ENABLED"),
 	.FEATURE_CMOV("ENABLED"),
 	.FEATURE_INSTRUCTIONCACHE("ENABLED"),
-	.FEATURE_MULTICORE              ("ENABLED"),
+	.FEATURE_MULTICORE("ENABLED"),
 	.OPTION_ICACHE_BLOCK_WIDTH(5),
 	.OPTION_ICACHE_SET_WIDTH(8),
 	.OPTION_ICACHE_WAYS(2),
@@ -869,6 +886,9 @@ mor1kx #(
 	.FEATURE_DMMU("ENABLED"),
 	.OPTION_DMMU_SET_WIDTH(7),
 	.OPTION_PIC_TRIGGER("LEVEL"),
+
+
+	.FEATURE_TRACEPORT_EXEC("ENABLED"),
 
 	.IBUS_WB_TYPE("B3_REGISTERED_FEEDBACK"),
 	.DBUS_WB_TYPE("B3_REGISTERED_FEEDBACK"),
@@ -922,6 +942,13 @@ mor1kx #(
 
 	.snoop_adr_i(snoop_adr),
 	.snoop_en_i(snoop_en)
+	,
+	.traceport_exec_valid_o(traceport_exec_valid[1]),
+	.traceport_exec_pc_o(traceport_exec_pc[1]),
+	.traceport_exec_insn_o(traceport_exec_insn[1]),
+	.traceport_exec_wbdata_o(traceport_exec_wbdata[1]),
+	.traceport_exec_wbreg_o(traceport_exec_wbreg[1]),
+	.traceport_exec_wben_o(traceport_exec_wben[1])
 );
 
 // TODOD: connect
@@ -1352,7 +1379,8 @@ assign or1k_irq[1][31] = 0;
 wire [31:0] diila_trig;
 wire [31:0] diila_data [5:0];
 
-assign diila_trig = wb_m2s_or1k0_i_adr;//wb_m2s_fpga_ddr3_adr;
+assign diila_trig = traceport_exec_pc[0];
+//wb_m2s_or1k0_i_adr;//wb_m2s_fpga_ddr3_adr;
 assign diila_data[0] = wb_m2s_fpga_ddr3_dat;
 assign diila_data[1] = wb_s2m_fpga_ddr3_dat;
 assign diila_data[2] = wb_m2s_or1k0_d_adr;
