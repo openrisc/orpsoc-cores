@@ -1,0 +1,9 @@
+OpenRISC system for Digilent Atlys development board.
+Basically lifted 'as is' from the orpsocv2 port at:
+git://git.openrisc.net/stefan/orpsoc
+
+TODO:
+ - Rewrite dvi_gen (currently a hacked up Xilinx whitepaper)
+ - Clean up the Xilinx MIG memory controller wrapper (and possibly generate the
+   MIG with coregen on fly)
+ - General cleanup and de-orpsocv2-fication
