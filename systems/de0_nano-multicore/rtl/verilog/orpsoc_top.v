@@ -254,17 +254,16 @@ mor1kx #(
 	.FEATURE_MULTICORE              ("ENABLED"),
 	.FEATURE_TRACEPORT_EXEC         ("ENABLED"),
 	.OPTION_ICACHE_BLOCK_WIDTH      (5),
-	.OPTION_ICACHE_SET_WIDTH        (8),
+	.OPTION_ICACHE_SET_WIDTH        (7),
 	.OPTION_ICACHE_WAYS             (1),
 	.OPTION_ICACHE_LIMIT_WIDTH      (32),
 	.FEATURE_IMMU                   ("ENABLED"),
-//	.FEATURE_DATACACHE              ("ENABLED"),
+	.FEATURE_DATACACHE              ("ENABLED"),
 	.OPTION_DCACHE_BLOCK_WIDTH      (5),
-	.OPTION_DCACHE_SET_WIDTH        (8),
-	.OPTION_DCACHE_WAYS             (4),
+	.OPTION_DCACHE_SET_WIDTH        (7),
+	.OPTION_DCACHE_WAYS             (1),
 	.OPTION_DCACHE_LIMIT_WIDTH      (31),
 	.FEATURE_DMMU                   ("ENABLED"),
-	.OPTION_PIC_TRIGGER             ("LATCHED_LEVEL"),
 
 	.IBUS_WB_TYPE                   ("B3_REGISTERED_FEEDBACK"),
 	.DBUS_WB_TYPE                   ("B3_REGISTERED_FEEDBACK"),
@@ -334,17 +333,16 @@ mor1kx #(
 	.FEATURE_MULTICORE              ("ENABLED"),
 	.FEATURE_TRACEPORT_EXEC         ("ENABLED"),
 	.OPTION_ICACHE_BLOCK_WIDTH      (5),
-	.OPTION_ICACHE_SET_WIDTH        (8),
+	.OPTION_ICACHE_SET_WIDTH        (7),
 	.OPTION_ICACHE_WAYS             (1),
 	.OPTION_ICACHE_LIMIT_WIDTH      (32),
 	.FEATURE_IMMU                   ("ENABLED"),
-//	.FEATURE_DATACACHE              ("ENABLED"),
+	.FEATURE_DATACACHE              ("ENABLED"),
 	.OPTION_DCACHE_BLOCK_WIDTH      (5),
-	.OPTION_DCACHE_SET_WIDTH        (8),
-	.OPTION_DCACHE_WAYS             (4),
+	.OPTION_DCACHE_SET_WIDTH        (7),
+	.OPTION_DCACHE_WAYS             (1),
 	.OPTION_DCACHE_LIMIT_WIDTH      (31),
 	.FEATURE_DMMU                   ("ENABLED"),
-	.OPTION_PIC_TRIGGER             ("LATCHED_LEVEL"),
 
 	.IBUS_WB_TYPE                   ("B3_REGISTERED_FEEDBACK"),
 	.DBUS_WB_TYPE                   ("B3_REGISTERED_FEEDBACK"),
@@ -418,6 +416,8 @@ assign or1k_dbg_bp_o = 0;
 //
 ////////////////////////////////////////////////////////////////////////
 
+wire uart1_irq;
+
 adbg_top dbg_if0 (
 	// OR1K interface
 	.cpu0_clk_i	(wb_clk),
@@ -455,7 +455,23 @@ adbg_top dbg_if0 (
 	.wb_sel_o	(wb_m2s_dbg_sel),
 	.wb_we_o	(wb_m2s_dbg_we),
 	.wb_cti_o	(wb_m2s_dbg_cti),
-	.wb_bte_o	(wb_m2s_dbg_bte)
+	.wb_bte_o	(wb_m2s_dbg_bte),
+
+	// JTAG Serial Port
+	.wb_jsp_adr_i	(wb_m2s_uart1_adr[4:0]),
+	.wb_jsp_dat_o	(wb_s2m_uart1_dat),
+	.wb_jsp_dat_i	(wb_m2s_uart1_dat),
+	.wb_jsp_cyc_i	(wb_m2s_uart1_cyc),
+	.wb_jsp_stb_i	(wb_m2s_uart1_stb),
+	.wb_jsp_sel_i	(wb_m2s_uart1_sel),
+	.wb_jsp_we_i	(wb_m2s_uart1_we),
+	.wb_jsp_ack_o	(wb_s2m_uart1_ack),
+	.wb_jsp_cab_i	(),
+	.wb_jsp_err_o	(wb_s2m_uart1_err),
+	.wb_jsp_cti_i	(wb_m2s_uart1_cti),
+	.wb_jsp_bte_i	(wb_m2s_uart1_bte),
+	.int_o		(uart1_irq)
+
 );
 
 ////////////////////////////////////////////////////////////////////////
@@ -1196,13 +1212,15 @@ tc tc  (
 ////////////////////////////////////////////////////////////////////////
 
 assign or1k_irq[0][31] = 0;
-assign or1k_irq[0][30:3] = 0;
+assign or1k_irq[0][30:4] = 0;
+assign or1k_irq[0][3] = uart1_irq;
 assign or1k_irq[0][2] = uart0_irq;
 assign or1k_irq[0][1] = ipi_irq[0];
 assign or1k_irq[0][0] = 0;
 
 assign or1k_irq[1][31] = 0;
-assign or1k_irq[1][30:3] = 0;
+assign or1k_irq[1][30:4] = 0;
+assign or1k_irq[1][3] = uart1_irq;
 assign or1k_irq[1][2] = uart0_irq;
 assign or1k_irq[1][1] = ipi_irq[1];
 assign or1k_irq[1][0] = 0;
