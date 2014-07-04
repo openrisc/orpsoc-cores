@@ -161,10 +161,6 @@ module ram_wb_b3
       $readmemh(memory_file, mem);
    endtask // do_readmemh
 
-`endif // !`ifdef verilator
-   
-//synthesis translate_on
-
    // Function to access RAM (for use by Verilator).
    function [31:0] get_mem32;
       // verilator public
@@ -197,5 +193,9 @@ module ram_wb_b3
       end
    endfunction // set_mem32   
    
+`endif // !`ifdef verilator
+   
+//synthesis translate_on
+
 endmodule // ram_wb_b3
 
