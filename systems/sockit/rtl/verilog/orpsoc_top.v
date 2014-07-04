@@ -37,6 +37,8 @@ module orpsoc_top (
 	input 	      sys_clk_pad_i,
 	input 	      rst_n_pad_i,
 
+	input 	      fpga_ddr3_ref_clk_pad_i,
+
 `ifdef SIM
 	output 	      tdo_pad_o,
 	input 	      tms_pad_i,
@@ -368,10 +370,9 @@ wire        h2f_lw_avl_write;
 
 // Instantiate the qsys generated system.
 /* sockit AUTO_TEMPLATE (
-	.osc_clk_clk			(wb_clk),
-	.osc_reset_reset_n		(!hps_sys_rst),
 	.clk_clk			(wb_clk),
 	.reset_reset_n			(!hps_sys_rst),
+	.fpga_ddr3_pll_ref_clk_clk      (fpga_ddr3_ref_clk_pad_i),
 	.hps_0_uart1_cts		(1'b0),
 	.hps_0_uart1_dsr		(1'b0),
 	.hps_0_uart1_dcd		(1'b0),
@@ -471,16 +472,6 @@ sockit hps
 	.fpga_ddr3_status_local_init_done(fpga_ddr3_status_local_init_done),
 	.fpga_ddr3_status_local_cal_success(fpga_ddr3_status_local_cal_success),
 	.fpga_ddr3_status_local_cal_fail(fpga_ddr3_status_local_cal_fail),
-	.fpga_ddr3_pll_sharing_pll_mem_clk(fpga_ddr3_pll_sharing_pll_mem_clk),
-	.fpga_ddr3_pll_sharing_pll_write_clk(fpga_ddr3_pll_sharing_pll_write_clk),
-	.fpga_ddr3_pll_sharing_pll_write_clk_pre_phy_clk(fpga_ddr3_pll_sharing_pll_write_clk_pre_phy_clk),
-	.fpga_ddr3_pll_sharing_pll_addr_cmd_clk(fpga_ddr3_pll_sharing_pll_addr_cmd_clk),
-	.fpga_ddr3_pll_sharing_pll_locked(fpga_ddr3_pll_sharing_pll_locked),
-	.fpga_ddr3_pll_sharing_pll_avl_clk(fpga_ddr3_pll_sharing_pll_avl_clk),
-	.fpga_ddr3_pll_sharing_pll_config_clk(fpga_ddr3_pll_sharing_pll_config_clk),
-	.fpga_ddr3_pll_sharing_pll_mem_phy_clk(fpga_ddr3_pll_sharing_pll_mem_phy_clk),
-	.fpga_ddr3_pll_sharing_afi_phy_clk(fpga_ddr3_pll_sharing_afi_phy_clk),
-	.fpga_ddr3_pll_sharing_pll_avl_phy_clk(fpga_ddr3_pll_sharing_pll_avl_phy_clk),
 	.fpga_ddr3_avl_waitrequest_n	(fpga_ddr3_avl_waitrequest_n),
 	.fpga_ddr3_avl_readdatavalid	(fpga_ddr3_avl_readdatavalid),
 	.fpga_ddr3_avl_readdata		(fpga_ddr3_avl_readdata[31:0]),
@@ -534,6 +525,7 @@ sockit hps
 	// Inputs
 	.clk_clk			(wb_clk),		 // Templated
 	.reset_reset_n			(!hps_sys_rst),		 // Templated
+	.fpga_ddr3_pll_ref_clk_clk      (fpga_ddr3_ref_clk_pad_i),
 	.memory_oct_rzqin		(memory_oct_rzqin),
 	.hps_io_hps_io_emac1_inst_RXD0	(hps_io_hps_io_emac1_inst_RXD0),
 	.hps_io_hps_io_emac1_inst_RX_CTL(hps_io_hps_io_emac1_inst_RX_CTL),
@@ -586,9 +578,7 @@ sockit hps
 	.vga0_ddr3_avl_byteenable	(vga0_ddr3_avl_byteenable[3:0]),
 	.vga0_ddr3_avl_read		(vga0_ddr3_avl_read),
 	.vga0_ddr3_avl_write		(vga0_ddr3_avl_write),
-	.vga0_ddr3_avl_burstcount	(vga0_ddr3_avl_burstcount[5:0]),
-	.osc_clk_clk			(wb_clk),		 // Templated
-	.osc_reset_reset_n		(!hps_sys_rst));		 // Templated
+	.vga0_ddr3_avl_burstcount	(vga0_ddr3_avl_burstcount[5:0]));
 
 // HPS DDR3 interface
 wire [31:0] avm_hps_ddr3_address;

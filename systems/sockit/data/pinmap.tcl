@@ -4,6 +4,8 @@
 set_location_assignment PIN_AD27 -to rst_n_pad_i
 set_location_assignment PIN_AF14 -to sys_clk_pad_i
 set_instance_assignment -name IO_STANDARD "1.5 V" -to sys_clk_pad_i
+set_location_assignment PIN_AA16 -to fpga_ddr3_ref_clk_pad_i
+set_instance_assignment -name IO_STANDARD "1.5 V" -to fpga_ddr3_ref_clk_pad_i
 
 #
 # GPIO
