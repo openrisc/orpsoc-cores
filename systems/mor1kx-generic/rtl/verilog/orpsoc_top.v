@@ -70,6 +70,21 @@ tap_top jtag_tap0 (
 // Debug Interface
 //
 ////////////////////////////////////////////////////////////////////////
+wire [31:0]	or1k_dbg_dat_i;
+wire [31:0]	or1k_dbg_adr_i;
+wire		or1k_dbg_we_i;
+wire		or1k_dbg_stb_i;
+wire		or1k_dbg_ack_o;
+wire [31:0]	or1k_dbg_dat_o;
+
+wire		or1k_dbg_stall_i;
+wire		or1k_dbg_ewt_i;
+wire [3:0]	or1k_dbg_lss_o;
+wire [1:0]	or1k_dbg_is_o;
+wire [10:0]	or1k_dbg_wp_o;
+wire		or1k_dbg_bp_o;
+wire		or1k_dbg_rst;
+
 
 adbg_top dbg_if0 (
 	// OR1K interface
@@ -120,21 +135,6 @@ adbg_top dbg_if0 (
 wire [31:0]	or1k_irq;
 wire		or1k_clk;
 wire		or1k_rst;
-
-wire [31:0]	or1k_dbg_dat_i;
-wire [31:0]	or1k_dbg_adr_i;
-wire		or1k_dbg_we_i;
-wire		or1k_dbg_stb_i;
-wire		or1k_dbg_ack_o;
-wire [31:0]	or1k_dbg_dat_o;
-
-wire		or1k_dbg_stall_i;
-wire		or1k_dbg_ewt_i;
-wire [3:0]	or1k_dbg_lss_o;
-wire [1:0]	or1k_dbg_is_o;
-wire [10:0]	or1k_dbg_wp_o;
-wire		or1k_dbg_bp_o;
-wire		or1k_dbg_rst;
 
 assign or1k_clk = wb_clk;
 assign or1k_rst = wb_rst | or1k_dbg_rst;
