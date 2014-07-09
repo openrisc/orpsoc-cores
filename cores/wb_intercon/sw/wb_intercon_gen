@@ -73,7 +73,7 @@ class WbIntercon:
     def __init__(self, name, config_file):
         self.verilog_writer = VerilogWriter(name)
         self.template_writer = VerilogWriter(name);
-        self.name = 'wb_intercon'
+        self.name = name
         d = {}
         self.slaves = {}
         self.masters = OrderedDict()
@@ -284,10 +284,13 @@ class WbIntercon:
         self.template_writer.write(file+'h')
 
 if __name__ == "__main__":
-    if not (len(sys.argv) == 3):
-        print("wb_intercon_gen <config_file> <out_file>")
+    if len(sys.argv) < 3 or len(sys.argv) > 4:
+        print("wb_intercon_gen <config_file> <out_file> [module_name]")
         exit(0)
-    g = WbIntercon('wb_intercon', sys.argv[1])
+    name = "wb_intercon"
+    if len(sys.argv) == 4:
+      name = sys.argv[3]
+    g = WbIntercon(name, sys.argv[1])
 
     print("="*80)
     g.write(sys.argv[2])
