@@ -116,27 +116,17 @@ module ram_wb_b3
      if (ram_we)
 	  mem[adr] <= wr_data;
 
-
-   // Error when out of bounds of memory - skip top nibble of address in case
-   // this is mapped somewhere other than 0x0.
-   wire addr_err  = wb_cyc_i & wb_stb_i & (|wb_adr_i[aw-1-4:mem_adr_width]);  
-   
-
-
    // Ack Logic
    reg wb_ack_o_r;
 
-   assign wb_ack_o = wb_ack_o_r & wb_stb_i & 
-		     !(burst_access_wrong_wb_adr | addr_err);
+   assign wb_ack_o = wb_ack_o_r & wb_stb_i & !burst_access_wrong_wb_adr;
    
    //Handle wb_ack
    always @ (posedge wb_clk_i)
      if (wb_rst_i)
        wb_ack_o_r <= 1'b0;
      else if (wb_cyc_i) begin // We have bus
-	if (addr_err & wb_stb_i)
-	  wb_ack_o_r <= 1;
-	else if (wb_cti_i == 3'b000) // Classic cycle acks
+	if (wb_cti_i == 3'b000) // Classic cycle acks
 	  wb_ack_o_r <= wb_stb_i ^ wb_ack_o_r;
 	else if ((wb_cti_i == 3'b001) | (wb_cti_i == 3'b010)) // Increment/constant address bursts
 	  wb_ack_o_r <= wb_stb_i;
@@ -152,7 +142,7 @@ module ram_wb_b3
    
    // OR in other errors here...
    assign wb_err_o =  wb_ack_o_r & wb_stb_i & 
-		      (burst_access_wrong_wb_adr | addr_err);
+		      (burst_access_wrong_wb_adr);
 
    //
    // Access functions
@@ -170,10 +160,6 @@ module ram_wb_b3
       // verilator public
       $readmemh(memory_file, mem);
    endtask // do_readmemh
-
-`endif // !`ifdef verilator
-   
-//synthesis translate_on
 
    // Function to access RAM (for use by Verilator).
    function [31:0] get_mem32;
@@ -207,5 +193,9 @@ module ram_wb_b3
       end
    endfunction // set_mem32   
    
+`endif // !`ifdef verilator
+   
+//synthesis translate_on
+
 endmodule // ram_wb_b3
 
