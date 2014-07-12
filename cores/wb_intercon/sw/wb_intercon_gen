@@ -70,7 +70,23 @@ AXI4_LITE_PORTS = ['awaddr', 'awvalid', 'awready', 'wrdata', 'wvalid',
     'wready', 'bresp', 'bvalid', 'bready', 'araddr', 'arvalid', 'arready',
     'rdata', 'rresp', 'rvalid', 'rready']
 
-VALID_BUS_TYPES= ['wishbone', 'axi4', 'axi4-lite']
+AVALON_MASTER_PORTS = [
+    Signal('address', 32),
+    Signal('byteenable', 4),
+    Signal('read'),
+    Signal('burstcount', 8),
+    Signal('write'),
+    Signal('writedata', 32)]
+
+AVALON_SLAVE_PORTS = [
+    Signal('readdata', 32),
+    Signal('waitrequest'),
+    Signal('readdatavalid')]
+
+AVALON_DATA_WIDTH = defaultdict(float, {
+    'byteenable': 0.25, 'readdata': 1.0, 'writedata': 1.0 })
+
+VALID_BUS_TYPES= ['wishbone', 'avalon', 'axi4', 'axi4-lite']
 
 class Error(Exception):
   """Base error for wb_intercon_gen"""
@@ -360,98 +376,91 @@ class WbIntercon:
             template_ports += [Port(portname, wirename)]
         return template_ports
 
-    def _gen_axi4_master_port(self, master):
-        parameters = [Parameter('C_AXI_ADDR_WIDTH', 32),
-            Parameter('C_S_AXI_DATA_WIDTH', master.datawidth)]
-        m = master.name
-
-        converter_ports = []
+    def _gen_bus_converter(self, bus, name, is_master, datawidth, datawidth_map, ports):
+        converter_ports = [Port('wb_clk_i', 'wb_clk_i'),
+            Port('wb_rst_i', 'wb_rst_i')]
         template_ports = []
 
-        # Create master connections
-        ports = []
-        ports.extend([(p, 'm2s') for p in WB_MASTER_PORTS])
-        ports.extend([(p, 's2m') for p in WB_SLAVE_PORTS])
-        for p, direction in ports:
-            pin_direction = 'output' if direction == 'm2s' else 'input'
-            wirename = 'wb_{direction}_{master}_{port}'.format(
-                direction=direction, master=m, port=p.name)
+        out_direction = 'm2s' if is_master else 's2m'
+
+        # Wishbone side
+        ms_type = 'm' if is_master else 's'
+        # Foreign side
+        f_ms_type = 's' if is_master else 'm'
+
+        # Create Wishbone connections
+        wb_ports = []
+        wb_ports.extend([(p, 'm2s') for p in WB_MASTER_PORTS])
+        wb_ports.extend([(p, 's2m') for p in WB_SLAVE_PORTS])
+        for p, direction in wb_ports:
+            pin_direction = 'output' if direction == out_direction else 'input'
+            wirename = 'wb_{direction}_{name}_{port}'.format(
+                direction=direction, name=name, port=p.name)
             converter_ports.append(
-                Port('wbm_%s_%s' % (p.name, pin_direction[0]), wirename))
-            dw = int(WB_DATA_WIDTH[p.name] * master.datawidth) or p.width
+                Port('%s_%s_%s' % ('wbm' if ms_type == 'm' else 'wb', p.name,
+                  pin_direction[0]), wirename))
+            dw = int(WB_DATA_WIDTH[p.name] * datawidth) or p.width
             self.verilog_writer.add(Wire(wirename, dw))
 
-        # Create AXI4 connections
-        ports = []
-        ports.extend([(p, 'm2s') for p in AXI4_MASTER_PORTS])
-        ports.extend([(p, 's2m') for p in AXI4_SLAVE_PORTS])
-        if master.bus_type == 'axi4-lite':
-          ports = [p for p in ports if p[0].name in AXI4_LITE_PORTS]
-
+        # Create foreign bus connections
         for p, direction in ports:
-            pin_direction = 'output' if direction == 's2m' else 'input'
-            portname = 's_axi_{master}_{port}_{direction}'.format(
-                direction=pin_direction[0], master=m, port=p.name)
-            wirename = 'axi_{direction}_{master}_{port}'.format(
-                direction=direction, master=m, port=p.name)
+            pin_direction = 'output' if direction != out_direction else 'input'
+            portname = '{d}_{bus}_{name}_{port}_{direction}'.format(
+                d=f_ms_type, bus=bus, direction=pin_direction[0],
+                name=name, port=p.name)
+            wirename = '{bus}_{direction}_{name}_{port}'.format(
+                bus=bus, direction=direction, name=name, port=p.name)
             converter_ports.append(
-                Port('s_axi_%s_%s' % (p.name, pin_direction[0]), portname))
-            dw = int(AXI4_DATA_WIDTH[p.name] * master.datawidth) or p.width
+                Port('{d}_{bus}_{port}_{direction}'.format(
+                    d=f_ms_type, bus=bus, direction=pin_direction[0],
+                    port=p.name), portname))
+            dw = int(datawidth_map[p.name] * datawidth) or p.width
             self.verilog_writer.add(
                 ModulePort(portname, pin_direction, p.width))
             self.template_writer.add(Wire(wirename, dw))
             template_ports.append(Port(portname, wirename))
 
-        self.verilog_writer.add(Instance('wb_axi_slave',
-            'wb_axi_slave_%s' % master.name, parameters, converter_ports))
+        return template_ports, converter_ports
 
+    def _gen_axi4_port(self, thing, is_master=False):
+        parameters = [Parameter('C_AXI_ADDR_WIDTH', 32),
+            Parameter('C_S_AXI_DATA_WIDTH', thing.datawidth)]
+
+        ports = []
+        ports.extend([(p, 'm2s') for p in AXI4_MASTER_PORTS])
+        ports.extend([(p, 's2m') for p in AXI4_SLAVE_PORTS])
+        if thing.bus_type == 'axi4-lite':
+            ports = [p for p in ports if p[0].name in AXI4_LITE_PORTS]
+
+        template_ports, converter_ports = self._gen_bus_converter(
+            'axi', name=thing.name, is_master=is_master,
+            datawidth=thing.datawidth, datawidth_map=AXI4_DATA_WIDTH,
+            ports=ports)
+
+        core = 'wb_axi_slave' if is_master else 'wb_axi_master'
+        self.verilog_writer.add(Instance(
+            core, '%s_%s' % (core, thing.name), parameters, converter_ports))
         return template_ports
 
-    def _gen_axi4_port(self, slave):
-        parameters = [Parameter('C_AXI_ADDR_WIDTH', 32),
-            Parameter('C_S_AXI_DATA_WIDTH', slave.datawidth)]
-        s = slave.name
+    def _gen_avalon_port(self, thing, is_master=False):
+        parameters = [Parameter('AW', 32),
+            Parameter('DW', thing.datawidth)]
 
-        converter_ports = []
-        template_ports = []
+        if not is_master:
+            parameters.append(Parameter('BURST_SUPPORT', 1))
 
-        # Create master connections
         ports = []
-        ports.extend([(p, 'm2s') for p in WB_MASTER_PORTS])
-        ports.extend([(p, 's2m') for p in WB_SLAVE_PORTS])
-        for p, direction in ports:
-            pin_direction = 'input' if direction == 'm2s' else 'output'
-            wirename = 'wb_{direction}_{slave}_{port}'.format(
-                direction=direction, slave=s, port=p.name)
-            converter_ports.append(
-                Port('wb_%s_%s' % (p.name, pin_direction[0]), wirename))
-            dw = int(WB_DATA_WIDTH[p.name] * slave.datawidth) or p.width
-            self.verilog_writer.add(Wire(wirename, dw))
+        ports.extend([(p, 'm2s') for p in AVALON_MASTER_PORTS])
+        ports.extend([(p, 's2m') for p in AVALON_SLAVE_PORTS])
 
-        # Create AXI4 connections
-        ports = []
-        ports.extend([(p, 'm2s') for p in AXI4_MASTER_PORTS])
-        ports.extend([(p, 's2m') for p in AXI4_SLAVE_PORTS])
-        if slave.bus_type == 'axi4-lite':
-          ports = [p for p in ports if p[0].name in AXI4_LITE_PORTS]
+        template_ports, converter_ports = self._gen_bus_converter(
+            'av', name=thing.name, is_master=is_master,
+            datawidth=thing.datawidth, datawidth_map=AVALON_DATA_WIDTH,
+            ports=ports)
 
-        for p, direction in ports:
-            pin_direction = 'input' if direction == 's2m' else 'output'
-            portname = 'm_axi_{slave}_{port}_{direction}'.format(
-                direction=pin_direction[0], slave=s, port=p.name)
-            wirename = 'axi_{direction}_{slave}_{port}'.format(
-                direction=direction, slave=s, port=p.name)
-            converter_ports.append(
-                Port('m_axi_%s_%s' % (p.name, pin_direction[0]), portname))
-            dw = int(AXI4_DATA_WIDTH[p.name] * slave.datawidth) or p.width
-            self.verilog_writer.add(
-                ModulePort(portname, pin_direction, p.width))
-            self.template_writer.add(Wire(wirename, dw))
-            template_ports.append(Port(portname, wirename))
-
-        self.verilog_writer.add(Instance('wb_axi_master',
-            'wb_axi_master_%s' % slave.name, parameters, converter_ports))
-
+        core = 'avalon_to_wb_bridge' if is_master else 'wb_to_avalon_bridge'
+        self.verilog_writer.add(Instance(
+            core, '%s_%s' % (core, thing.name), parameters, converter_ports))
         return template_ports
 
     def write(self, file):
@@ -476,7 +485,11 @@ class WbIntercon:
             if master.bus_type == 'wishbone':
                 master_template_ports = self._gen_wishbone_master_port(master)
             elif master.bus_type.startswith('axi4'):
-                master_template_ports = self._gen_axi4_master_port(master)
+                master_template_ports = self._gen_axi4_port(
+                    master, is_master=True)
+            elif master.bus_type == 'avalon':
+                master_template_ports = self._gen_avalon_port(
+                    master, is_master=True)
             template_ports.extend(master_template_ports)
 
         for slave in self.slaves.values():
@@ -488,6 +501,8 @@ class WbIntercon:
                 slave_template_ports = self._gen_wishbone_port(slave)
             elif slave.bus_type.startswith('axi4'):
                 slave_template_ports = self._gen_axi4_port(slave)
+            elif slave.bus_type == 'avalon':
+                slave_template_ports = self._gen_avalon_port(slave)
             template_ports.extend(slave_template_ports)
 
         self.template_writer.add(Instance(self.name, self.name+'0',
