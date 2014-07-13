@@ -28,34 +28,34 @@ module wb_to_avalon_bridge #(
 	parameter AW = 32,	// Address width
 	parameter BURST_SUPPORT = 0
 )(
-	input 		  clk,
-	input 		  rst,
-	// Wishbone Master Input
-	input [AW-1:0] 	  wbm_adr_i,
-	input [DW-1:0] 	  wbm_dat_i,
-	input [DW/8-1:0]  wbm_sel_i,
-	input 		  wbm_we_i,
-	input 		  wbm_cyc_i,
-	input 		  wbm_stb_i,
-	input [2:0] 	  wbm_cti_i,
-	input [1:0] 	  wbm_bte_i,
-	output [DW-1:0]   wbm_dat_o,
-	output 		  wbm_ack_o,
-	output 		  wbm_err_o,
-	output 		  wbm_rty_o,
+	input 		  wb_clk_i,
+	input 		  wb_rst_i,
+	// Wishbone Slave Input
+	input [AW-1:0] 	  wb_adr_i,
+	input [DW-1:0] 	  wb_dat_i,
+	input [DW/8-1:0]  wb_sel_i,
+	input 		  wb_we_i,
+	input 		  wb_cyc_i,
+	input 		  wb_stb_i,
+	input [2:0] 	  wb_cti_i,
+	input [1:0] 	  wb_bte_i,
+	output [DW-1:0]   wb_dat_o,
+	output 		  wb_ack_o,
+	output 		  wb_err_o,
+	output 		  wb_rty_o,
 	// Avalon Master Output
-	output [AW-1:0]   avm_address_o,
-	output [DW/8-1:0] avm_byteenable_o,
-	output 		  avm_read_o,
-	input [DW-1:0] 	  avm_readdata_i,
-	output [7:0] 	  avm_burstcount_o,
-	output 		  avm_write_o,
-	output [DW-1:0]   avm_writedata_o,
-	input 		  avm_waitrequest_i,
-	input 		  avm_readdatavalid_i
+	output [AW-1:0]   m_av_address_o,
+	output [DW/8-1:0] m_av_byteenable_o,
+	output 		  m_av_read_o,
+	input [DW-1:0] 	  m_av_readdata_i,
+	output [7:0] 	  m_av_burstcount_o,
+	output 		  m_av_write_o,
+	output [DW-1:0]   m_av_writedata_o,
+	input 		  m_av_waitrequest_i,
+	input 		  m_av_readdatavalid_i
 );
 
-wire cycstb = wbm_cyc_i & wbm_stb_i;
+wire cycstb = wb_cyc_i & wb_stb_i;
 
 generate if (BURST_SUPPORT == 1) begin : burst_enable
 localparam IDLE		= 3'd0;
@@ -96,26 +96,26 @@ wire [AW-1:0] 	wb_burst_req;
 // A future improvement would be to let the user choose one of the burst
 // modes by parameters and handle those as proper bursts.
 //
-assign curr_adr = (state == IDLE) ? wbm_adr_i : adr;
-assign next_adr = (wbm_bte_i == LINEAR_BURST) ?
+assign curr_adr = (state == IDLE) ? wb_adr_i : adr;
+assign next_adr = (wb_bte_i == LINEAR_BURST) ?
 		  (curr_adr[AW-1:0] + 32'd4) :
-		  (wbm_bte_i == WRAP4_BURST ) ?
+		  (wb_bte_i == WRAP4_BURST ) ?
 		  {curr_adr[AW-1:4], curr_adr[3:0] + 4'd4} :
-		  (wbm_bte_i == WRAP8_BURST ) ?
+		  (wb_bte_i == WRAP8_BURST ) ?
 		  {curr_adr[AW-1:5], curr_adr[4:0] + 5'd4} :
-		/*(wbm_bte_i == WRAP16_BURST) ?*/
+		/*(wb_bte_i == WRAP16_BURST) ?*/
 		  {curr_adr[AW-1:6], curr_adr[5:0] + 6'd4};
 
-assign wb_burst_req = cycstb & (wbm_cti_i == INC_BURST);
+assign wb_burst_req = cycstb & (wb_cti_i == INC_BURST);
 
-always @(posedge clk) begin
+always @(posedge wb_clk_i) begin
 	read_req <= 0;
 	case (state)
 	IDLE: begin
 		pending_reads <= 0;
-		adr <= wbm_adr_i;
-		if (cycstb & !avm_waitrequest_i) begin
-			if (wbm_we_i)
+		adr <= wb_adr_i;
+		if (cycstb & !m_av_waitrequest_i) begin
+			if (wb_we_i)
 				state <= WRITE;
 			else if (wb_burst_req) begin
 				// Set counter for number of reads left,
@@ -123,7 +123,7 @@ always @(posedge clk) begin
 				// for the current read (performed by the
 				// bypass) and one for the read initiated
 				// here.
-				case (wbm_bte_i)
+				case (wb_bte_i)
 				WRAP4_BURST:
 					reads_left <= 4 - 2;
 
@@ -146,7 +146,7 @@ always @(posedge clk) begin
 	end
 
 	READ: begin
-		if (avm_readdatavalid_i)
+		if (m_av_readdatavalid_i)
 			state <= IDLE;
 	end
 
@@ -157,33 +157,33 @@ always @(posedge clk) begin
 		// On cycles where both a read is pipelined and a pending read
 		// is acked, pending_reads do not change.
 		read_req <= 1;
-		if (avm_readdatavalid_i)
+		if (m_av_readdatavalid_i)
 			pending_reads <= pending_reads - 1;
 
-		if (!avm_waitrequest_i && reads_left != 0) begin
+		if (!m_av_waitrequest_i && reads_left != 0) begin
 			pending_reads <= pending_reads + 1;
-			if (avm_readdatavalid_i)
+			if (m_av_readdatavalid_i)
 				pending_reads <= pending_reads;
 			reads_left <= reads_left - 1;
 			adr <= next_adr;
 		end
 
 		// All reads pipelined?
-		if (reads_left == 0 && !(avm_waitrequest_i & read_req)) begin
+		if (reads_left == 0 && !(m_av_waitrequest_i & read_req)) begin
 			read_req <= 0;
 			// Last transaction done, go back to IDLE
-			if (avm_readdatavalid_i && pending_reads == 0)
+			if (m_av_readdatavalid_i && pending_reads == 0)
 				state <= IDLE;
 		end
 
 		// If the burst ends prematurely, we have to wait out the
 		// already pipelined reads before we can accept new requests.
-		if (avm_readdatavalid_i & !wb_burst_req & pending_reads != 0)
+		if (m_av_readdatavalid_i & !wb_burst_req & pending_reads != 0)
 			state <= FLUSH_PIPE;
 	end
 
 	FLUSH_PIPE: begin
-		if (avm_readdatavalid_i) begin
+		if (m_av_readdatavalid_i) begin
 			if (pending_reads == 0)
 				state <= IDLE;
 			pending_reads <= pending_reads - 1;
@@ -198,17 +198,17 @@ always @(posedge clk) begin
 		state <= IDLE;
 	endcase
 
-	if (rst) begin
+	if (wb_rst_i) begin
 		read_req <= 0;
 		state <= IDLE;
 	end
 end
 
-assign avm_address_o = curr_adr;
-assign avm_read_o = cycstb & !wbm_we_i & (state == IDLE) | read_req;
-assign avm_write_o = cycstb & wbm_we_i & (state == IDLE);
+assign m_av_address_o = curr_adr;
+assign m_av_read_o = cycstb & !wb_we_i & (state == IDLE) | read_req;
+assign m_av_write_o = cycstb & wb_we_i & (state == IDLE);
 
-assign wbm_ack_o = avm_readdatavalid_i & (state != FLUSH_PIPE) |
+assign wb_ack_o = m_av_readdatavalid_i & (state != FLUSH_PIPE) |
 		   (state == WRITE);
 
 end else begin : burst_disable
@@ -217,26 +217,26 @@ reg	cycstb_r;
 wire	req;
 reg	write_ack;
 
-always @(posedge clk)
-	cycstb_r <= cycstb & !wbm_ack_o;
+always @(posedge wb_clk_i)
+	cycstb_r <= cycstb & !wb_ack_o;
 
-assign req = cycstb & (!cycstb_r | avm_waitrequest_i);
+assign req = cycstb & (!cycstb_r | m_av_waitrequest_i);
 
-always @(posedge clk)
-	write_ack <= cycstb & wbm_we_i & !avm_waitrequest_i & !wbm_ack_o;
+always @(posedge wb_clk_i)
+	write_ack <= cycstb & wb_we_i & !m_av_waitrequest_i & !wb_ack_o;
 
-assign avm_address_o = wbm_adr_i;
-assign avm_write_o = req & wbm_we_i;
-assign avm_read_o = req & !wbm_we_i;
-assign wbm_ack_o = write_ack | avm_readdatavalid_i;
+assign m_av_address_o = wb_adr_i;
+assign m_av_write_o = req & wb_we_i;
+assign m_av_read_o = req & !wb_we_i;
+assign wb_ack_o = write_ack | m_av_readdatavalid_i;
 end
 endgenerate
 
-assign avm_burstcount_o = 8'h1;
-assign avm_writedata_o = wbm_dat_i;
-assign avm_byteenable_o = wbm_sel_i;
-assign wbm_dat_o = avm_readdata_i;
-assign wbm_err_o = 0;
-assign wbm_rty_o = 0;
+assign m_av_burstcount_o = 8'h1;
+assign m_av_writedata_o = wb_dat_i;
+assign m_av_byteenable_o = wb_sel_i;
+assign wb_dat_o = m_av_readdata_i;
+assign wb_err_o = 0;
+assign wb_rty_o = 0;
 
 endmodule
