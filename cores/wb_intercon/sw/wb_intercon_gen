@@ -86,7 +86,8 @@ AVALON_SLAVE_PORTS = [
 AVALON_DATA_WIDTH = defaultdict(float, {
     'byteenable': 0.25, 'readdata': 1.0, 'writedata': 1.0 })
 
-VALID_BUS_TYPES= ['wishbone', 'avalon', 'axi4', 'axi4-lite']
+# TODO(bluecmd): Add 'axi4' and 'axi4-lite' when the cores are available
+VALID_BUS_TYPES = ['wishbone', 'avalon']
 
 class Error(Exception):
   """Base error for wb_intercon_gen"""
