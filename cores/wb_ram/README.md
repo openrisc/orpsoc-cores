@@ -22,3 +22,4 @@ TODO
 - Make width configurable
 - Add technology-specific backends
 - Move wb_funcs to common wishbone utilities
+- Only allow wrap bursts less than memory size
