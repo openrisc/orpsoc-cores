@@ -1,0 +1,6 @@
+Implement support for CDC between masters and slaves
+wb_intercon_gen: Optionally disable wire generation in .vh
+Allow arbitrary (byte granularity) width for masters and slaves
+Add AXI4/AXI4-Lite converters
+Write base address and size as parameters to a separate include file
+Write documentation
