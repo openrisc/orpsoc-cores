@@ -1,34 +1,34 @@
 CAPI=1
 [main]
 depend =
- jtag_tap
- wb_intercon
  adv_debug_sys
- or1200
- uart16550
+ altera_virtual_jtag
  elf-loader
- vlog_tb_utils
+ gpio
+ jtag_tap
  jtag_vpi
- wiredelay
- wb_sdram_ctrl
  mor1kx
  mt48lc16m16a2
- gpio
- altera_virtual_jtag
+ or1200
+ uart16550
+ vlog_tb_utils
+ wb_intercon
+ wb_sdram_ctrl
+ wiredelay
 
 simulators =
  icarus
  modelsim
 
 [verilog]
-src_files = 
+src_files =
  rtl/verilog/clkgen.v
  rtl/verilog/orpsoc_top.v
  backend/rtl/verilog/pll.v
  rtl/verilog/rom.v
  rtl/verilog/wb_intercon.v
 
-tb_private_src_files = 
+tb_private_src_files =
  bench/orpsoc_tb.v
  bench/uart_decoder.v
 
