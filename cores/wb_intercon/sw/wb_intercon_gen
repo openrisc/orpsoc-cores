@@ -92,10 +92,10 @@ VALID_BUS_TYPES = ['wishbone', 'avalon']
 class Error(Exception):
   """Base error for wb_intercon_gen"""
 
-class UnsupportedBusTypeError(Exception):
+class UnsupportedBusTypeError(Error):
   """User tried to interconnect with an unsupported bus type."""
 
-class UnknownPropertyError(Exception):
+class UnknownPropertyError(Error):
   """An unknown property was encounterned while parsing the config file."""
 
 def parse_number(s):
@@ -519,7 +519,11 @@ if __name__ == "__main__":
     name = "wb_intercon"
     if len(sys.argv) == 4:
       name = sys.argv[3]
-    g = WbIntercon(name, sys.argv[1])
+    try:
+      g = WbIntercon(name, sys.argv[1])
+      print("="*80)
+      g.write(sys.argv[2])
+    except Error as e:
+      print("Error: %s" % e)
+      exit(1)
 
-    print("="*80)
-    g.write(sys.argv[2])
