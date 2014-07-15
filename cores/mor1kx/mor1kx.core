@@ -53,7 +53,5 @@ trace_enable = bool "Enable trace"
 trace_to_screen = bool "Output trace to screen"
 
 [provider]
-name = github
-user = openrisc
+name = submodule
 repo = mor1kx
-version = master

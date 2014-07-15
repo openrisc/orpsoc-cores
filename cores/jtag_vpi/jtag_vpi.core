@@ -12,7 +12,5 @@ src_files = jtag_vpi.c
 jtag-vpi-enable = bool "Enable JTAG debug interface"
 
 [provider]
-name = github
-user = fjullien
+name = submodule
 repo = jtag_vpi
-branch = master
