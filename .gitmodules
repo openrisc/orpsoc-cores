@@ -1,0 +1,21 @@
+[submodule "cores/jtag_vpi/jtag_vpi"]
+	path = cores/jtag_vpi/jtag_vpi
+	url = git@github.com:fjullien/jtag_vpi.git
+[submodule "cores/verilog-arbiter/verilog-arbiter"]
+	path = cores/verilog-arbiter/verilog-arbiter
+	url = git@github.com:bmartini/verilog-arbiter.git
+[submodule "cores/minimac2/milkymist"]
+	path = cores/minimac2/milkymist
+	url = git@github.com:m-labs/milkymist.git
+[submodule "cores/mor1kx-dev-env/mor1kx-dev-env"]
+	path = cores/mor1kx-dev-env/mor1kx-dev-env
+	url = git@github.com:olofk/mor1kx-dev-env.git
+[submodule "cores/wb_sdram_ctrl/wb_sdram_ctrl"]
+	path = cores/wb_sdram_ctrl/wb_sdram_ctrl
+	url = git@github.com:skristiansson/wb_sdram_ctrl.git
+[submodule "cores/mor1kx/mor1kx"]
+	path = cores/mor1kx/mor1kx
+	url = git@github.com:openrisc/mor1kx.git
+[submodule "cores/diila/diila"]
+	path = cores/diila/diila
+	url = git@github.com:skristiansson/diila.git
