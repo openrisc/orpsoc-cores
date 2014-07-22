@@ -230,6 +230,8 @@ ram_wb_b3 #(
 	.wb_rty_o	(wb_s2m_mem_rty)
 );
 
+wire uart_irq;
+
 wb_uart_wrapper #(
 	.DEBUG	(0),
 	.SIM	(UART_SIM)
@@ -239,6 +241,7 @@ wb_uart_wrapper #(
 	.wb_rst_i	(wb_rst_i),
 	.rx		(1'b0),
 	.tx		(uart),
+        .int_o		(uart_irq),
 	.wb_adr_i	(wb_m2s_uart_adr),
 	.wb_dat_i	(wb_m2s_uart_dat),
 	.wb_we_i	(wb_m2s_uart_we),
@@ -286,9 +289,9 @@ always @(posedge wb_clk_i)
 // CPU Interrupt assignments
 //
 ////////////////////////////////////////////////////////////////////////
-assign or1k_irq[0] = 0; // Non-maskable inside OR1K
-assign or1k_irq[1] = 0; // Non-maskable inside OR1K
-assign or1k_irq[2] = 0;
+assign or1k_irq[0] = 0;
+assign or1k_irq[1] = 0;
+assign or1k_irq[2] = uart_irq;
 assign or1k_irq[3] = 0;
 assign or1k_irq[4] = 0;
 assign or1k_irq[5] = 0;
