@@ -6,6 +6,7 @@ depend =
  mor1kx
  ram_wb
  uart16550
+ uart16550_model
  vlog_tb_utils
  verilator_tb_utils
  wb_bfm
@@ -20,9 +21,7 @@ simulators = icarus modelsim
 src_files =
  rtl/verilog/orpsoc_top.v
  rtl/verilog/wb_intercon.v
- bench/verilog/wb_uart_wrapper.v
 tb_private_src_files =
- bench/verilog/uart16550_model.v
  bench/verilog/orpsoc_tb.v
 include_files =
  rtl/verilog/wb_intercon.vh
