@@ -34,7 +34,7 @@
 //////////////////////////////////////////////////////////////////////
 
 module rom
-  #(parameter addr_width = 5,
+  #(parameter addr_width = 6,
     parameter b3_burst   = 0)
    (
     input 		       wb_clk,
