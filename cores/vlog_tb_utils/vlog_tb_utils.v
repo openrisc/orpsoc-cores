@@ -1,4 +1,6 @@
 module vlog_tb_utils;
+   parameter MAX_STRING_LEN = 128;
+   localparam CHAR_WIDTH = 8;
 
    //Force simulation stop after timeout cycles
    reg [63:0] timeout;
@@ -9,9 +11,14 @@ module vlog_tb_utils;
      end
 
    //FIXME: Add more options for VCD logging
+   reg [MAX_STRING_LEN*CHAR_WIDTH-1:0] testcase;
+
    initial begin
       if($test$plusargs("vcd")) begin
-	 $dumpfile("testlog.vcd");
+	 if($value$plusargs("testcase=%s", testcase))
+	   $dumpfile({testcase,".vcd"});
+	 else
+	   $dumpfile("testlog.vcd");
 	 $dumpvars(0);
       end
    end
