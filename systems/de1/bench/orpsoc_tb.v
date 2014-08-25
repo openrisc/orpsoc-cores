@@ -57,22 +57,8 @@ end
 // Add --vcd and --timeout options to the simulation
 //
 ////////////////////////////////////////////////////////////////////////
+vlog_tb_utils vlog_tb_utils0();
 
-//Force simulation stop after timeout cycles
-reg	[63:0]	timeout;
-initial
-	if($value$plusargs("timeout=%d", timeout)) begin
-		#timeout $display("Timeout: Forcing end of simulation");
-		$finish;
-	end
-
-//FIXME: Add more options for VCD logging
-initial begin
-	if($test$plusargs("vcd")) begin
-		$dumpfile("de1.vcd");
-		$dumpvars(0);
-	end
-end
 
 ////////////////////////////////////////////////////////////////////////
 //
