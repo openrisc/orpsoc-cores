@@ -80,48 +80,44 @@ jtag_vpi jtag_vpi0
 
 ////////////////////////////////////////////////////////////////////////
 //
-// ELF program loading
+// SDRAM
 //
 ////////////////////////////////////////////////////////////////////////
 
-integer			mem_words;
-integer			i;
-reg	[31:0]		mem_word;
-reg	[1023:0]	elf_file;
-reg	[31:0]		temp;
+wire	[11:0]	sdram_addr;
+wire	[1:0]	sdram_ba;
+wire		sdram_cas;
+wire		sdram_cke;
+wire		sdram_clk;
+wire		sdram_cs_n;
+wire	[15:0]	sdram_dq;
+wire	[1:0]	sdram_dqm;
+wire		sdram_ras;
+wire		sdram_we;
+wire		uart_tx;
 
-initial begin
-	if($value$plusargs("elf_load=%s", elf_file)) begin
-		$elf_load_file(elf_file);
-
-		mem_words = $elf_get_size / 4;
-		$display("Loading %d words", mem_words);
-		for(i = 0; i < mem_words; i = i + 1) begin
-			temp = $elf_read_32(i * 4);
-			orpsoc_tb.sdram0.Bank0[(i * 2)] = temp[31:16];
-			orpsoc_tb.sdram0.Bank0[(i * 2) + 1] = temp[15:0];
-		end
-	end else
-		$display("No ELF file specified");
-end
+mt48lc16m16a2_wrapper
+  #(.ADDR_BITS (12),
+    .COL_BITS (8),
+    .MEM_SIZES (1048576))
+sdram_wrapper0
+  (.clk_i   (sdram_clk),
+   .rst_n_i (rst_n),
+   .dq_io   (sdram_dq),
+   .addr_i  (sdram_addr),
+   .ba_i    (sdram_ba),
+   .cas_i   (sdram_cas),
+   .cke_i   (sdram_cke),
+   .cs_n_i  (sdram_cs_n),
+   .dqm_i   (sdram_dqm),
+   .ras_i   (sdram_ras),
+   .we_i    (sdram_we));
 
 ////////////////////////////////////////////////////////////////////////
 //
 // DUT
 //
 ////////////////////////////////////////////////////////////////////////
-
-wire	[11:0]	sdram_a_pad_o;
-wire	[1:0]	sdram_ba_pad_o;
-wire		sdram_cas_pad_o;
-wire		sdram_cke_pad_o;
-wire		sdram_clk_pad_o;
-wire		sdram_cs_n_pad_o;
-wire	[15:0]	sdram_dq_pad_io;
-wire	[1:0]	sdram_dqm_pad_o;
-wire		sdram_ras_pad_o;
-wire		sdram_we_pad_o;
-wire		uart_tx;
 
 orpsoc_top dut
 (
@@ -136,20 +132,26 @@ orpsoc_top dut
 	.tdi_pad_i		(tdi),
 	.tdo_pad_o		(tdo),
 
-	.sdram_ba_pad_o		(sdram_ba_pad_o),
-	.sdram_a_pad_o		(sdram_a_pad_o),
-	.sdram_cs_n_pad_o	(sdram_cs_n_pad_o),
-	.sdram_ras_pad_o	(sdram_ras_pad_o),
-	.sdram_cas_pad_o	(sdram_cas_pad_o),
-	.sdram_we_pad_o		(sdram_we_pad_o),
-	.sdram_dq_pad_io	(sdram_dq_pad_io),
-	.sdram_dqm_pad_o	(sdram_dqm_pad_o),
-	.sdram_cke_pad_o	(sdram_cke_pad_o),
-	.sdram_clk_pad_o	(sdram_clk_pad_o),
+	.sdram_ba_pad_o		(sdram_ba),
+	.sdram_a_pad_o		(sdram_addr),
+	.sdram_cs_n_pad_o	(sdram_cs_n),
+	.sdram_ras_pad_o	(sdram_ras),
+	.sdram_cas_pad_o	(sdram_cas),
+	.sdram_we_pad_o		(sdram_we),
+	.sdram_dq_pad_io	(sdram_dq),
+	.sdram_dqm_pad_o	(sdram_dqm),
+	.sdram_cke_pad_o	(sdram_cke),
+	.sdram_clk_pad_o	(sdram_clk),
 
 	.uart0_srx_pad_i	(),
 	.uart0_stx_pad_o	(uart_tx)
 );
+
+`ifdef OR1200_CPU
+   or1200_monitor i_monitor();
+`else
+   mor1kx_monitor #(.LOG_DIR(".")) i_monitor();
+`endif
 
 ////////////////////////////////////////////////////////////////////////
 //
@@ -166,65 +168,5 @@ uart_decoder0
 	.uart_tx(uart_tx)
 );
 
-////////////////////////////////////////////////////////////////////////
-//
-// SDRAM
-//
-////////////////////////////////////////////////////////////////////////
-
-parameter TPROP_PCB = 2.0;
-reg	[11:0]	sdram_a_pad_o_to_sdram;
-reg	[1:0]	sdram_ba_pad_o_to_sdram;
-reg		sdram_cas_pad_o_to_sdram;
-reg		sdram_cke_pad_o_to_sdram;
-reg		sdram_cs_n_pad_o_to_sdram;
-wire	[15:0]	sdram_dq_pad_io_to_sdram;
-reg	[1:0]	sdram_dqm_pad_o_to_sdram;
-reg		sdram_ras_pad_o_to_sdram;
-reg		sdram_we_pad_o_to_sdram;
-
-always @( * ) begin
-	sdram_a_pad_o_to_sdram		<= #(TPROP_PCB) sdram_a_pad_o;
-	sdram_ba_pad_o_to_sdram		<= #(TPROP_PCB) sdram_ba_pad_o;
-	sdram_cas_pad_o_to_sdram	<= #(TPROP_PCB) sdram_cas_pad_o;
-	sdram_cke_pad_o_to_sdram	<= #(TPROP_PCB) sdram_cke_pad_o;
-	sdram_cs_n_pad_o_to_sdram	<= #(TPROP_PCB) sdram_cs_n_pad_o;
-	sdram_dqm_pad_o_to_sdram	<= #(TPROP_PCB) sdram_dqm_pad_o;
-	sdram_ras_pad_o_to_sdram	<= #(TPROP_PCB) sdram_ras_pad_o;
-	sdram_we_pad_o_to_sdram		<= #(TPROP_PCB) sdram_we_pad_o;
-end
-
-genvar dqwd;
-generate
-for (dqwd = 0; dqwd < 16; dqwd = dqwd + 1) begin : dq_delay
-	wiredelay #(
-		.Delay_g	(TPROP_PCB),
-		.Delay_rd	(TPROP_PCB))
-	u_delay_dq (
-		.A		(sdram_dq_pad_io[dqwd]),
-		.B		(sdram_dq_pad_io_to_sdram[dqwd]),
-		.reset		(rst_n)
-	);
-end
-endgenerate
-
-mt48lc16m16a2 #(
-	.addr_bits	(12),
-	.col_bits	(8),
-	.mem_sizes	(1048576)
-) 
-sdram0
-(
-	.Dq		(sdram_dq_pad_io_to_sdram),
-	.Addr		(sdram_a_pad_o_to_sdram),
-	.Ba		(sdram_ba_pad_o_to_sdram),
-	.Clk		(sdram_clk_pad_o),
-	.Cke		(sdram_cke_pad_o_to_sdram),
-	.Cs_n		(sdram_cs_n_pad_o_to_sdram),
-	.Ras_n		(sdram_ras_pad_o_to_sdram),
-	.Cas_n		(sdram_cas_pad_o_to_sdram),
-	.We_n		(sdram_we_pad_o_to_sdram),
-	.Dqm		(sdram_dqm_pad_o_to_sdram)
-);
 
 endmodule
