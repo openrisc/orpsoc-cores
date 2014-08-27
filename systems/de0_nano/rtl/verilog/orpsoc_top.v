@@ -112,7 +112,7 @@ module orpsoc_top #(
     input           accelerometer_irq_i
 );
 
-parameter	IDCODE_VALUE=32'h14951185;
+parameter	IDCODE_VALUE = 32'h14951185;
 
 // choose I2C operation mode
 assign accelerometer_cs_o = 1;
@@ -248,7 +248,6 @@ wire		or1k_dbg_bp_o;
 wire		or1k_dbg_rst;
 
 wire		sig_tick;
-
 wire		or1k_rst;
 
 assign or1k_rst = wb_rst | or1k_dbg_rst;
@@ -384,6 +383,24 @@ mor1kx #(
 	.dwbm_dat_i(wb_s2m_or1k_d_dat),
 	.dwbm_rty_i(wb_s2m_or1k_d_rty),
 
+	.avm_d_address_o (),
+	.avm_d_byteenable_o (),
+	.avm_d_read_o (),
+	.avm_d_readdata_i (32'h00000000),
+	.avm_d_burstcount_o (),
+	.avm_d_write_o (),
+	.avm_d_writedata_o (),
+	.avm_d_waitrequest_i (1'b0),
+	.avm_d_readdatavalid_i (1'b0),
+
+	.avm_i_address_o (),
+	.avm_i_byteenable_o (),
+	.avm_i_read_o (),
+	.avm_i_readdata_i (32'h00000000),
+	.avm_i_burstcount_o (),
+	.avm_i_waitrequest_i (1'b0),
+	.avm_i_readdatavalid_i (1'b0),
+
 	.irq_i(or1k_irq),
 
 	.du_addr_i(or1k_dbg_adr_i[15:0]),
@@ -429,6 +446,7 @@ adbg_top dbg_if0 (
 
 	// Wishbone debug master
 	.wb_clk_i	(wb_clk),
+	.wb_rst_i       (1'b0),
 	.wb_dat_i	(wb_s2m_dbg_dat),
 	.wb_ack_i	(wb_s2m_dbg_ack),
 	.wb_err_i	(wb_s2m_dbg_err),
@@ -439,8 +457,24 @@ adbg_top dbg_if0 (
 	.wb_stb_o	(wb_m2s_dbg_stb),
 	.wb_sel_o	(wb_m2s_dbg_sel),
 	.wb_we_o	(wb_m2s_dbg_we),
+	.wb_cab_o       (),
 	.wb_cti_o	(wb_m2s_dbg_cti),
-	.wb_bte_o	(wb_m2s_dbg_bte)
+	.wb_bte_o	(wb_m2s_dbg_bte),
+
+	.wb_jsp_adr_i (32'd0),
+	.wb_jsp_dat_i (32'd0),
+	.wb_jsp_cyc_i (1'b0),
+	.wb_jsp_stb_i (1'b0),
+	.wb_jsp_sel_i (4'h0),
+	.wb_jsp_we_i  (1'b0),
+	.wb_jsp_cab_i (1'b0),
+	.wb_jsp_cti_i (3'd0),
+	.wb_jsp_bte_i (2'd0),
+	.wb_jsp_dat_o (),
+	.wb_jsp_ack_o (),
+	.wb_jsp_err_o (),
+
+	.int_o ()
 );
 
 ////////////////////////////////////////////////////////////////////////
