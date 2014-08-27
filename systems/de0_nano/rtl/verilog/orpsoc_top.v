@@ -453,7 +453,6 @@ adbg_top dbg_if0 (
    
 wb_ram
   #(.depth (WB_RAM_MEM_DEPTH),
-    .aw ($clog2(WB_RAM_MEM_DEPTH)),
     .memfile ("../src/de0_nano/sw/clear_r3_and_jump_to_0x100.vh"))
    wb_ram0
      (//Wishbone Master interface
