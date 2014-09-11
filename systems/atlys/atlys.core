@@ -11,6 +11,7 @@ depend =
  ps2
  diila
  mor1kx
+ or1200
  elf-loader
  uart16550
  vlog_tb_utils
@@ -50,6 +51,7 @@ tb_private_src_files =
  bench/orpsoc_tb.v
  bench/uart_decoder.v
 include_files =
+ rtl/verilog/include/or1200_defines.v
  rtl/verilog/include/orpsoc-defines.v
  rtl/verilog/include/timescale.v
  rtl/verilog/include/uart_defines.v
