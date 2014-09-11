@@ -33,7 +33,6 @@ src_files =
  rtl/verilog/mor1kx_pic.v
  rtl/verilog/mor1kx_rf_cappuccino.v
  rtl/verilog/mor1kx_rf_espresso.v
- rtl/verilog/mor1kx_rf_ram.v
  rtl/verilog/mor1kx_simple_dpram_sclk.v
  rtl/verilog/mor1kx_store_buffer.v
  rtl/verilog/mor1kx_ticktimer.v
