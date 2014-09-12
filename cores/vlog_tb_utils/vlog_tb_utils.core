@@ -3,7 +3,9 @@ CAPI=1
 description = "Verilog test bench utility functions"
 
 [verilog]
-tb_src_files = vlog_tb_utils.v
+tb_src_files =
+ vlog_functions.v
+ vlog_tb_utils.v
 
 [plusargs]
 testcase = str Name of testcase (Used for VCD filename)
