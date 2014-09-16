@@ -26,6 +26,8 @@ module wb_master
 
    `include "wb_bfm_params.v"
 
+   vlog_functions utils();
+
    integer SEED = 2;
    integer TRANSACTIONS;
    
@@ -113,8 +115,9 @@ module wb_master
 	      $finish;
 	   end
 	 if (VERBOSE) $display("Read ok from address %h (burst length=%0d, burst_type=%0d)", address, burst_length, burst_type);
+	 utils.progress_bar("Completed transaction", transaction, TRANSACTIONS);
       end // for (i = 1 ; i < 10; i = i + 1)
-      $display("All tests passed!");
+      $display("%0d : All tests passed!", $time);
       #3 $finish;
    end
    
