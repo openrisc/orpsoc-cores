@@ -5,7 +5,9 @@ module wb_bfm_memory
    parameter DEBUG = 0,
    // Memory parameters
    parameter memory_file = "",
-   parameter mem_size_bytes = 32'h0000_8000) // 32KBytes
+   parameter mem_size_bytes = 32'h0000_8000, // 32KBytes
+   parameter rd_min_delay = 0,
+   parameter rd_max_delay = 4)
   (input 	   wb_clk_i,
    input 	   wb_rst_i,
    
@@ -57,6 +59,8 @@ module wb_bfm_memory
    reg [dw-1:0] 	data;
 
    integer 		i;
+   integer 		delay;
+   integer 		seed;
    
    always begin
       bfm0.init();
@@ -84,6 +88,8 @@ module wb_bfm_memory
 		 if(bfm0.mask[i])
 		   data[i*8+:8] = mem[address[31:2]][i*8+:8];
 	       if(DEBUG) $display("%d : ram Read  0x%h = 0x%h %b", $time, address, data, bfm0.mask);
+	       delay = $dist_uniform(seed, rd_min_delay, rd_max_delay);
+	       repeat(delay) @(posedge wb_clk_i);
 	       bfm0.read_ack(data);
 	    end
 	 end
