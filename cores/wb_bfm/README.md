@@ -15,3 +15,4 @@ TODO
 - Generate error conditions for non-compliance testing
 - Generate classic cycles in transactor
 - Move wb_funcs to common wishbone utilities
+- Send multiple writes with different burst types followed by multiple reads
