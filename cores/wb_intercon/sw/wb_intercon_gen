@@ -177,8 +177,8 @@ class WbIntercon:
         self.verilog_writer = VerilogWriter(name)
         self.template_writer = VerilogWriter(name);
         self.name = name
-        d = {}
-        self.slaves = {}
+        d = OrderedDict()
+        self.slaves = OrderedDict()
         self.masters = OrderedDict()
         config = configparser.SafeConfigParser()
         config.read(config_file)
