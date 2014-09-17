@@ -928,7 +928,7 @@ gpio gpio0 (
 
 gpio gpio1 (
 	// GPIO bus
-	.gpio_i		(gpio1_i),
+	.gpio_i		({4'h0, gpio1_i}),
 	.gpio_o		(),
 	.gpio_dir_o	(),
 	// Wishbone slave interface
