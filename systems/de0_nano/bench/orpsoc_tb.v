@@ -83,6 +83,7 @@ orpsoc_top dut
 	.sys_clk_pad_i		(clk),
 	.rst_n_pad_i		(rst_n),
  .gpio0_io (),
+ .gpio1_i (4'h0),
 	//JTAG interface
 	.tms_pad_i		(tms),
 	.tck_pad_i		(tck),

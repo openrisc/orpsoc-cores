@@ -193,3 +193,12 @@ set_location_assignment PIN_B1 -to gpio0_io[6]
 set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to gpio0_io[6]
 set_location_assignment PIN_L3 -to gpio0_io[7]
 set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to gpio0_io[7]
+
+#============================================================
+# GPIO1 (Switches)
+#============================================================
+set_location_assignment PIN_M1  -to gpio1_i[0]
+set_location_assignment PIN_T8  -to gpio1_i[1]
+set_location_assignment PIN_B9  -to gpio1_i[2]
+set_location_assignment PIN_M15 -to gpio1_i[3]
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to gpio1_i[*]

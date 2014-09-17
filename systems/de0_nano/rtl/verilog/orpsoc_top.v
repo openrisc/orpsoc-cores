@@ -71,6 +71,7 @@ module orpsoc_top #(
 	output		uart0_stx_pad_o,
 
 	inout	[7:0]	gpio0_io,
+	input	[3:0]	gpio1_i,
 
 `ifdef I2C0
 	inout		i2c0_sda_io,
@@ -925,6 +926,27 @@ gpio gpio0 (
 	.wb_rst		(wb_rst)
 );
 
+gpio gpio1 (
+	// GPIO bus
+	.gpio_i		(gpio1_i),
+	.gpio_o		(),
+	.gpio_dir_o	(),
+	// Wishbone slave interface
+	.wb_adr_i	(wb_m2s_gpio1_adr[0]),
+	.wb_dat_i	(wb_m2s_gpio1_dat),
+	.wb_we_i	(wb_m2s_gpio1_we),
+	.wb_cyc_i	(wb_m2s_gpio1_cyc),
+	.wb_stb_i	(wb_m2s_gpio1_stb),
+	.wb_cti_i	(wb_m2s_gpio1_cti),
+	.wb_bte_i	(wb_m2s_gpio1_bte),
+	.wb_dat_o	(wb_s2m_gpio1_dat),
+	.wb_ack_o	(wb_s2m_gpio1_ack),
+	.wb_err_o	(wb_s2m_gpio1_err),
+	.wb_rty_o	(wb_s2m_gpio1_rty),
+
+	.wb_clk		(wb_clk),
+	.wb_rst		(wb_rst)
+);
 ////////////////////////////////////////////////////////////////////////
 //
 // Interrupt assignment
