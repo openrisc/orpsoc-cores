@@ -52,11 +52,13 @@ module clkgen
 
 	output 		  hps_sys_rst_o,
 	output 		  hps_cold_rst_o,
-	output 		  or1k_cpu_rst_o,
+	output [1:0]	  or1k_cpu_rst_o,
 
 	// Wishbone clock and reset out
 	output 		  wb_clk_o,
 	output 		  wb_rst_o,
+
+	output 		  eth0_clk_o,
 
 	output 		  vga0_clk_o,
 
@@ -116,11 +118,13 @@ wire   pll2_lock;
 `ifndef SIM
 wire   pll0_clk0;
 wire   pll0_clk1;
+wire   pll0_clk2;
 
 wire   pll1_clk0;
 wire   pll2_clk0;
 
 assign wb_clk_o = pll0_clk0;
+assign eth0_clk_o = pll0_clk1;
 assign vga0_clk_o = pll1_clk0;
 assign i2s0_mclk_o = pll2_clk0;
 
@@ -128,11 +132,11 @@ altera_pll #(
 	.fractional_vco_multiplier("false"),
 	.reference_clock_frequency("50.0 MHz"),
 	.operation_mode("normal"),
-	.number_of_clocks(2),
+	.number_of_clocks(3),
 	.output_clock_frequency0("50.0 MHz"),
 	.phase_shift0("0 ps"),
 	.duty_cycle0(50),
-	.output_clock_frequency1("100.0 MHz"),
+	.output_clock_frequency1("25.0 MHz"),
 	.phase_shift1("0 ps"),
 	.duty_cycle1(50),
 	.output_clock_frequency2("0 MHz"),
@@ -336,7 +340,6 @@ altera_pll #(
 	.rst	(async_rst),
 	.refclk	(sys_clk_pad_i)
 );
-
 `else
 
 assign wb_clk_o = sys_clk_pad_i;
@@ -350,10 +353,12 @@ assign sync_rst_n = pll0_lock;
 // Reset generation
 //
 //
-localparam WB_RST	= 0;
-localparam HPS_SYS_RST	= 1;
-localparam HPS_COLD_RST	= 2;
-localparam OR1K_CPU_RST	= 3;
+localparam
+	WB_RST		= 0,
+	HPS_SYS_RST	= 1,
+	HPS_COLD_RST	= 2,
+	OR1K0_CPU_RST	= 3,
+	OR1K1_CPU_RST	= 4;
 
 // Reset generation for wishbone
 reg [15:0]	wb_rst_shr;
@@ -371,7 +376,8 @@ assign hps_sys_rst_o = rst_ctrl[HPS_SYS_RST];
 assign hps_cold_rst_o = rst_ctrl[HPS_COLD_RST];
 
 // OR1K cpu reset
-assign or1k_cpu_rst_o = rst_ctrl[OR1K_CPU_RST];
+assign or1k_cpu_rst_o = rst_ctrl[OR1K1_CPU_RST:OR1K0_CPU_RST];
+
 //
 // Wishbone interface
 //

@@ -37,6 +37,8 @@ module orpsoc_top (
 	input 	      sys_clk_pad_i,
 	input 	      rst_n_pad_i,
 
+	input 	      fpga_ddr3_ref_clk_pad_i,
+
 `ifdef SIM
 	output 	      tdo_pad_o,
 	input 	      tms_pad_i,
@@ -196,6 +198,41 @@ wire [31:0] traceport_exec_wbdata[0:1] /* verilator public */;
 wire [4:0]  traceport_exec_wbreg[0:1] /* verilator public */;
 wire        traceport_exec_wben[0:1] /*verilator public*/;
 
+// Ethernet wires
+wire [3:0]	a_txd;
+wire		a_txen;
+wire		a_txerr;
+
+wire [3:0]	a_rxd;
+wire		a_rxdv;
+wire		a_rxerr;
+wire		a_coll;
+wire		a_crs;
+
+wire		a_mdio_clk;
+wire		a_mdio_i;
+wire		a_mdio_ie;
+wire		a_mdio_o;
+wire		a_mdio_oe;
+
+wire [3:0]	b_txd;
+wire		b_txen;
+wire		b_txerr;
+
+wire [3:0]	b_rxd;
+wire		b_rxdv;
+wire		b_rxerr;
+wire		b_coll;
+wire		b_crs;
+
+wire		b_mdio_clk;
+wire		b_mdio_i;
+wire		b_mdio_ie;
+wire		b_mdio_o;
+wire		b_mdio_oe;
+
+wire		eth0_irq;
+
 ////////////////////////////////////////////////////////////////////////
 //
 // Modules interconnections
@@ -212,10 +249,11 @@ wire        traceport_exec_wben[0:1] /*verilator public*/;
 wire	async_rst;
 wire	wb_clk, wb_rst;
 wire	vga0_clk;
+wire	eth0_clk;
 wire	dbg_tck;
 wire	hps_sys_rst;
 wire	hps_cold_rst;
-wire	or1k_cpu_rst;
+wire [1:0] or1k_cpu_rst;
 
 clkgen clkgen0 (
 	.sys_clk_pad_i	(sys_clk_pad_i),
@@ -225,6 +263,8 @@ clkgen clkgen0 (
 	.tck_pad_i	(tck_pad_i),
 	.dbg_tck_o	(dbg_tck),
 `endif
+
+	.eth0_clk_o	(eth0_clk),
 
 	.vga0_clk_o	(vga0_clk),
 
@@ -360,6 +400,17 @@ wire [31:0] vga0_ddr3_avl_writedata;
 wire [3:0]  vga0_ddr3_avl_byteenable;
 wire        vga0_ddr3_avl_write;
 
+wire [27:0] eth0_ddr3_avl_address;
+wire [5:0]  eth0_ddr3_avl_burstcount;
+wire        eth0_ddr3_avl_waitrequest_n;
+wire        eth0_ddr3_avl_waitrequest = !eth0_ddr3_avl_waitrequest_n;
+wire [31:0] eth0_ddr3_avl_readdata;
+wire        eth0_ddr3_avl_readdatavalid;
+wire        eth0_ddr3_avl_read;
+wire [31:0] eth0_ddr3_avl_writedata;
+wire [3:0]  eth0_ddr3_avl_byteenable;
+wire        eth0_ddr3_avl_write;
+
 wire [20:0] h2f_lw_avl_address;
 wire [0:0]  h2f_lw_avl_burstcount;
 wire        h2f_lw_avl_waitrequest;
@@ -371,46 +422,7 @@ wire [3:0]  h2f_lw_avl_byteenable;
 wire        h2f_lw_avl_write;
 
 // Instantiate the qsys generated system.
-/* sockit AUTO_TEMPLATE (
-	.osc_clk_clk			(wb_clk),
-	.osc_reset_reset_n		(!hps_sys_rst),
-	.clk_clk			(wb_clk),
-	.reset_reset_n			(!hps_sys_rst),
-	.hps_0_uart1_cts		(1'b0),
-	.hps_0_uart1_dsr		(1'b0),
-	.hps_0_uart1_dcd		(1'b0),
-	.hps_0_uart1_ri			(1'b0),
-	.hps_0_uart1_dtr		(),
-	.hps_0_uart1_rts		(),
-	.hps_0_uart1_out1_n		(),
-	.hps_0_uart1_out2_n		(),
-	.hps_0_uart1_rxd		(uart0_txd),
-	.hps_0_uart1_txd		(uart0_rxd),
-	.hps_0_emac0_phy_txd_o		(),
-	.hps_0_emac0_phy_txen_o		(),
-	.hps_0_emac0_phy_txer_o		(),
-	.hps_0_emac0_phy_rxdv_i		(),
-	.hps_0_emac0_phy_rxer_i		(),
-	.hps_0_emac0_phy_rxd_i		(),
-	.hps_0_emac0_phy_col_i		(),
-	.hps_0_emac0_phy_crs_i		(),
-	.hps_0_emac0_gmii_mdo_o		(),
-	.hps_0_emac0_gmii_mdo_o_e	(),
-	.hps_0_emac0_gmii_mdi_i		(),
-	.hps_0_emac0_ptp_pps_o		(),
-	.hps_0_emac0_ptp_aux_ts_trig_i	(),
-	.hps_0_emac0_md_clk_clk		(),
-	.hps_0_emac0_rx_clk_in_clk	(),
-	.hps_0_emac0_tx_clk_in_clk	(),
-	.hps_0_emac0_gtx_clk_clk	(),
-	.hps_0_emac0_tx_reset_reset_n	(),
-	.hps_0_emac0_rx_reset_reset_n	(),
-	.hps_0_emac_ptp_ref_clock_clk	(),
-	.hps_0_f2h_cold_reset_req_reset_n(!hps_cold_rst),
-);*/
-sockit hps
-       (
-	/*AUTOINST*/
+sockit hps (
 	// Outputs
 	.memory_mem_a			(memory_mem_a[14:0]),
 	.memory_mem_ba			(memory_mem_ba[2:0]),
@@ -447,16 +459,16 @@ sockit hps
 	.hps_0_uart1_out1_n		(),			 // Templated
 	.hps_0_uart1_out2_n		(),			 // Templated
 	.hps_0_uart1_txd		(uart0_rxd),		 // Templated
-	.hps_0_emac0_phy_txd_o		(),			 // Templated
-	.hps_0_emac0_phy_txen_o		(),			 // Templated
-	.hps_0_emac0_phy_txer_o		(),			 // Templated
-	.hps_0_emac0_gmii_mdo_o		(),			 // Templated
-	.hps_0_emac0_gmii_mdo_o_e	(),			 // Templated
+	.hps_0_emac0_phy_txd_o		(a_txd),
+	.hps_0_emac0_phy_txen_o		(a_txen),
+	.hps_0_emac0_phy_txer_o		(a_txerr),
+	.hps_0_emac0_gmii_mdo_o		(a_mdio_i),
+	.hps_0_emac0_gmii_mdo_o_e	(a_mdio_ie),
 	.hps_0_emac0_ptp_pps_o		(),			 // Templated
-	.hps_0_emac0_md_clk_clk		(),			 // Templated
+	.hps_0_emac0_md_clk_clk		(a_mdio_clk),
 	.hps_0_emac0_gtx_clk_clk	(),			 // Templated
-	.hps_0_emac0_tx_reset_reset_n	(),			 // Templated
-	.hps_0_emac0_rx_reset_reset_n	(),			 // Templated
+	.hps_0_emac0_tx_reset_reset_n	(1'b1),
+	.hps_0_emac0_rx_reset_reset_n	(1'b1),
 	.hps_0_f2h_sdram0_data_waitrequest(hps_0_f2h_sdram0_data_waitrequest),
 	.hps_0_f2h_sdram0_data_readdata	(hps_0_f2h_sdram0_data_readdata[31:0]),
 	.hps_0_f2h_sdram0_data_readdatavalid(hps_0_f2h_sdram0_data_readdatavalid),
@@ -475,16 +487,6 @@ sockit hps
 	.fpga_ddr3_status_local_init_done(fpga_ddr3_status_local_init_done),
 	.fpga_ddr3_status_local_cal_success(fpga_ddr3_status_local_cal_success),
 	.fpga_ddr3_status_local_cal_fail(fpga_ddr3_status_local_cal_fail),
-	.fpga_ddr3_pll_sharing_pll_mem_clk(fpga_ddr3_pll_sharing_pll_mem_clk),
-	.fpga_ddr3_pll_sharing_pll_write_clk(fpga_ddr3_pll_sharing_pll_write_clk),
-	.fpga_ddr3_pll_sharing_pll_write_clk_pre_phy_clk(fpga_ddr3_pll_sharing_pll_write_clk_pre_phy_clk),
-	.fpga_ddr3_pll_sharing_pll_addr_cmd_clk(fpga_ddr3_pll_sharing_pll_addr_cmd_clk),
-	.fpga_ddr3_pll_sharing_pll_locked(fpga_ddr3_pll_sharing_pll_locked),
-	.fpga_ddr3_pll_sharing_pll_avl_clk(fpga_ddr3_pll_sharing_pll_avl_clk),
-	.fpga_ddr3_pll_sharing_pll_config_clk(fpga_ddr3_pll_sharing_pll_config_clk),
-	.fpga_ddr3_pll_sharing_pll_mem_phy_clk(fpga_ddr3_pll_sharing_pll_mem_phy_clk),
-	.fpga_ddr3_pll_sharing_afi_phy_clk(fpga_ddr3_pll_sharing_afi_phy_clk),
-	.fpga_ddr3_pll_sharing_pll_avl_phy_clk(fpga_ddr3_pll_sharing_pll_avl_phy_clk),
 	.fpga_ddr3_avl_waitrequest_n	(fpga_ddr3_avl_waitrequest_n),
 	.fpga_ddr3_avl_readdatavalid	(fpga_ddr3_avl_readdatavalid),
 	.fpga_ddr3_avl_readdata		(fpga_ddr3_avl_readdata[31:0]),
@@ -498,6 +500,9 @@ sockit hps
 	.vga0_ddr3_avl_waitrequest_n	(vga0_ddr3_avl_waitrequest_n),
 	.vga0_ddr3_avl_readdatavalid	(vga0_ddr3_avl_readdatavalid),
 	.vga0_ddr3_avl_readdata		(vga0_ddr3_avl_readdata[31:0]),
+	.eth0_ddr3_avl_waitrequest_n	(eth0_ddr3_avl_waitrequest_n),
+	.eth0_ddr3_avl_readdatavalid	(eth0_ddr3_avl_readdatavalid),
+	.eth0_ddr3_avl_readdata		(eth0_ddr3_avl_readdata[31:0]),
 	// Inouts
 	.memory_mem_dq			(memory_mem_dq[31:0]),
 	.memory_mem_dqs			(memory_mem_dqs[3:0]),
@@ -538,6 +543,7 @@ sockit hps
 	// Inputs
 	.clk_clk			(wb_clk),		 // Templated
 	.reset_reset_n			(!hps_sys_rst),		 // Templated
+	.fpga_ddr3_pll_ref_clk_clk      (fpga_ddr3_ref_clk_pad_i),
 	.memory_oct_rzqin		(memory_oct_rzqin),
 	.hps_io_hps_io_emac1_inst_RXD0	(hps_io_hps_io_emac1_inst_RXD0),
 	.hps_io_hps_io_emac1_inst_RX_CTL(hps_io_hps_io_emac1_inst_RX_CTL),
@@ -556,15 +562,15 @@ sockit hps
 	.hps_0_uart1_dcd		(1'b0),			 // Templated
 	.hps_0_uart1_ri			(1'b0),			 // Templated
 	.hps_0_uart1_rxd		(uart0_txd),		 // Templated
-	.hps_0_emac0_phy_rxdv_i		(),			 // Templated
-	.hps_0_emac0_phy_rxer_i		(),			 // Templated
-	.hps_0_emac0_phy_rxd_i		(),			 // Templated
-	.hps_0_emac0_phy_col_i		(),			 // Templated
-	.hps_0_emac0_phy_crs_i		(),			 // Templated
-	.hps_0_emac0_gmii_mdi_i		(),			 // Templated
+	.hps_0_emac0_phy_rxdv_i		(a_rxdv),
+	.hps_0_emac0_phy_rxer_i		(a_rxerr),
+	.hps_0_emac0_phy_rxd_i		(a_rxd),
+	.hps_0_emac0_phy_col_i		(a_coll),
+	.hps_0_emac0_phy_crs_i		(a_crs),
+	.hps_0_emac0_gmii_mdi_i		(a_mdio_o),
 	.hps_0_emac0_ptp_aux_ts_trig_i	(),			 // Templated
-	.hps_0_emac0_rx_clk_in_clk	(),			 // Templated
-	.hps_0_emac0_tx_clk_in_clk	(),			 // Templated
+	.hps_0_emac0_rx_clk_in_clk	(eth0_clk),
+	.hps_0_emac0_tx_clk_in_clk	(eth0_clk),
 	.hps_0_emac_ptp_ref_clock_clk	(),			 // Templated
 	.hps_0_f2h_sdram0_data_address	(hps_0_f2h_sdram0_data_address[29:0]),
 	.hps_0_f2h_sdram0_data_burstcount(hps_0_f2h_sdram0_data_burstcount[7:0]),
@@ -591,8 +597,14 @@ sockit hps
 	.vga0_ddr3_avl_read		(vga0_ddr3_avl_read),
 	.vga0_ddr3_avl_write		(vga0_ddr3_avl_write),
 	.vga0_ddr3_avl_burstcount	(vga0_ddr3_avl_burstcount[5:0]),
-	.osc_clk_clk			(wb_clk),		 // Templated
-	.osc_reset_reset_n		(!hps_sys_rst));		 // Templated
+	.eth0_ddr3_avl_beginbursttransfer(eth0_ddr3_avl_beginbursttransfer),
+	.eth0_ddr3_avl_address		(eth0_ddr3_avl_address[27:0]),
+	.eth0_ddr3_avl_writedata	(eth0_ddr3_avl_writedata[31:0]),
+	.eth0_ddr3_avl_byteenable	(eth0_ddr3_avl_byteenable[3:0]),
+	.eth0_ddr3_avl_read		(eth0_ddr3_avl_read),
+	.eth0_ddr3_avl_write		(eth0_ddr3_avl_write),
+	.eth0_ddr3_avl_burstcount	(eth0_ddr3_avl_burstcount[5:0])
+);
 
 // HPS DDR3 interface
 wire [31:0] avm_hps_ddr3_address;
@@ -634,6 +646,8 @@ wb_to_avalon_bridge #(
 wire [31:0] avm_fpga_ddr3_address;
 assign fpga_ddr3_avl_address = avm_fpga_ddr3_address[29:2];
 
+wire [31:0] snoop_adr;
+wire snoop_en;
 assign snoop_adr = wb_m2s_fpga_ddr3_adr;
 assign snoop_en = wb_s2m_fpga_ddr3_ack & wb_m2s_fpga_ddr3_we;
 
@@ -704,6 +718,43 @@ wb_to_avalon_bridge #(
 	.avm_writedata_o	(vga0_ddr3_avl_writedata),
 	.avm_waitrequest_i	(vga0_ddr3_avl_waitrequest),
 	.avm_readdatavalid_i	(vga0_ddr3_avl_readdatavalid)
+);
+
+// FPGA DDR3 interface - ETH port
+
+wire [31:0] avm_eth0_ddr3_address;
+assign eth0_ddr3_avl_address = avm_eth0_ddr3_address[29:2];
+
+wb_to_avalon_bridge #(
+	.DW			(32),
+ 	.AW			(32),
+	.BURST_SUPPORT		(1)
+) eth0_ddr3_wb2avl_bridge (
+	.clk			(wb_clk),
+	.rst			(wb_rst),
+	// Wishbone Master Input
+	.wbm_adr_i		(wb_m2s_eth0_ddr3_adr),
+	.wbm_dat_i		(wb_m2s_eth0_ddr3_dat),
+	.wbm_sel_i		(wb_m2s_eth0_ddr3_sel),
+	.wbm_we_i		(wb_m2s_eth0_ddr3_we),
+	.wbm_cyc_i		(wb_m2s_eth0_ddr3_cyc),
+	.wbm_stb_i		(wb_m2s_eth0_ddr3_stb),
+	.wbm_cti_i		(wb_m2s_eth0_ddr3_cti),
+	.wbm_bte_i		(wb_m2s_eth0_ddr3_bte),
+	.wbm_dat_o		(wb_s2m_eth0_ddr3_dat),
+	.wbm_ack_o		(wb_s2m_eth0_ddr3_ack),
+	.wbm_err_o		(wb_s2m_eth0_ddr3_err),
+	.wbm_rty_o		(wb_s2m_eth0_ddr3_rty),
+	// Avalon Master Output
+	.avm_address_o		(avm_eth0_ddr3_address),
+	.avm_byteenable_o	(eth0_ddr3_avl_byteenable),
+	.avm_read_o		(eth0_ddr3_avl_read),
+	.avm_readdata_i		(eth0_ddr3_avl_readdata),
+	.avm_burstcount_o	(eth0_ddr3_avl_burstcount),
+	.avm_write_o		(eth0_ddr3_avl_write),
+	.avm_writedata_o	(eth0_ddr3_avl_writedata),
+	.avm_waitrequest_i	(eth0_ddr3_avl_waitrequest),
+	.avm_readdatavalid_i	(eth0_ddr3_avl_readdatavalid)
 );
 
 //
@@ -779,10 +830,11 @@ wire		or1k_dbg_bp_o;
 wire		or1k_dbg_rst;
 
 wire		or1k_clk;
-wire		or1k_rst;
+wire	[1:0]	or1k_rst;
 
 assign or1k_clk = wb_clk;
-assign or1k_rst = wb_rst | or1k_cpu_rst;
+assign or1k_rst[0] = wb_rst | or1k_cpu_rst[0];
+assign or1k_rst[1] = wb_rst | or1k_cpu_rst[1];
 
 mor1kx #(
 	.FEATURE_DEBUGUNIT("ENABLED"),
@@ -805,6 +857,10 @@ mor1kx #(
 	.OPTION_PIC_TRIGGER("LEVEL"),
 
 	.FEATURE_TRACEPORT_EXEC("ENABLED"),
+
+	.OPTION_RF_NUM_SHADOW_GPR	(1),
+
+	.OPTION_PIC_NMI_WIDTH           (2),
 
 	.IBUS_WB_TYPE("B3_REGISTERED_FEEDBACK"),
 	.DBUS_WB_TYPE("B3_REGISTERED_FEEDBACK"),
@@ -830,7 +886,7 @@ mor1kx #(
 	.dwbm_dat_o(wb_m2s_or1k0_d_dat),
 
 	.clk(or1k_clk),
-	.rst(or1k_rst),
+	.rst(or1k_rst[0]),
 
 	.iwbm_err_i(wb_s2m_or1k0_i_err),
 	.iwbm_ack_i(wb_s2m_or1k0_i_ack),
@@ -887,6 +943,9 @@ mor1kx #(
 	.OPTION_DMMU_SET_WIDTH(7),
 	.OPTION_PIC_TRIGGER("LEVEL"),
 
+	.OPTION_RF_NUM_SHADOW_GPR	(1),
+
+	.OPTION_PIC_NMI_WIDTH           (2),
 
 	.FEATURE_TRACEPORT_EXEC("ENABLED"),
 
@@ -914,7 +973,7 @@ mor1kx #(
 	.dwbm_dat_o(wb_m2s_or1k1_d_dat),
 
 	.clk(or1k_clk),
-	.rst(or1k_rst),
+	.rst(or1k_rst[1]),
 
 	.iwbm_err_i(wb_s2m_or1k1_i_err),
 	.iwbm_ack_i(wb_s2m_or1k1_i_ack),
@@ -1251,6 +1310,202 @@ vga_enh_top #(
 	.b_pad_o	(vga0_b_pad_o)
 );
 
+////////////////////////////////////////////////////////////////////////
+//
+// Ethernet
+//
+////////////////////////////////////////////////////////////////////////
+
+mac2mac_bridge #(
+	.A_PHY_ADDR(8),
+	.B_PHY_ADDR(0)
+) mac2mac_bridge0
+       (
+	.txrx_clk	(eth0_clk),
+
+	.a_txd		(a_txd),
+	.a_txen		(a_txen),
+	.a_txerr	(a_txerr),
+
+	.a_rxd		(a_rxd),
+	.a_rxdv		(a_rxdv),
+	.a_rxerr	(a_rxerr),
+	.a_coll		(a_coll),
+	.a_crs		(a_crs),
+
+	.a_mdio_clk	(a_mdio_clk),
+	.a_mdio_i	(a_mdio_i),
+	.a_mdio_ie	(a_mdio_ie),
+	.a_mdio_o	(a_mdio_o),
+	.a_mdio_oe	(a_mdio_oe),
+
+	.b_txd		(b_txd),
+	.b_txen		(b_txen),
+	.b_txerr	(b_txerr),
+
+	.b_rxd		(b_rxd),
+	.b_rxdv		(b_rxdv),
+	.b_rxerr	(b_rxerr),
+	.b_coll		(b_coll),
+	.b_crs		(b_crs),
+
+	.b_mdio_clk	(b_mdio_clk),
+	.b_mdio_i	(b_mdio_i),
+	.b_mdio_ie	(b_mdio_ie),
+	.b_mdio_o	(b_mdio_o),
+	.b_mdio_oe	(b_mdio_oe)
+);
+
+ethmac ethmac0 (
+	// Wishbone Slave interface
+	.wb_clk_i	(wb_clk),
+	.wb_rst_i	(wb_rst),
+	.wb_adr_i	(wb_m2s_eth0_slave_adr[11:2]),
+	.wb_dat_i	(wb_m2s_eth0_slave_dat),
+	.wb_sel_i	(wb_m2s_eth0_slave_sel),
+	.wb_we_i 	(wb_m2s_eth0_slave_we),
+	.wb_cyc_i	(wb_m2s_eth0_slave_cyc),
+	.wb_stb_i	(wb_m2s_eth0_slave_stb),
+	.wb_dat_o	(wb_s2m_eth0_slave_dat),
+	.wb_err_o	(wb_s2m_eth0_slave_err),
+	.wb_ack_o	(wb_s2m_eth0_slave_ack),
+	// Wishbone Master Interface
+	.m_wb_adr_o	(wb_m2s_eth0_master_adr),
+	.m_wb_sel_o	(wb_m2s_eth0_master_sel),
+	.m_wb_we_o 	(wb_m2s_eth0_master_we),
+	.m_wb_dat_o	(wb_m2s_eth0_master_dat),
+	.m_wb_cyc_o	(wb_m2s_eth0_master_cyc),
+	.m_wb_stb_o	(wb_m2s_eth0_master_stb),
+	.m_wb_cti_o	(wb_m2s_eth0_master_cti),
+	.m_wb_bte_o	(wb_m2s_eth0_master_bte),
+	.m_wb_dat_i	(wb_s2m_eth0_master_dat),
+	.m_wb_ack_i	(wb_s2m_eth0_master_ack),
+	.m_wb_err_i	(wb_s2m_eth0_master_err),
+
+	// Ethernet MII interface
+	// Transmit
+	.mtx_clk_pad_i	(eth0_clk),
+	.mtxd_pad_o	(b_txd),
+	.mtxen_pad_o	(b_txen),
+	.mtxerr_pad_o	(b_txerr),
+	// Receive
+	.mrx_clk_pad_i	(eth0_clk),
+	.mrxd_pad_i	(b_rxd),
+	.mrxdv_pad_i	(b_rxdv),
+	.mrxerr_pad_i	(b_rxerr),
+	.mcoll_pad_i	(b_coll),
+	.mcrs_pad_i	(b_crs),
+	// Management interface
+	.md_pad_i	(b_mdio_o),
+	.mdc_pad_o	(b_mdio_clk),
+	.md_pad_o	(b_mdio_i),
+	.md_padoe_o	(b_mdio_ie),
+
+	// Processor interrupt
+	.int_o		(eth0_irq)
+      );
+
+////////////////////////////////////////////////////////////////////////
+//
+// wb_streamer
+//
+////////////////////////////////////////////////////////////////////////
+wire [31:0] streamer0_data;
+wire streamer0_valid;
+wire streamer0_ready;
+wire streamer0_irq;
+
+wb_stream_writer #(
+	.WB_DW		(32),
+	.WB_AW		(32),
+	.FIFO_AW	(5)
+) wb_streamer0 (
+	.clk			(wb_clk),
+	.rst			(wb_rst),
+	// Wisbhone memory interface
+	.wbm_adr_o		(wb_m2s_streamer0_master_adr),
+	.wbm_dat_o		(wb_m2s_streamer0_master_dat),
+	.wbm_sel_o		(wb_m2s_streamer0_master_sel),
+	.wbm_we_o		(wb_m2s_streamer0_master_we),
+	.wbm_cyc_o		(wb_m2s_streamer0_master_cyc),
+	.wbm_stb_o		(wb_m2s_streamer0_master_stb),
+	.wbm_cti_o		(wb_m2s_streamer0_master_cti),
+	.wbm_bte_o		(wb_m2s_streamer0_master_bte),
+	.wbm_dat_i		(wb_s2m_streamer0_master_dat),
+	.wbm_ack_i		(wb_s2m_streamer0_master_ack),
+	.wbm_err_i		(wb_s2m_streamer0_master_err),
+	.wbm_rty_i		(wb_s2m_streamer0_master_rty),
+	//Stream interface
+	.stream_m_data_o	(streamer0_data),
+	.stream_m_valid_o	(streamer0_valid),
+	.stream_m_ready_i	(streamer0_ready),
+	.stream_m_irq_o		(streamer0_irq),
+	//Configuration interface
+	.wbs_adr_i		(wb_m2s_streamer0_slave_adr[11:0]),
+	.wbs_dat_i		(wb_m2s_streamer0_slave_dat),
+	.wbs_sel_i		(wb_m2s_streamer0_slave_sel),
+	.wbs_we_i		(wb_m2s_streamer0_slave_we),
+	.wbs_cyc_i		(wb_m2s_streamer0_slave_cyc),
+	.wbs_stb_i		(wb_m2s_streamer0_slave_stb),
+	.wbs_cti_i		(wb_m2s_streamer0_slave_cti),
+	.wbs_bte_i		(wb_m2s_streamer0_slave_bte),
+	.wbs_dat_o		(wb_s2m_streamer0_slave_dat),
+	.wbs_ack_o		(wb_s2m_streamer0_slave_ack),
+	.wbs_err_o		(wb_s2m_streamer0_slave_err),
+	.wbs_rty_o		(wb_s2m_streamer0_slave_rty)
+);
+
+////////////////////////////////////////////////////////////////////////
+//
+// I2S
+//
+////////////////////////////////////////////////////////////////////////
+parameter AUDIO_DW = 32;
+reg [31:0] i2s0_left_chan;
+reg [31:0] i2s0_right_chan;
+
+// Divide i2s0_mclk with 2 to get the sclk
+// NOTE: this is specific to 32-bit word length and  96KHz lrclk with ssm2603.
+// i.e. mclk = 12,288 MHz , SR = 0111 = mclk/128 => lrclk 96 KHz
+// and 128/(2*32) = 2.
+reg sclk = 0;
+always @(posedge i2s0_mclk)
+	sclk <= ~sclk;
+
+assign i2s0_sclk = sclk;
+
+//
+// Hook up the streamer interface
+//
+always @(posedge sclk) begin
+	if (i2s0_tx_lrclk & streamer0_valid)
+		i2s0_right_chan <= streamer0_data;
+	if (!i2s0_tx_lrclk & streamer0_valid)
+		i2s0_left_chan <= streamer0_data;
+end
+
+reg i2s0_tx_lrclk_r;
+always @(posedge wb_clk)
+	i2s0_tx_lrclk_r <= i2s0_tx_lrclk;
+
+// latch data on i2s0_tx_lrclk edges
+assign streamer0_ready = i2s0_tx_lrclk ^ i2s0_tx_lrclk_r;
+
+i2s_tx #(
+	.AUDIO_DW	(AUDIO_DW)
+) i2s_tx0 (
+	.sclk		(i2s0_sclk),
+	.rst		(wb_rst),
+
+	.lrclk		(i2s0_tx_lrclk),
+	.sdata		(i2s0_tx_sdata),
+
+	.left_chan	(i2s0_left_chan),
+	.right_chan	(i2s0_right_chan)
+);
+
+assign mute_n = 1;
+
 //
 // Inter-processor-interrupt
 //
@@ -1259,7 +1514,7 @@ ipi #(
 	.NUM_CORES	(2)
 ) ipi  (
 	.clk		(wb_clk),
-	.rst		(or1k_rst),
+	.rst		(|or1k_rst),
 	// Wishbone slave interface
 	.wb_adr_i	(wb_m2s_ipi_adr[16:0]),
 	.wb_dat_i	(wb_m2s_ipi_dat),
@@ -1283,7 +1538,7 @@ ipi #(
 //
 tc tc  (
 	.clk		(wb_clk),
-	.rst		(or1k_rst),
+	.rst		(|or1k_rst),
 	// Wishbone slave interface
 	.wb_adr_i	(wb_m2s_tc_adr),
 	.wb_dat_i	(wb_m2s_tc_dat),
@@ -1305,18 +1560,18 @@ tc tc  (
 //
 ////////////////////////////////////////////////////////////////////////
 
-assign or1k_irq[0][0] = 0; // Non-maskable inside OR1K
-assign or1k_irq[0][1] = ipi_irq[0]; // Non-maskable inside OR1K
+assign or1k_irq[0][0] = 0;
+assign or1k_irq[0][1] = ipi_irq[0];
 assign or1k_irq[0][2] = uart0_irq;
 assign or1k_irq[0][3] = 0;
-assign or1k_irq[0][4] = 0;
+assign or1k_irq[0][4] = eth0_irq;
 assign or1k_irq[0][5] = 0;
 assign or1k_irq[0][6] = 0;
 assign or1k_irq[0][7] = 0;
 assign or1k_irq[0][8] = vga0_irq;
 assign or1k_irq[0][9] = 0;
 assign or1k_irq[0][10] = i2c0_irq;
-assign or1k_irq[0][11] = 0;
+assign or1k_irq[0][11] = streamer0_irq;
 assign or1k_irq[0][12] = 0;
 assign or1k_irq[0][13] = 0;
 assign or1k_irq[0][14] = 0;
@@ -1338,18 +1593,18 @@ assign or1k_irq[0][29] = 0;
 assign or1k_irq[0][30] = 0;
 assign or1k_irq[0][31] = 0;
 
-assign or1k_irq[1][0] = 0; // Non-maskable inside OR1K
-assign or1k_irq[1][1] = ipi_irq[1]; // Non-maskable inside OR1K
+assign or1k_irq[1][0] = 0;
+assign or1k_irq[1][1] = ipi_irq[1];
 assign or1k_irq[1][2] = uart0_irq;
 assign or1k_irq[1][3] = 0;
-assign or1k_irq[1][4] = 0;
+assign or1k_irq[1][4] = eth0_irq;
 assign or1k_irq[1][5] = 0;
 assign or1k_irq[1][6] = 0;
 assign or1k_irq[1][7] = 0;
 assign or1k_irq[1][8] = vga0_irq;
 assign or1k_irq[1][9] = 0;
 assign or1k_irq[1][10] = i2c0_irq;
-assign or1k_irq[1][11] = 0;
+assign or1k_irq[1][11] = streamer0_irq;
 assign or1k_irq[1][12] = 0;
 assign or1k_irq[1][13] = 0;
 assign or1k_irq[1][14] = 0;
@@ -1380,37 +1635,21 @@ wire [31:0] diila_trig;
 wire [31:0] diila_data [5:0];
 
 assign diila_trig = traceport_exec_pc[0];
-//wb_m2s_or1k0_i_adr;//wb_m2s_fpga_ddr3_adr;
-assign diila_data[0] = wb_m2s_fpga_ddr3_dat;
-assign diila_data[1] = wb_s2m_fpga_ddr3_dat;
-assign diila_data[2] = wb_m2s_or1k0_d_adr;
+assign diila_data[0] = traceport_exec_pc[1];
+assign diila_data[1] = traceport_exec_insn[0];
+assign diila_data[2] = traceport_exec_insn[1];
 assign diila_data[3] = {
-	h2f_lw_avl_read,  // 1
-	h2f_lw_avl_write, // 1
-	h2f_lw_avl_readdatavalid, // 1
-	h2f_lw_avl_waitrequest, // 1
-	wb_m2s_or1k0_i_cyc, // 1
-	wb_m2s_or1k0_i_stb, // 1
-	wb_m2s_or1k0_i_we,  // 1
-	wb_m2s_or1k0_i_sel, // 4
-	wb_s2m_or1k0_i_ack, // 1
-	wb_m2s_or1k0_d_cyc, // 1
-	wb_m2s_or1k0_d_stb, // 1
-	wb_m2s_or1k0_d_we,  // 1
-	wb_m2s_or1k0_d_sel, // 4
-	wb_s2m_or1k0_d_ack, // 1
-	fpga_ddr3_avl_read,  // 1
-	fpga_ddr3_avl_write, // 1
-	fpga_ddr3_avl_readdatavalid, // 1
-	fpga_ddr3_avl_waitrequest, // 1
-	wb_m2s_fpga_ddr3_cyc, // 1
-	wb_m2s_fpga_ddr3_stb, // 1
-	wb_m2s_fpga_ddr3_we,  // 1
-	wb_m2s_fpga_ddr3_sel, // 4
-	wb_s2m_fpga_ddr3_ack  // 1
+	20'h0,
+	traceport_exec_wben[0], // 1
+	traceport_exec_wben[1], // 1
+	traceport_exec_valid[0], // 1
+	traceport_exec_valid[1], // 1
+	traceport_exec_wbreg[0], // 4
+	traceport_exec_wbreg[1] // 4
 };
-assign diila_data[4] = fpga_ddr3_avl_address;
-assign diila_data[5] = wb_m2s_fpga_ddr3_adr;
+assign diila_data[4] = traceport_exec_wbdata[0];
+assign diila_data[5] = traceport_exec_wbdata[1];
+
 diila
       #(
 	.DATA_WIDTH(32*6)

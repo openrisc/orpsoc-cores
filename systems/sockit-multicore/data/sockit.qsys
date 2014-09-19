@@ -37,7 +37,7 @@
    {
       datum _sortIndex
       {
-         value = "1";
+         value = "0";
          type = "int";
       }
    }
@@ -45,7 +45,7 @@
    {
       datum _sortIndex
       {
-         value = "2";
+         value = "1";
          type = "int";
       }
    }
@@ -53,7 +53,7 @@
    {
       datum _sortIndex
       {
-         value = "4";
+         value = "3";
          type = "int";
       }
    }
@@ -61,15 +61,7 @@
    {
       datum _sortIndex
       {
-         value = "3";
-         type = "int";
-      }
-   }
-   element osc_clk_0
-   {
-      datum _sortIndex
-      {
-         value = "0";
+         value = "2";
          type = "int";
       }
    }
@@ -97,11 +89,13 @@
  <parameter name="generationId" value="0" />
  <parameter name="globalResetBus" value="false" />
  <parameter name="hdlLanguage" value="VERILOG" />
+ <parameter name="hideFromIPCatalog" value="false" />
  <parameter name="maxAdditionalLatency" value="1" />
  <parameter name="projectName" value="" />
  <parameter name="sopcBorderPoints" value="false" />
- <parameter name="systemHash" value="1" />
- <parameter name="timeStamp" value="1379082639556" />
+ <parameter name="systemHash" value="0" />
+ <parameter name="testBenchDutName" value="" />
+ <parameter name="timeStamp" value="0" />
  <parameter name="useTestBenchNamingPattern" value="false" />
  <instanceScript></instanceScript>
  <interface name="clk" internal="clk_0.clk_in" type="clock" dir="end" />
@@ -172,11 +166,6 @@
    type="conduit"
    dir="end" />
  <interface
-   name="fpga_ddr3_pll_sharing"
-   internal="mem_if_ddr3_emif_0.pll_sharing"
-   type="conduit"
-   dir="end" />
- <interface
    name="fpga_ddr3_avl"
    internal="mem_if_ddr3_emif_0.avl_0"
    type="avalon"
@@ -187,25 +176,30 @@
    internal="mem_if_ddr3_emif_0.avl_2"
    type="avalon"
    dir="end" />
- <interface name="osc_clk" internal="osc_clk_0.clk_in" type="clock" dir="end" />
  <interface
-   name="osc_reset"
-   internal="osc_clk_0.clk_in_reset"
-   type="reset"
+   name="fpga_ddr3_pll_ref_clk"
+   internal="mem_if_ddr3_emif_0.pll_ref_clk"
+   type="clock"
    dir="end" />
- <module kind="clock_source" version="13.0" enabled="1" name="clk_0">
+ <interface
+   name="eth0_ddr3_avl"
+   internal="mem_if_ddr3_emif_0.avl_3"
+   type="avalon"
+   dir="end" />
+ <module kind="clock_source" version="14.0" enabled="1" name="clk_0">
   <parameter name="clockFrequency" value="50000000" />
   <parameter name="clockFrequencyKnown" value="true" />
   <parameter name="inputClockFrequency" value="0" />
   <parameter name="resetSynchronousEdges" value="NONE" />
  </module>
- <module kind="altera_hps" version="13.0.1" enabled="1" name="hps_0">
+ <module kind="altera_hps" version="14.0" enabled="1" name="hps_0">
   <parameter name="MEM_VENDOR" value="Micron" />
   <parameter name="MEM_FORMAT" value="DISCRETE" />
   <parameter name="RDIMM_CONFIG" value="0000000000000000" />
   <parameter name="LRDIMM_EXTENDED_CONFIG">0x000000000000000000</parameter>
   <parameter name="DISCRETE_FLY_BY" value="true" />
   <parameter name="DEVICE_DEPTH" value="1" />
+  <parameter name="DEVICE_WIDTH" value="1" />
   <parameter name="MEM_MIRROR_ADDRESSING" value="0" />
   <parameter name="MEM_CLK_FREQ_MAX" value="800.0" />
   <parameter name="MEM_ROW_ADDR_WIDTH" value="15" />
@@ -229,6 +223,7 @@
   <parameter name="MEM_GUARANTEED_WRITE_INIT" value="false" />
   <parameter name="MEM_VERBOSE" value="true" />
   <parameter name="PINGPONGPHY_EN" value="false" />
+  <parameter name="DUPLICATE_AC" value="false" />
   <parameter name="REFRESH_BURST_VALIDATION" value="false" />
   <parameter name="MEM_BL" value="OTF" />
   <parameter name="MEM_BT" value="Sequential" />
@@ -407,7 +402,6 @@
   <parameter name="ENABLE_ISS_PROBES" value="false" />
   <parameter name="CALIB_REG_WIDTH" value="8" />
   <parameter name="USE_SEQUENCER_BFM" value="false" />
-  <parameter name="DEFAULT_FAST_SIM_MODEL" value="true" />
   <parameter name="PLL_SHARING_MODE" value="None" />
   <parameter name="NUM_PLL_SHARING_INTERFACES" value="1" />
   <parameter name="EXPORT_AFI_HALF_CLK" value="false" />
@@ -417,6 +411,7 @@
   <parameter name="USE_FAKE_PHY" value="false" />
   <parameter name="FORCE_MAX_LATENCY_COUNT_WIDTH" value="0" />
   <parameter name="ENABLE_NON_DESTRUCTIVE_CALIB" value="false" />
+  <parameter name="ENABLE_DELAY_CHAIN_WRITE" value="false" />
   <parameter name="TRACKING_ERROR_TEST" value="false" />
   <parameter name="TRACKING_WATCH_TEST" value="false" />
   <parameter name="MARGIN_VARIATION_TEST" value="false" />
@@ -462,6 +457,8 @@
   <parameter name="TIMING_BOARD_AC_EYE_REDUCTION_H" value="0.0" />
   <parameter name="TIMING_BOARD_DQ_EYE_REDUCTION" value="0.0" />
   <parameter name="TIMING_BOARD_DELTA_DQS_ARRIVAL_TIME" value="0.0" />
+  <parameter name="TIMING_BOARD_READ_DQ_EYE_REDUCTION" value="0.0" />
+  <parameter name="TIMING_BOARD_DELTA_READ_DQS_ARRIVAL_TIME" value="0.0" />
   <parameter name="PACKAGE_DESKEW" value="false" />
   <parameter name="AC_PACKAGE_DESKEW" value="false" />
   <parameter name="TIMING_BOARD_MAX_CK_DELAY" value="0.03" />
@@ -504,6 +501,70 @@
   <parameter name="NUM_DLL_SHARING_INTERFACES" value="1" />
   <parameter name="OCT_SHARING_MODE" value="None" />
   <parameter name="NUM_OCT_SHARING_INTERFACES" value="1" />
+  <parameter name="show_advanced_parameters" value="false" />
+  <parameter name="configure_advanced_parameters" value="false" />
+  <parameter name="customize_device_pll_info" value="false" />
+  <parameter name="device_pll_info_manual">{320000000 1600000000} {320000000 1000000000} {800000000 400000000 400000000}</parameter>
+  <parameter name="show_debug_info_as_warning_msg" value="false" />
+  <parameter name="show_warning_as_error_msg" value="false" />
+  <parameter name="eosc1_clk_mhz" value="25.0" />
+  <parameter name="eosc2_clk_mhz" value="25.0" />
+  <parameter name="F2SCLK_SDRAMCLK_Enable" value="false" />
+  <parameter name="F2SCLK_PERIPHCLK_Enable" value="false" />
+  <parameter name="F2SCLK_SDRAMCLK_FREQ" value="0" />
+  <parameter name="F2SCLK_PERIPHCLK_FREQ" value="0" />
+  <parameter name="periph_pll_source" value="0" />
+  <parameter name="sdmmc_clk_source" value="2" />
+  <parameter name="nand_clk_source" value="2" />
+  <parameter name="qspi_clk_source" value="1" />
+  <parameter name="l4_mp_clk_source" value="1" />
+  <parameter name="l4_sp_clk_source" value="1" />
+  <parameter name="use_default_mpu_clk" value="true" />
+  <parameter name="desired_mpu_clk_mhz" value="800.0" />
+  <parameter name="l3_mp_clk_div" value="1" />
+  <parameter name="l3_sp_clk_div" value="1" />
+  <parameter name="dbctrl_stayosc1" value="true" />
+  <parameter name="dbg_at_clk_div" value="0" />
+  <parameter name="dbg_clk_div" value="1" />
+  <parameter name="dbg_trace_clk_div" value="0" />
+  <parameter name="desired_l4_mp_clk_mhz" value="100.0" />
+  <parameter name="desired_l4_sp_clk_mhz" value="100.0" />
+  <parameter name="desired_cfg_clk_mhz" value="100.0" />
+  <parameter name="desired_sdmmc_clk_mhz" value="200.0" />
+  <parameter name="desired_nand_clk_mhz" value="12.5" />
+  <parameter name="desired_qspi_clk_mhz" value="400.0" />
+  <parameter name="desired_emac0_clk_mhz" value="250.0" />
+  <parameter name="desired_emac1_clk_mhz" value="250.0" />
+  <parameter name="desired_usb_mp_clk_mhz" value="200.0" />
+  <parameter name="desired_spi_m_clk_mhz" value="200.0" />
+  <parameter name="desired_can0_clk_mhz" value="100.0" />
+  <parameter name="desired_can1_clk_mhz" value="100.0" />
+  <parameter name="desired_gpio_db_clk_hz" value="32000" />
+  <parameter name="S2FCLK_USER0CLK_Enable" value="false" />
+  <parameter name="S2FCLK_USER1CLK_Enable" value="false" />
+  <parameter name="S2FCLK_USER2CLK_Enable" value="false" />
+  <parameter name="S2FCLK_USER1CLK_FREQ" value="100.0" />
+  <parameter name="S2FCLK_USER2CLK_FREQ" value="100.0" />
+  <parameter name="main_pll_m" value="63" />
+  <parameter name="main_pll_n" value="0" />
+  <parameter name="main_pll_c3" value="3" />
+  <parameter name="main_pll_c4" value="3" />
+  <parameter name="main_pll_c5" value="15" />
+  <parameter name="periph_pll_m" value="79" />
+  <parameter name="periph_pll_n" value="1" />
+  <parameter name="periph_pll_c0" value="3" />
+  <parameter name="periph_pll_c1" value="3" />
+  <parameter name="periph_pll_c2" value="1" />
+  <parameter name="periph_pll_c3" value="19" />
+  <parameter name="periph_pll_c4" value="4" />
+  <parameter name="periph_pll_c5" value="9" />
+  <parameter name="usb_mp_clk_div" value="0" />
+  <parameter name="spi_m_clk_div" value="0" />
+  <parameter name="can0_clk_div" value="1" />
+  <parameter name="can1_clk_div" value="1" />
+  <parameter name="gpio_db_clk_div" value="6249" />
+  <parameter name="l4_mp_clk_div" value="1" />
+  <parameter name="l4_sp_clk_div" value="1" />
   <parameter name="MPU_EVENTS_Enable" value="false" />
   <parameter name="GP_Enable" value="false" />
   <parameter name="DEBUGAPB_Enable" value="false" />
@@ -522,6 +583,7 @@
   <parameter name="LWH2F_Enable" value="true" />
   <parameter name="F2SDRAM_Type">Avalon-MM Bidirectional</parameter>
   <parameter name="F2SDRAM_Width" value="32" />
+  <parameter name="BONDING_OUT_ENABLED" value="false" />
   <parameter name="S2FCLK_COLDRST_Enable" value="false" />
   <parameter name="S2FCLK_PENDINGRST_Enable" value="false" />
   <parameter name="F2SCLK_DBGRST_Enable" value="false" />
@@ -590,16 +652,6 @@
   <parameter name="TRACE_Mode" value="N/A" />
   <parameter name="GPIO_Enable">Yes,No,No,No,No,No,No,No,No,Yes,No,No,No,No,No,No,No,No,No,No,No,No,No,No,No,No,No,No,No,No,No,No,No,No,No,Yes,No,No,No,No,No,No,No,No,No,No,No,No,Yes,No,No,No,No,Yes,Yes,Yes,Yes,No,No,No,No,Yes,Yes,No,No,No,No,No,No,No,No,No,No,No,No,No,No,No,No,No,No,No,No,No,No,No,No,No,No,No,No,No,No,No,No,No,No,No,No,No</parameter>
   <parameter name="LOANIO_Enable">No,No,No,No,No,No,No,No,No,No,No,No,No,No,No,No,No,No,No,No,No,No,No,No,No,No,No,No,No,No,No,No,No,No,No,No,No,No,No,No,No,No,No,No,No,No,No,No,No,No,No,No,No,No,No,No,No,No,No,No,No,No,No,No,No,No,No,No,No,No,No,No,No,No,No,No,No,No,No,No,No,No,No,No,No,No,No,No,No,No,No,No,No,No,No,No,No,No,No,No</parameter>
-  <parameter name="S2FCLK_USER0CLK_Enable" value="false" />
-  <parameter name="S2FCLK_USER0CLK_FREQ" value="100" />
-  <parameter name="S2FCLK_USER1CLK_Enable" value="false" />
-  <parameter name="S2FCLK_USER1CLK_FREQ" value="100" />
-  <parameter name="S2FCLK_USER2CLK_Enable" value="false" />
-  <parameter name="S2FCLK_USER2CLK_FREQ" value="100" />
-  <parameter name="F2SCLK_PERIPHCLK_Enable" value="false" />
-  <parameter name="F2SCLK_PERIPHCLK_FREQ" value="100" />
-  <parameter name="F2SCLK_SDRAMCLK_Enable" value="false" />
-  <parameter name="F2SCLK_SDRAMCLK_FREQ" value="100" />
   <parameter name="F2H_AXI_CLOCK_FREQ" value="50000000" />
   <parameter name="H2F_AXI_CLOCK_FREQ" value="50000000" />
   <parameter name="H2F_LW_AXI_CLOCK_FREQ" value="50000000" />
@@ -648,15 +700,15 @@
   <parameter name="quartus_ini_hps_ip_enable_test_interface" value="false" />
   <parameter name="quartus_ini_hps_ip_fast_f2sdram_sim_model" value="false" />
   <parameter name="quartus_ini_hps_ip_suppress_sdram_synth" value="false" />
-  <parameter name="quartus_ini_hps_ip_enable_loanio" value="false" />
   <parameter
      name="quartus_ini_hps_ip_enable_low_speed_serial_fpga_interfaces"
      value="false" />
   <parameter name="quartus_ini_hps_ip_enable_bsel_csel" value="false" />
+  <parameter name="quartus_ini_hps_ip_f2sdram_bonding_out" value="false" />
  </module>
  <module
    kind="altera_mem_if_ddr3_emif"
-   version="13.0"
+   version="14.0"
    enabled="1"
    name="mem_if_ddr3_emif_0">
   <parameter name="MEM_VENDOR" value="Micron" />
@@ -665,6 +717,7 @@
   <parameter name="LRDIMM_EXTENDED_CONFIG">0x000000000000000000</parameter>
   <parameter name="DISCRETE_FLY_BY" value="true" />
   <parameter name="DEVICE_DEPTH" value="1" />
+  <parameter name="DEVICE_WIDTH" value="1" />
   <parameter name="MEM_MIRROR_ADDRESSING" value="0" />
   <parameter name="MEM_CLK_FREQ_MAX" value="800.0" />
   <parameter name="MEM_ROW_ADDR_WIDTH" value="15" />
@@ -688,6 +741,7 @@
   <parameter name="MEM_GUARANTEED_WRITE_INIT" value="false" />
   <parameter name="MEM_VERBOSE" value="true" />
   <parameter name="PINGPONGPHY_EN" value="false" />
+  <parameter name="DUPLICATE_AC" value="false" />
   <parameter name="REFRESH_BURST_VALIDATION" value="false" />
   <parameter name="MEM_BL" value="OTF" />
   <parameter name="MEM_BT" value="Sequential" />
@@ -791,7 +845,7 @@
   <parameter name="CTL_CMD_QUEUE_DEPTH" value="8" />
   <parameter name="CTL_CSR_READ_ONLY" value="1" />
   <parameter name="CFG_DATA_REORDERING_TYPE" value="INTER_BANK" />
-  <parameter name="NUM_OF_PORTS" value="3" />
+  <parameter name="NUM_OF_PORTS" value="4" />
   <parameter name="ENABLE_BONDING" value="false" />
   <parameter name="ENABLE_USER_ECC" value="false" />
   <parameter name="AVL_DATA_WIDTH_PORT" value="32,32,32,32,32,32" />
@@ -883,7 +937,6 @@
   <parameter name="ENABLE_ISS_PROBES" value="false" />
   <parameter name="CALIB_REG_WIDTH" value="8" />
   <parameter name="USE_SEQUENCER_BFM" value="false" />
-  <parameter name="DEFAULT_FAST_SIM_MODEL" value="true" />
   <parameter name="PLL_SHARING_MODE" value="None" />
   <parameter name="NUM_PLL_SHARING_INTERFACES" value="1" />
   <parameter name="EXPORT_AFI_HALF_CLK" value="false" />
@@ -893,6 +946,7 @@
   <parameter name="USE_FAKE_PHY" value="false" />
   <parameter name="FORCE_MAX_LATENCY_COUNT_WIDTH" value="0" />
   <parameter name="ENABLE_NON_DESTRUCTIVE_CALIB" value="false" />
+  <parameter name="ENABLE_DELAY_CHAIN_WRITE" value="false" />
   <parameter name="TRACKING_ERROR_TEST" value="false" />
   <parameter name="TRACKING_WATCH_TEST" value="false" />
   <parameter name="MARGIN_VARIATION_TEST" value="false" />
@@ -938,6 +992,8 @@
   <parameter name="TIMING_BOARD_AC_EYE_REDUCTION_H" value="0.0" />
   <parameter name="TIMING_BOARD_DQ_EYE_REDUCTION" value="0.0" />
   <parameter name="TIMING_BOARD_DELTA_DQS_ARRIVAL_TIME" value="0.0" />
+  <parameter name="TIMING_BOARD_READ_DQ_EYE_REDUCTION" value="0.0" />
+  <parameter name="TIMING_BOARD_DELTA_READ_DQS_ARRIVAL_TIME" value="0.0" />
   <parameter name="PACKAGE_DESKEW" value="false" />
   <parameter name="AC_PACKAGE_DESKEW" value="false" />
   <parameter name="TIMING_BOARD_MAX_CK_DELAY" value="0.6" />
@@ -965,12 +1021,14 @@
  </module>
  <module
    kind="altera_avalon_mm_bridge"
-   version="13.0"
+   version="14.0"
    enabled="1"
    name="mm_bridge_0">
   <parameter name="DATA_WIDTH" value="32" />
   <parameter name="SYMBOL_WIDTH" value="8" />
   <parameter name="ADDRESS_WIDTH" value="21" />
+  <parameter name="SYSINFO_ADDR_WIDTH" value="10" />
+  <parameter name="USE_AUTO_ADDRESS_WIDTH" value="0" />
   <parameter name="ADDRESS_UNITS" value="SYMBOLS" />
   <parameter name="MAX_BURST_SIZE" value="1" />
   <parameter name="MAX_PENDING_RESPONSES" value="4" />
@@ -980,115 +1038,109 @@
   <parameter name="AUTO_CLK_CLOCK_RATE" value="50000000" />
   <parameter name="AUTO_DEVICE_FAMILY" value="Cyclone V" />
  </module>
- <module kind="clock_source" version="13.0" enabled="1" name="osc_clk_0">
-  <parameter name="clockFrequency" value="50000000" />
-  <parameter name="clockFrequencyKnown" value="true" />
-  <parameter name="inputClockFrequency" value="0" />
-  <parameter name="resetSynchronousEdges" value="NONE" />
- </module>
  <connection
    kind="clock"
-   version="13.0"
+   version="14.0"
    start="clk_0.clk"
    end="hps_0.f2h_sdram0_clock" />
  <connection
    kind="clock"
-   version="13.0"
+   version="14.0"
    start="clk_0.clk"
    end="hps_0.h2f_axi_clock" />
  <connection
    kind="clock"
-   version="13.0"
+   version="14.0"
    start="clk_0.clk"
    end="hps_0.f2h_axi_clock" />
  <connection
    kind="clock"
-   version="13.0"
+   version="14.0"
    start="clk_0.clk"
    end="hps_0.h2f_lw_axi_clock" />
  <connection
    kind="reset"
-   version="13.0"
+   version="14.0"
    start="clk_0.clk_reset"
    end="mem_if_ddr3_emif_0.global_reset" />
  <connection
    kind="reset"
-   version="13.0"
+   version="14.0"
    start="clk_0.clk_reset"
    end="mem_if_ddr3_emif_0.soft_reset" />
  <connection
    kind="reset"
-   version="13.0"
+   version="14.0"
    start="mem_if_ddr3_emif_0.afi_reset"
    end="mem_if_ddr3_emif_0.mp_cmd_reset_n_0" />
  <connection
    kind="clock"
-   version="13.0"
+   version="14.0"
    start="clk_0.clk"
    end="mem_if_ddr3_emif_0.mp_cmd_clk_0" />
  <connection
    kind="clock"
-   version="13.0"
+   version="14.0"
    start="clk_0.clk"
    end="mem_if_ddr3_emif_0.mp_rfifo_clk_0" />
  <connection
    kind="clock"
-   version="13.0"
+   version="14.0"
    start="clk_0.clk"
    end="mem_if_ddr3_emif_0.mp_wfifo_clk_0" />
  <connection
    kind="reset"
-   version="13.0"
+   version="14.0"
    start="clk_0.clk_reset"
    end="mem_if_ddr3_emif_0.mp_cmd_reset_n_0" />
  <connection
    kind="reset"
-   version="13.0"
+   version="14.0"
    start="clk_0.clk_reset"
    end="mem_if_ddr3_emif_0.mp_rfifo_reset_n_0" />
  <connection
    kind="reset"
-   version="13.0"
+   version="14.0"
    start="clk_0.clk_reset"
    end="mem_if_ddr3_emif_0.mp_wfifo_reset_n_0" />
  <connection
    kind="clock"
-   version="13.0"
+   version="14.0"
    start="clk_0.clk"
    end="mem_if_ddr3_emif_0.mp_cmd_clk_1" />
  <connection
    kind="reset"
-   version="13.0"
+   version="14.0"
    start="clk_0.clk_reset"
    end="mem_if_ddr3_emif_0.mp_cmd_reset_n_1" />
  <connection
    kind="clock"
-   version="13.0"
+   version="14.0"
    start="clk_0.clk"
    end="mem_if_ddr3_emif_0.mp_rfifo_clk_1" />
  <connection
    kind="reset"
-   version="13.0"
+   version="14.0"
    start="clk_0.clk_reset"
    end="mem_if_ddr3_emif_0.mp_rfifo_reset_n_1" />
  <connection
    kind="reset"
-   version="13.0"
+   version="14.0"
    start="hps_0.h2f_reset"
    end="mem_if_ddr3_emif_0.mp_wfifo_reset_n_1" />
  <connection
    kind="clock"
-   version="13.0"
+   version="14.0"
    start="clk_0.clk"
    end="mem_if_ddr3_emif_0.mp_wfifo_clk_1" />
  <connection
    kind="reset"
-   version="13.0"
+   version="14.0"
    start="hps_0.h2f_reset"
    end="mem_if_ddr3_emif_0.mp_rfifo_reset_n_1" />
  <connection
    kind="avalon"
-   version="13.0"
+   version="14.0"
    start="hps_0.h2f_axi_master"
    end="mem_if_ddr3_emif_0.avl_1">
   <parameter name="arbitrationPriority" value="1" />
@@ -1097,44 +1149,69 @@
  </connection>
  <connection
    kind="reset"
-   version="13.0"
+   version="14.0"
    start="clk_0.clk_reset"
    end="mm_bridge_0.reset" />
  <connection
    kind="avalon"
-   version="13.0"
+   version="14.0"
    start="hps_0.h2f_lw_axi_master"
    end="mm_bridge_0.s0">
   <parameter name="arbitrationPriority" value="1" />
   <parameter name="baseAddress" value="0x0000" />
   <parameter name="defaultConnection" value="false" />
  </connection>
- <connection kind="clock" version="13.0" start="clk_0.clk" end="mm_bridge_0.clk" />
+ <connection kind="clock" version="14.0" start="clk_0.clk" end="mm_bridge_0.clk" />
  <connection
    kind="clock"
-   version="13.0"
+   version="14.0"
    start="clk_0.clk"
    end="mem_if_ddr3_emif_0.mp_rfifo_clk_2" />
  <connection
-   kind="reset"
-   version="13.0"
-   start="clk_0.clk_reset"
-   end="mem_if_ddr3_emif_0.mp_rfifo_reset_n_2" />
- <connection
    kind="clock"
-   version="13.0"
+   version="14.0"
    start="clk_0.clk"
    end="mem_if_ddr3_emif_0.mp_cmd_clk_2" />
  <connection
    kind="reset"
-   version="13.0"
+   version="14.0"
    start="clk_0.clk_reset"
    end="mem_if_ddr3_emif_0.mp_cmd_reset_n_2" />
  <connection
+   kind="reset"
+   version="14.0"
+   start="clk_0.clk_reset"
+   end="mem_if_ddr3_emif_0.mp_rfifo_reset_n_2" />
+ <connection
+   kind="reset"
+   version="14.0"
+   start="clk_0.clk_reset"
+   end="mem_if_ddr3_emif_0.mp_rfifo_reset_n_3" />
+ <connection
    kind="clock"
-   version="13.0"
-   start="osc_clk_0.clk"
-   end="mem_if_ddr3_emif_0.pll_ref_clk" />
+   version="14.0"
+   start="clk_0.clk"
+   end="mem_if_ddr3_emif_0.mp_rfifo_clk_3" />
+ <connection
+   kind="clock"
+   version="14.0"
+   start="clk_0.clk"
+   end="mem_if_ddr3_emif_0.mp_wfifo_clk_3" />
+ <connection
+   kind="reset"
+   version="14.0"
+   start="clk_0.clk_reset"
+   end="mem_if_ddr3_emif_0.mp_wfifo_reset_n_3" />
+ <connection
+   kind="clock"
+   version="14.0"
+   start="clk_0.clk"
+   end="mem_if_ddr3_emif_0.mp_cmd_clk_3" />
+ <connection
+   kind="reset"
+   version="14.0"
+   start="clk_0.clk_reset"
+   end="mem_if_ddr3_emif_0.mp_cmd_reset_n_3" />
  <interconnectRequirement for="$system" name="qsys_mm.clockCrossingAdapter" value="HANDSHAKE" />
  <interconnectRequirement for="$system" name="qsys_mm.maxAdditionalLatency" value="1" />
 </system>

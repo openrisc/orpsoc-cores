@@ -15,9 +15,13 @@ depend =
  gpio
  diila
  vga_lcd
+ ethmac
+ mac2mac_bridge
+ i2s
  i2c
  ompic
  timer
+ wb_streamer
 
 simulators =
  icarus
