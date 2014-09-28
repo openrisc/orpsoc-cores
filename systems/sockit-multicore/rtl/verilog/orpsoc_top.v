@@ -252,6 +252,12 @@ wire	async_rst;
 wire	wb_clk, wb_rst;
 wire	vga0_clk;
 wire	eth0_clk;
+wire	i2s0_mclk_12288000;
+wire	i2s0_mclk_12288000_div2;
+wire	i2s0_mclk_12288000_div4;
+wire	i2s0_mclk_11289600;
+wire	i2s0_mclk_11289600_div2;
+wire	i2s0_mclk_11289600_div4;
 wire	dbg_tck;
 wire	hps_sys_rst;
 wire	hps_cold_rst;
@@ -270,7 +276,13 @@ clkgen clkgen0 (
 
 	.vga0_clk_o	(vga0_clk),
 
-	.i2s0_mclk_o	(i2s0_mclk),
+	.i2s0_mclk_12288000_o		(i2s0_mclk_12288000),
+	.i2s0_mclk_12288000_div2_o	(i2s0_mclk_12288000_div2),
+	.i2s0_mclk_12288000_div4_o	(i2s0_mclk_12288000_div4),
+
+	.i2s0_mclk_11289600_o		(i2s0_mclk_11289600),
+	.i2s0_mclk_11289600_div2_o	(i2s0_mclk_11289600_div2),
+	.i2s0_mclk_11289600_div4_o	(i2s0_mclk_11289600_div4),
 
 	.hps_sys_rst_o	(hps_sys_rst),
 	.hps_cold_rst_o	(hps_cold_rst),
@@ -1602,7 +1614,7 @@ wire streamer0_irq;
 wb_stream_writer #(
 	.WB_DW		(32),
 	.WB_AW		(32),
-	.FIFO_AW	(5)
+	.FIFO_AW	(10)
 ) wb_streamer0 (
 	.clk			(wb_clk),
 	.rst			(wb_rst),
@@ -1644,6 +1656,26 @@ wb_stream_writer #(
 // I2S
 //
 ////////////////////////////////////////////////////////////////////////
+function [31:0] reverse;
+input [31:0] in;
+integer 			     i;
+begin
+	for (i = 0; i < 32; i=i+1) begin
+		reverse[31-i] = in[i];
+	end
+end
+endfunction
+
+function [31:0] swab;
+input [31:0] in;
+begin
+	swab[31:24] = in[7:0];
+	swab[23:16] = in[15:8];
+	swab[15:8]  = in[23:16];
+	swab[7:0]   = in[31:24];
+end
+endfunction
+
 parameter AUDIO_DW = 32;
 reg [31:0] i2s0_left_chan;
 reg [31:0] i2s0_right_chan;
@@ -1652,40 +1684,71 @@ reg [31:0] i2s0_right_chan;
 // NOTE: this is specific to 32-bit word length and  96KHz lrclk with ssm2603.
 // i.e. mclk = 12,288 MHz , SR = 0111 = mclk/128 => lrclk 96 KHz
 // and 128/(2*32) = 2.
-reg sclk = 0;
-always @(posedge i2s0_mclk)
-	sclk <= ~sclk;
 
-assign i2s0_sclk = sclk;
+//assign i2s0_mclk = i2s0_mclk_12288000;
+//assign i2s0_sclk = i2s0_mclk_12288000_div4;
+
+assign i2s0_mclk = i2s0_mclk_11289600;
+assign i2s0_sclk = i2s0_mclk_11289600_div4;
 
 //
 // Hook up the streamer interface
 //
-always @(posedge sclk) begin
-	if (i2s0_tx_lrclk & streamer0_valid)
-		i2s0_right_chan <= streamer0_data;
-	if (!i2s0_tx_lrclk & streamer0_valid)
-		i2s0_left_chan <= streamer0_data;
+always @(posedge i2s0_sclk) begin
+	if (i2s0_tx_lrclk)
+		i2s0_right_chan <= swab(streamer0_data);
+	if (!i2s0_tx_lrclk)
+		i2s0_left_chan <= swab(streamer0_data);
 end
 
-reg i2s0_tx_lrclk_r;
+// Sync the lrclk into wb domain
+reg [3:0] i2s0_tx_lrclk_wb;
 always @(posedge wb_clk)
-	i2s0_tx_lrclk_r <= i2s0_tx_lrclk;
+	i2s0_tx_lrclk_wb <= {i2s0_tx_lrclk_wb[2:0], i2s0_tx_lrclk};
+
+wire i2s0_tx_lrclk_posedge;
+assign i2s0_tx_lrclk_posedge = i2s0_tx_lrclk_wb[3] & !i2s0_tx_lrclk_wb[2];
+
+wire i2s0_tx_lrclk_negedge;
+assign i2s0_tx_lrclk_negedge = !i2s0_tx_lrclk_wb[3] & i2s0_tx_lrclk_wb[2];
 
 // latch data on i2s0_tx_lrclk edges
-assign streamer0_ready = i2s0_tx_lrclk ^ i2s0_tx_lrclk_r;
+assign streamer0_ready = i2s0_tx_lrclk_posedge | i2s0_tx_lrclk_negedge;
 
+wire [AUDIO_DW-1:0] i2s0_prescaler;
 i2s_tx #(
 	.AUDIO_DW	(AUDIO_DW)
 ) i2s_tx0 (
 	.sclk		(i2s0_sclk),
 	.rst		(wb_rst),
 
+	.prescaler	(i2s0_prescaler),
+
 	.lrclk		(i2s0_tx_lrclk),
 	.sdata		(i2s0_tx_sdata),
 
 	.left_chan	(i2s0_left_chan),
 	.right_chan	(i2s0_right_chan)
+);
+
+i2s_wb_if i2s_wb_if0 (
+	.rst		(wb_rst),
+	.wb_clk		(wb_clk),
+
+	.wb_adr_i	(wb_m2s_i2s0_adr),
+	.wb_dat_i	(wb_m2s_i2s0_dat),
+	.wb_sel_i	(wb_m2s_i2s0_sel),
+	.wb_we_i	(wb_m2s_i2s0_we),
+	.wb_cyc_i	(wb_m2s_i2s0_cyc),
+	.wb_stb_i	(wb_m2s_i2s0_stb),
+	.wb_cti_i	(wb_m2s_i2s0_cti),
+	.wb_bte_i	(wb_m2s_i2s0_bte),
+	.wb_dat_o	(wb_s2m_i2s0_dat),
+	.wb_ack_o	(wb_s2m_i2s0_ack),
+	.wb_err_o	(wb_s2m_i2s0_err),
+	.wb_rty_o	(wb_s2m_i2s0_rty),
+
+	.prescaler	(i2s0_prescaler)
 );
 
 assign mute_n = 1;
