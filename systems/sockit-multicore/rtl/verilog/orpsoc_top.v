@@ -1514,7 +1514,7 @@ ipi #(
 	.NUM_CORES	(2)
 ) ipi  (
 	.clk		(wb_clk),
-	.rst		(|or1k_rst),
+	.rst		(&or1k_rst),
 	// Wishbone slave interface
 	.wb_adr_i	(wb_m2s_ipi_adr[16:0]),
 	.wb_dat_i	(wb_m2s_ipi_dat),
@@ -1538,7 +1538,7 @@ ipi #(
 //
 tc tc  (
 	.clk		(wb_clk),
-	.rst		(|or1k_rst),
+	.rst		(&or1k_rst),
 	// Wishbone slave interface
 	.wb_adr_i	(wb_m2s_tc_adr),
 	.wb_dat_i	(wb_m2s_tc_dat),
