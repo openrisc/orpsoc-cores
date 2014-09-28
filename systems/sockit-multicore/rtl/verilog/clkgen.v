@@ -52,7 +52,7 @@ module clkgen
 
 	output 		  hps_sys_rst_o,
 	output 		  hps_cold_rst_o,
-	output [1:0]	  or1k_cpu_rst_o,
+	output [3:0]	  or1k_cpu_rst_o,
 
 	// Wishbone clock and reset out
 	output 		  wb_clk_o,
@@ -358,7 +358,9 @@ localparam
 	HPS_SYS_RST	= 1,
 	HPS_COLD_RST	= 2,
 	OR1K0_CPU_RST	= 3,
-	OR1K1_CPU_RST	= 4;
+	OR1K1_CPU_RST	= 4,
+	OR1K2_CPU_RST	= 5,
+	OR1K3_CPU_RST	= 6;
 
 // Reset generation for wishbone
 reg [15:0]	wb_rst_shr;
@@ -376,7 +378,7 @@ assign hps_sys_rst_o = rst_ctrl[HPS_SYS_RST];
 assign hps_cold_rst_o = rst_ctrl[HPS_COLD_RST];
 
 // OR1K cpu reset
-assign or1k_cpu_rst_o = rst_ctrl[OR1K1_CPU_RST:OR1K0_CPU_RST];
+assign or1k_cpu_rst_o = rst_ctrl[OR1K3_CPU_RST:OR1K0_CPU_RST];
 
 //
 // Wishbone interface

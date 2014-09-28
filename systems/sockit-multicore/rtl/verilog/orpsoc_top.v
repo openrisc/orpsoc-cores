@@ -191,6 +191,8 @@ module orpsoc_top (
 
 parameter	IDCODE_VALUE=32'h14951185;
 
+parameter	NUM_CPUS=4;
+
 wire        traceport_exec_valid[0:1] /* verilator public */;
 wire [31:0] traceport_exec_pc[0:1] /* verilator public */;
 wire [31:0] traceport_exec_insn[0:1] /* verilator public */;
@@ -253,7 +255,7 @@ wire	eth0_clk;
 wire	dbg_tck;
 wire	hps_sys_rst;
 wire	hps_cold_rst;
-wire [1:0] or1k_cpu_rst;
+wire [3:0] or1k_cpu_rst;
 
 clkgen clkgen0 (
 	.sys_clk_pad_i	(sys_clk_pad_i),
@@ -812,7 +814,7 @@ avalon_to_wb_bridge #(
 //
 ////////////////////////////////////////////////////////////////////////
 
-wire	[31:0]	or1k_irq [0:1];
+wire	[31:0]	or1k_irq [0:NUM_CPUS-1];
 
 wire	[31:0]	or1k_dbg_dat_i;
 wire	[31:0]	or1k_dbg_adr_i;
@@ -830,12 +832,17 @@ wire		or1k_dbg_bp_o;
 wire		or1k_dbg_rst;
 
 wire		or1k_clk;
-wire	[1:0]	or1k_rst;
+
+wire	[NUM_CPUS-1:0]	or1k_rst;
 
 assign or1k_clk = wb_clk;
+
 assign or1k_rst[0] = wb_rst | or1k_cpu_rst[0];
 assign or1k_rst[1] = wb_rst | or1k_cpu_rst[1];
+assign or1k_rst[2] = wb_rst | or1k_cpu_rst[2];
+assign or1k_rst[3] = wb_rst | or1k_cpu_rst[3];
 
+// CPU0
 mor1kx #(
 	.FEATURE_DEBUGUNIT("ENABLED"),
 	.FEATURE_CMOV("ENABLED"),
@@ -910,7 +917,7 @@ mor1kx #(
 	.du_stall_o(/*or1k_dbg_bp_o*/),
 
 	.multicore_coreid_i(0),
-	.multicore_numcores_i(2),
+	.multicore_numcores_i(NUM_CPUS),
 
 	.snoop_adr_i(snoop_adr),
 	.snoop_en_i(snoop_en)
@@ -923,6 +930,7 @@ mor1kx #(
 	.traceport_exec_wben_o(traceport_exec_wben[0])
 );
 
+// CPU1
 mor1kx #(
 	.FEATURE_DEBUGUNIT("ENABLED"),
 	.FEATURE_CMOV("ENABLED"),
@@ -997,7 +1005,7 @@ mor1kx #(
 	.du_stall_o(/*or1k_dbg_bp_o*/),
 
 	.multicore_coreid_i(1),
-	.multicore_numcores_i(2),
+	.multicore_numcores_i(NUM_CPUS),
 
 	.snoop_adr_i(snoop_adr),
 	.snoop_en_i(snoop_en)
@@ -1008,6 +1016,182 @@ mor1kx #(
 	.traceport_exec_wbdata_o(traceport_exec_wbdata[1]),
 	.traceport_exec_wbreg_o(traceport_exec_wbreg[1]),
 	.traceport_exec_wben_o(traceport_exec_wben[1])
+);
+
+// CPU2
+mor1kx #(
+	.FEATURE_DEBUGUNIT("ENABLED"),
+	.FEATURE_CMOV("ENABLED"),
+	.FEATURE_INSTRUCTIONCACHE("ENABLED"),
+	.FEATURE_MULTICORE("ENABLED"),
+	.OPTION_ICACHE_BLOCK_WIDTH(5),
+	.OPTION_ICACHE_SET_WIDTH(8),
+	.OPTION_ICACHE_WAYS(2),
+	.OPTION_ICACHE_LIMIT_WIDTH(32),
+	.FEATURE_IMMU("ENABLED"),
+	.OPTION_IMMU_SET_WIDTH(7),
+	.FEATURE_DATACACHE("ENABLED"),
+	.OPTION_DCACHE_BLOCK_WIDTH(5),
+	.OPTION_DCACHE_SET_WIDTH(8),
+	.OPTION_DCACHE_WAYS(2),
+	.OPTION_DCACHE_LIMIT_WIDTH(31),
+	.FEATURE_DMMU("ENABLED"),
+	.OPTION_DMMU_SET_WIDTH(7),
+	.OPTION_PIC_TRIGGER("LEVEL"),
+
+	.FEATURE_TRACEPORT_EXEC("ENABLED"),
+
+	.OPTION_RF_NUM_SHADOW_GPR	(1),
+
+	.OPTION_PIC_NMI_WIDTH           (2),
+
+	.IBUS_WB_TYPE("B3_REGISTERED_FEEDBACK"),
+	.DBUS_WB_TYPE("B3_REGISTERED_FEEDBACK"),
+	.OPTION_CPU0("CAPPUCCINO"),
+	.OPTION_RESET_PC(32'h00000100)
+) mor1kx2 (
+	.iwbm_adr_o(wb_m2s_or1k2_i_adr),
+	.iwbm_stb_o(wb_m2s_or1k2_i_stb),
+	.iwbm_cyc_o(wb_m2s_or1k2_i_cyc),
+	.iwbm_sel_o(wb_m2s_or1k2_i_sel),
+	.iwbm_we_o (wb_m2s_or1k2_i_we),
+	.iwbm_cti_o(wb_m2s_or1k2_i_cti),
+	.iwbm_bte_o(wb_m2s_or1k2_i_bte),
+	.iwbm_dat_o(wb_m2s_or1k2_i_dat),
+
+	.dwbm_adr_o(wb_m2s_or1k2_d_adr),
+	.dwbm_stb_o(wb_m2s_or1k2_d_stb),
+	.dwbm_cyc_o(wb_m2s_or1k2_d_cyc),
+	.dwbm_sel_o(wb_m2s_or1k2_d_sel),
+	.dwbm_we_o (wb_m2s_or1k2_d_we ),
+	.dwbm_cti_o(wb_m2s_or1k2_d_cti),
+	.dwbm_bte_o(wb_m2s_or1k2_d_bte),
+	.dwbm_dat_o(wb_m2s_or1k2_d_dat),
+
+	.clk(or1k_clk),
+	.rst(or1k_rst[2]),
+
+	.iwbm_err_i(wb_s2m_or1k2_i_err),
+	.iwbm_ack_i(wb_s2m_or1k2_i_ack),
+	.iwbm_dat_i(wb_s2m_or1k2_i_dat),
+	.iwbm_rty_i(wb_s2m_or1k2_i_rty),
+
+	.dwbm_err_i(wb_s2m_or1k2_d_err),
+	.dwbm_ack_i(wb_s2m_or1k2_d_ack),
+	.dwbm_dat_i(wb_s2m_or1k2_d_dat),
+	.dwbm_rty_i(wb_s2m_or1k2_d_rty),
+
+	.irq_i(or1k_irq[2]),
+
+	.du_addr_i(16'b0 /*or1k_dbg_adr_i[15:0]*/),
+	.du_stb_i(1'b0 /*or1k_dbg_stb_i*/),
+	.du_dat_i(32'b0 /*or1k_dbg_dat_i*/),
+	.du_we_i(1'b0 /*or1k_dbg_we_i*/),
+	.du_dat_o(/*or1k_dbg_dat_o*/),
+	.du_ack_o(/*or1k_dbg_ack_o*/),
+	.du_stall_i(1'b0 /*or1k_dbg_stall_i*/),
+	.du_stall_o(/*or1k_dbg_bp_o*/),
+
+	.multicore_coreid_i(2),
+	.multicore_numcores_i(NUM_CPUS),
+
+	.snoop_adr_i(snoop_adr),
+	.snoop_en_i(snoop_en)
+	,
+	.traceport_exec_valid_o(),
+	.traceport_exec_pc_o(),
+	.traceport_exec_insn_o(),
+	.traceport_exec_wbdata_o(),
+	.traceport_exec_wbreg_o(),
+	.traceport_exec_wben_o()
+);
+
+// CPU3
+mor1kx #(
+	.FEATURE_DEBUGUNIT("ENABLED"),
+	.FEATURE_CMOV("ENABLED"),
+	.FEATURE_INSTRUCTIONCACHE("ENABLED"),
+	.FEATURE_MULTICORE("ENABLED"),
+	.OPTION_ICACHE_BLOCK_WIDTH(5),
+	.OPTION_ICACHE_SET_WIDTH(8),
+	.OPTION_ICACHE_WAYS(2),
+	.OPTION_ICACHE_LIMIT_WIDTH(32),
+	.FEATURE_IMMU("ENABLED"),
+	.OPTION_IMMU_SET_WIDTH(7),
+	.FEATURE_DATACACHE("ENABLED"),
+	.OPTION_DCACHE_BLOCK_WIDTH(5),
+	.OPTION_DCACHE_SET_WIDTH(8),
+	.OPTION_DCACHE_WAYS(2),
+	.OPTION_DCACHE_LIMIT_WIDTH(31),
+	.FEATURE_DMMU("ENABLED"),
+	.OPTION_DMMU_SET_WIDTH(7),
+	.OPTION_PIC_TRIGGER("LEVEL"),
+
+	.FEATURE_TRACEPORT_EXEC("ENABLED"),
+
+	.OPTION_RF_NUM_SHADOW_GPR	(1),
+
+	.OPTION_PIC_NMI_WIDTH           (2),
+
+	.IBUS_WB_TYPE("B3_REGISTERED_FEEDBACK"),
+	.DBUS_WB_TYPE("B3_REGISTERED_FEEDBACK"),
+	.OPTION_CPU0("CAPPUCCINO"),
+	.OPTION_RESET_PC(32'h00000100)
+) mor1kx3 (
+	.iwbm_adr_o(wb_m2s_or1k3_i_adr),
+	.iwbm_stb_o(wb_m2s_or1k3_i_stb),
+	.iwbm_cyc_o(wb_m2s_or1k3_i_cyc),
+	.iwbm_sel_o(wb_m2s_or1k3_i_sel),
+	.iwbm_we_o (wb_m2s_or1k3_i_we),
+	.iwbm_cti_o(wb_m2s_or1k3_i_cti),
+	.iwbm_bte_o(wb_m2s_or1k3_i_bte),
+	.iwbm_dat_o(wb_m2s_or1k3_i_dat),
+
+	.dwbm_adr_o(wb_m2s_or1k3_d_adr),
+	.dwbm_stb_o(wb_m2s_or1k3_d_stb),
+	.dwbm_cyc_o(wb_m2s_or1k3_d_cyc),
+	.dwbm_sel_o(wb_m2s_or1k3_d_sel),
+	.dwbm_we_o (wb_m2s_or1k3_d_we ),
+	.dwbm_cti_o(wb_m2s_or1k3_d_cti),
+	.dwbm_bte_o(wb_m2s_or1k3_d_bte),
+	.dwbm_dat_o(wb_m2s_or1k3_d_dat),
+
+	.clk(or1k_clk),
+	.rst(or1k_rst[3]),
+
+	.iwbm_err_i(wb_s2m_or1k3_i_err),
+	.iwbm_ack_i(wb_s2m_or1k3_i_ack),
+	.iwbm_dat_i(wb_s2m_or1k3_i_dat),
+	.iwbm_rty_i(wb_s2m_or1k3_i_rty),
+
+	.dwbm_err_i(wb_s2m_or1k3_d_err),
+	.dwbm_ack_i(wb_s2m_or1k3_d_ack),
+	.dwbm_dat_i(wb_s2m_or1k3_d_dat),
+	.dwbm_rty_i(wb_s2m_or1k3_d_rty),
+
+	.irq_i(or1k_irq[3]),
+
+	.du_addr_i(16'b0 /*or1k_dbg_adr_i[15:0]*/),
+	.du_stb_i(1'b0 /*or1k_dbg_stb_i*/),
+	.du_dat_i(32'b0 /*or1k_dbg_dat_i*/),
+	.du_we_i(1'b0 /*or1k_dbg_we_i*/),
+	.du_dat_o(/*or1k_dbg_dat_o*/),
+	.du_ack_o(/*or1k_dbg_ack_o*/),
+	.du_stall_i(1'b0 /*or1k_dbg_stall_i*/),
+	.du_stall_o(/*or1k_dbg_bp_o*/),
+
+	.multicore_coreid_i(3),
+	.multicore_numcores_i(NUM_CPUS),
+
+	.snoop_adr_i(snoop_adr),
+	.snoop_en_i(snoop_en)
+	,
+	.traceport_exec_valid_o(),
+	.traceport_exec_pc_o(),
+	.traceport_exec_insn_o(),
+	.traceport_exec_wbdata_o(),
+	.traceport_exec_wbreg_o(),
+	.traceport_exec_wben_o()
 );
 
 // TODOD: connect
@@ -1509,9 +1693,9 @@ assign mute_n = 1;
 //
 // Inter-processor-interrupt
 //
-wire [0:1] ipi_irq;
+wire [0:NUM_CPUS-1] ipi_irq;
 ipi #(
-	.NUM_CORES	(2)
+	.NUM_CORES	(NUM_CPUS)
 ) ipi  (
 	.clk		(wb_clk),
 	.rst		(&or1k_rst),
@@ -1572,26 +1756,7 @@ assign or1k_irq[0][8] = vga0_irq;
 assign or1k_irq[0][9] = 0;
 assign or1k_irq[0][10] = i2c0_irq;
 assign or1k_irq[0][11] = streamer0_irq;
-assign or1k_irq[0][12] = 0;
-assign or1k_irq[0][13] = 0;
-assign or1k_irq[0][14] = 0;
-assign or1k_irq[0][15] = 0;
-assign or1k_irq[0][16] = 0;
-assign or1k_irq[0][17] = 0;
-assign or1k_irq[0][18] = 0;
-assign or1k_irq[0][19] = 0;
-assign or1k_irq[0][20] = 0;
-assign or1k_irq[0][21] = 0;
-assign or1k_irq[0][22] = 0;
-assign or1k_irq[0][23] = 0;
-assign or1k_irq[0][24] = 0;
-assign or1k_irq[0][25] = 0;
-assign or1k_irq[0][26] = 0;
-assign or1k_irq[0][27] = 0;
-assign or1k_irq[0][28] = 0;
-assign or1k_irq[0][29] = 0;
-assign or1k_irq[0][30] = 0;
-assign or1k_irq[0][31] = 0;
+assign or1k_irq[0][31:12] = 0;
 
 assign or1k_irq[1][0] = 0;
 assign or1k_irq[1][1] = ipi_irq[1];
@@ -1605,26 +1770,35 @@ assign or1k_irq[1][8] = vga0_irq;
 assign or1k_irq[1][9] = 0;
 assign or1k_irq[1][10] = i2c0_irq;
 assign or1k_irq[1][11] = streamer0_irq;
-assign or1k_irq[1][12] = 0;
-assign or1k_irq[1][13] = 0;
-assign or1k_irq[1][14] = 0;
-assign or1k_irq[1][15] = 0;
-assign or1k_irq[1][16] = 0;
-assign or1k_irq[1][17] = 0;
-assign or1k_irq[1][18] = 0;
-assign or1k_irq[1][19] = 0;
-assign or1k_irq[1][20] = 0;
-assign or1k_irq[1][21] = 0;
-assign or1k_irq[1][22] = 0;
-assign or1k_irq[1][23] = 0;
-assign or1k_irq[1][24] = 0;
-assign or1k_irq[1][25] = 0;
-assign or1k_irq[1][26] = 0;
-assign or1k_irq[1][27] = 0;
-assign or1k_irq[1][28] = 0;
-assign or1k_irq[1][29] = 0;
-assign or1k_irq[1][30] = 0;
-assign or1k_irq[1][31] = 0;
+assign or1k_irq[1][31:12] = 0;
+
+assign or1k_irq[2][0] = 0;
+assign or1k_irq[2][1] = ipi_irq[2];
+assign or1k_irq[2][2] = uart0_irq;
+assign or1k_irq[2][3] = 0;
+assign or1k_irq[2][4] = eth0_irq;
+assign or1k_irq[2][5] = 0;
+assign or1k_irq[2][6] = 0;
+assign or1k_irq[2][7] = 0;
+assign or1k_irq[2][8] = vga0_irq;
+assign or1k_irq[2][9] = 0;
+assign or1k_irq[2][10] = i2c0_irq;
+assign or1k_irq[2][11] = streamer0_irq;
+assign or1k_irq[2][31:12] = 0;
+
+assign or1k_irq[3][0] = 0;
+assign or1k_irq[3][1] = ipi_irq[3];
+assign or1k_irq[3][2] = uart0_irq;
+assign or1k_irq[3][3] = 0;
+assign or1k_irq[3][4] = eth0_irq;
+assign or1k_irq[3][5] = 0;
+assign or1k_irq[3][6] = 0;
+assign or1k_irq[3][7] = 0;
+assign or1k_irq[3][8] = vga0_irq;
+assign or1k_irq[3][9] = 0;
+assign or1k_irq[3][10] = i2c0_irq;
+assign or1k_irq[3][11] = streamer0_irq;
+assign or1k_irq[3][31:12] = 0;
 
 ////////////////////////////////////////////////////////////////////////
 //
