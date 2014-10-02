@@ -78,3 +78,31 @@ begin
 	end
 end
 endfunction
+
+//
+// Reverse bits in a vector
+//
+function integer reverse_bits;
+input integer in;
+input integer width;
+integer i;
+begin
+	for (i = 0; i < width; i=i+1) begin
+		reverse_bits[width-i] = in[i];
+	end
+end
+endfunction
+
+//
+// Reverse bytes in a vector
+//
+function integer reverse_bytes;
+input integer in;
+input integer width;
+integer i;
+begin
+	for (i = 0; i < width; i=i+8) begin
+		reverse_bytes[(width-1)-i-:8] = in[i+:8];
+	end
+end
+endfunction
