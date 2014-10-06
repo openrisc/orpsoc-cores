@@ -27,7 +27,5 @@ toplevel = wb_sdram_ctrl_tb
 vsim_options = -t 1ps
  
 [provider]
-name = github
-user = skristiansson
+name = submodule
 repo = wb_sdram_ctrl
-branch = master

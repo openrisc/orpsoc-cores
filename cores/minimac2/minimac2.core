@@ -22,7 +22,5 @@ tb_private_src_files =
 toplevel = tb_minimac
 
 [provider]
-name = github
-user = m-labs
+name = submodule
 repo = milkymist
-version = master

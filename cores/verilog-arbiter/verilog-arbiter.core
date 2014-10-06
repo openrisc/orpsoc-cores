@@ -6,7 +6,5 @@ description = "Verilog arbiter"
 src_files = src/arbiter.v
 
 [provider]
-name = github
-user = bmartini
+name = submodule
 repo = verilog-arbiter
-branch = master

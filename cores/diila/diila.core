@@ -7,7 +7,5 @@ src_files =
  rtl/verilog/diila.v
 
 [provider]
-name = github
-user = skristiansson
+name = submodule
 repo = diila
-branch = master
