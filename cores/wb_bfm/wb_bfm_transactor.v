@@ -170,7 +170,7 @@ module wb_bfm_transactor
 	 end
 	 for(word = 0 ; word < burst_length ; word = word +1)
 	   if(read_data[word*dw+:dw] !== expected_data[word*dw+:dw]) begin
-	      $error("Transaction %0d failed!", transaction);
+	      $error("%m : Transaction %0d failed!", transaction);
 	      $error("Read data mismatch on address %h (burst length=%0d, burst_type=%0d, iteration %0d)", address, burst_length, burst_type, word);
 	      $error("Expected %h", expected_data[word*dw+:dw]);
 	      $error("Got      %h", read_data[word*dw+:dw]);

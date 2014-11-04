@@ -63,6 +63,8 @@ module wb_bfm_master
 	 @(posedge wb_clk_i);
 	 next;
 	 err_o = wb_err_i;
+	 wb_cyc_o = 1'b0;
+	 wb_we_o  = 1'b0;
       end
    endtask //
 
