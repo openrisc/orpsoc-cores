@@ -1,7 +1,7 @@
 CAPI=1
 [main]
 simulators = icarus modelsim
-depend = fifo
+depend = fifo-1.0
 
 [verilog]
 src_files =
