@@ -9,4 +9,4 @@ src_files = src/arbiter.v
 name = github
 user = bmartini
 repo = verilog-arbiter
-branch = master
+version = 4d7be0fb204a249491a5b321887f4b9bbc133558
