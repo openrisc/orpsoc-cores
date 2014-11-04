@@ -25,4 +25,4 @@ toplevel = tb_minimac
 name = github
 user = m-labs
 repo = milkymist
-version = master
+version = 7d944d3dcffb5e528a44937b10123ff65a0aecbc
