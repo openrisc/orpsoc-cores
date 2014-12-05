@@ -120,9 +120,10 @@ module wb_port #(
 		IDLE		= 3'd0,
 		READ		= 3'd1,
 		WRITE		= 3'd2,
-		REFILL		= 3'd3,
-		WAIT_LATENCY	= 3'd4,
-		READ_DONE	= 3'd5;
+		WRITE_LAST	= 3'd3,
+		REFILL		= 3'd4,
+		WAIT_LATENCY	= 3'd5,
+		READ_DONE	= 3'd6;
 
 
 	localparam [2:0]
@@ -315,10 +316,20 @@ dual_clock_fifo #(
 					end
 				end
 
-				if ((wb_cti_i != INC_BURST) & wb_ack_o) begin
-					wb_state <= IDLE;
-					wb_write_ack <= 0;
+				if ((wb_cti_i == END_BURST) & wb_ack_o) begin
+					wb_state <= WRITE_LAST;
+					wb_write_ack <= 1'b0;
 				end
+
+				if ((wb_cti_i == CLASSIC) & wb_ack_o) begin
+					wb_state <= IDLE;
+					wb_write_ack <= 1'b0;
+				end
+
+			end
+
+			WRITE_LAST: begin
+				wb_state <= IDLE;
 			end
 
 			READ_DONE: begin
