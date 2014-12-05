@@ -85,6 +85,8 @@ module ddr_ctrl_wrapper #(
 	reg		ack_w;
 	reg [31:0]	adr;
 
+	wire		ack_w_rdy;
+
 	// FSM states
 	localparam [3:0]
 		WAIT_READY    = 4'h0,
@@ -95,8 +97,9 @@ module ddr_ctrl_wrapper #(
 	assign rdy_o = local_ready_i;
 	assign idle_o = (state == IDLE);
 	assign adr_o = adr;
+	assign ack_w_rdy = local_ready_i & ack_w;
 
-	assign ack_o = acc_i ? (we_i ? ack_w : local_rdata_valid_i) : 1'b0;
+	assign ack_o = acc_i ? (we_i ? ack_w_rdy : local_rdata_valid_i) : 1'b0;
 
 	always @(posedge local_clk_i) begin
 		if (local_reset_n_i == 1'b0) begin
@@ -143,7 +146,8 @@ module ddr_ctrl_wrapper #(
 			end
 
 			WRITE : begin
-				state <= IDLE;
+				if (local_ready_i)
+					state <= IDLE;
 			end
 
 			READ : begin
