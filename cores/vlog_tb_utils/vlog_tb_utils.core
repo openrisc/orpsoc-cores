@@ -8,6 +8,7 @@ tb_src_files =
  vlog_tb_utils.v
 
 [plusargs]
+heartbeat = int Display a heartbeat message every n*heartbeat
 testcase = str Name of testcase (Used for VCD filename)
 timeout = int "Abort test case after n cycles"
 vcd     = bool "Enable VCD logging"

@@ -23,4 +23,11 @@ module vlog_tb_utils;
       end
    end
 
+   //Heartbeat timer for simulations
+   reg [63:0] heartbeat;
+   initial begin
+      if($value$plusargs("heartbeat=%d", heartbeat))
+	forever #heartbeat $display("Heartbeat : Time=%0t", $time);
+   end
+
 endmodule // vlog_tb_utils
