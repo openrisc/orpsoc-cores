@@ -162,14 +162,12 @@ BUFG dcm0_clkfx_bufg
 	.I	(dcm0_clkfx_prebufg)
 );
 
-/* This is buffered in dvi_gen
 BUFG dcm0_clkdv_bufg
        (// Outputs
 	.O	(dcm0_clkdv),
 	// Inputs
 	.I	(dcm0_clkdv_prebufg)
 );
-*/
 
 BUFG pll0_clk1_bufg
        (// Outputs
@@ -184,7 +182,7 @@ assign sync_ddr2_rst_n = dcm0_locked;
 assign ddr2_if_clk_o = dcm0_clkfx; // 266MHz
 assign clk100_o = dcm0_clk0; // 100MHz
 
-assign dvi_clk_o = dcm0_clkdv_prebufg;
+assign dvi_clk_o = dcm0_clkdv;
 
 //
 // Reset generation
