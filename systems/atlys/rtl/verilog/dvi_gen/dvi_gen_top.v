@@ -71,12 +71,12 @@ module dvi_gen_top (
   wire          locked;
   wire          reset;
 
-  wire          clk50m, clk50m_bufg;
+  wire          /*clk50m,*/ clk50m_bufg;
 
   wire          pwrup;
 
-  assign clk50m = dvi_clk_i;
-  BUFG clk50m_bufgbufg (.I(clk50m), .O(clk50m_bufg));
+  assign clk50m_bufg = dvi_clk_i;
+  /*BUFG clk50m_bufgbufg (.I(clk50m), .O(clk50m_bufg));*/
 
   wire pclk_lckd;
   wire RSTBTN;
@@ -433,7 +433,7 @@ module dvi_gen_top (
     .LOCKED(pclk_lckd),
     .PROGDONE(progdone),
     .STATUS(),
-    .CLKIN(clk50m),
+    .CLKIN(clk50m_bufg),
     .FREEZEDCM(1'b0),
     .PROGCLK(clk50m_bufg),
     .PROGDATA(progdata),
