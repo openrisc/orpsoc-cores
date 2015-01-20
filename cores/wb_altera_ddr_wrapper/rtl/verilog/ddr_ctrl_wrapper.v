@@ -68,7 +68,6 @@ module ddr_ctrl_wrapper #(
 	assign local_address_o	= we_i ? adr_i[LOCAL_ADR_WIDTH+1:2] : adr_i[LOCAL_ADR_WIDTH+1:2] & ~get_mask(buf_width_i);
 	assign local_wdata_o	= dat_i;
 
-	reg [22:0]	local_address;
 	reg		local_write_req;
 	reg		local_read_req;
 	reg		local_burstbegin;

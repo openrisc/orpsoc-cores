@@ -45,7 +45,7 @@ module wb_ddr_ctrl #(
 	output [WB_PORTS-1:0]		wb_ack_o,
 
 	// DDR controller local interface
-	output	[22:0]			local_address_o,
+	output	[ADDR_WIDTH-3:0]	local_address_o,
 	output				local_write_req_o,
 	output				local_read_req_o,
 	output				local_burstbegin_o,
@@ -75,7 +75,7 @@ module wb_ddr_ctrl #(
 	)
 	ddr_ctrl_wrapper (
 		// Internal interface
-		.rdy_o			(sdram_if_rdy),
+		.rdy_o			(),
 		.idle_o			(sdram_if_idle),
 		.adr_i			(sdram_if_adr_i),
 		.adr_o			(sdram_if_adr_o),
