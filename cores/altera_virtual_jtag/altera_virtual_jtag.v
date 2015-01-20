@@ -61,10 +61,6 @@ module altera_virtual_jtag (
 localparam [3:0] CMD_DEBUG = 4'b1000;
 
 wire	[3:0]	ir_value;
-wire		exit1_dr;
-wire		exit2_dr;
-wire		capture_ir;
-wire		update_ir;
 
 sld_virtual_jtag #(
 	.sld_auto_instance_index	("YES"),
@@ -80,16 +76,32 @@ sld_virtual_jtag #(
 	.tdi				(tdi_o),
 	.jtag_state_rti			(run_test_idle_o),
 	.tck				(tck_o),
+	.tms				(),
 	.ir_in				(ir_value),
 	.jtag_state_tlr			(test_logic_reset_o),
-	.virtual_state_cir		(capture_ir),
+	.jtag_state_sdr			(),
+	.jtag_state_sir			(),
+	.jtag_state_sdrs		(),
+	.jtag_state_cdr			(),
+	.jtag_state_e1dr		(),
+	.jtag_state_pdr			(),
+	.jtag_state_e2dr		(),
+	.jtag_state_udr			(),
+	.jtag_state_sirs		(),
+	.jtag_state_cir			(),
+	.jtag_state_e1ir		(),
+	.jtag_state_pir			(),
+	.jtag_state_e2ir		(),
+	.jtag_state_uir			(),
+
+	.virtual_state_cir		(),
 	.virtual_state_pdr		(pause_dr_o),
-	.virtual_state_uir		(update_ir),
+	.virtual_state_uir		(),
 	.virtual_state_sdr		(shift_dr_o),
 	.virtual_state_cdr		(capture_dr_o),
 	.virtual_state_udr		(update_dr_o),
-	.virtual_state_e1dr		(exit1_dr),
-	.virtual_state_e2dr		(exit2_dr)
+	.virtual_state_e1dr		(),
+	.virtual_state_e2dr		()
 );
 
 assign debug_select_o = (ir_value == CMD_DEBUG);
