@@ -2,11 +2,6 @@ CAPI=1
 [main]
 description = "Altera DDR controller wrapper with multiple wishbone slave ports"
 
-depend =
- mt46v16m16p
- vlog_tb_utils
- wb_bfm
-
 simulators =
  modelsim
 
@@ -86,3 +81,8 @@ toplevel =
 [modelsim]
 vlog_options = +define+sg5B +define+x16 +define+FULL_MEM
 vsim_options = -t 1ps
+depend =
+ mt46v16m16p
+ vlog_tb_utils
+ wb_bfm
+
