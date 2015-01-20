@@ -13,7 +13,7 @@ depend =
  simple_spi
  uart16550
  vlog_tb_utils
- wb_intercon
+ wb_intercon-1.0
  wb_ram
  wb_sdram_ctrl
 
