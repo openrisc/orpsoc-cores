@@ -25,8 +25,8 @@ function [31:0] wb_next_adr;
    input [2:0] 	bte_i;
    input integer dw;
 
-   reg [31-1:0]   adr;
-   integer 	  shift;
+   reg [31:0] 	 adr;
+   integer 	 shift;
    begin
       shift = $clog2(dw/8);
       adr = adr_i >> shift;
