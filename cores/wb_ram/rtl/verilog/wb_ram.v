@@ -21,6 +21,7 @@ module wb_ram
    output 	   wb_err_o,
    output [dw-1:0] wb_dat_o);
 
+   `include "wb_common.v"
    reg [aw-1:0] 	   adr_r;
 
    wire [aw-1:0] 	   next_adr;
@@ -31,7 +32,7 @@ module wb_ram
 
    wire 		   new_cycle = valid & !valid_r;
 
-   wb_next_adr #(.aw(aw)) wb_next_adr0(adr_r, wb_cti_i, wb_bte_i, next_adr);
+   assign next_adr = wb_next_adr(adr_r, wb_cti_i, wb_bte_i, dw);
 
    wire [aw-1:0] 	   adr = new_cycle ? wb_adr_i : next_adr;
 

@@ -9,7 +9,6 @@ module wb_ram_generic
    input [$clog2(depth)-1:0] 	 raddr,
    output reg [31:0] dout);
 
-   (* ram_style = "block" *)
    reg [31:0] 	 mem [0:depth-1];
    
    always @(posedge clk) begin
