@@ -2,6 +2,7 @@ CAPI=1
 [main]
 description = "Altera DDR controller wrapper with multiple wishbone slave ports"
 
+depend = fifo-1.0
 simulators =
  modelsim
 
@@ -10,7 +11,6 @@ src_files =
  rtl/verilog/wb_port_arbiter.v
  rtl/verilog/bufram.v
  rtl/verilog/dpram_altera.v
- rtl/verilog/dual_clock_fifo.v
  rtl/verilog/wb_ddr_ctrl.v
  rtl/verilog/wb_port.v
  rtl/verilog/ddr_ctrl_wrapper.v
