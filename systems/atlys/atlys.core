@@ -13,7 +13,7 @@ depend =
  mor1kx
  or1200
  elf-loader
- uart16550
+ uart16550-1.5
  vlog_tb_utils
  wb_intercon
  wb_sdram_ctrl

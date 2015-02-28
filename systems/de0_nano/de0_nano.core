@@ -11,7 +11,7 @@ depend =
  mor1kx
  or1200
  simple_spi
- uart16550
+ uart16550-1.5
  vlog_tb_utils
  wb_intercon-1.0
  wb_ram

@@ -5,7 +5,7 @@ depend =
  mmuart
  or1200
  ram_wb
- uart16550
+ uart16550-1.5
  uart16550_model
  vlog_tb_utils
  verilator_tb_utils

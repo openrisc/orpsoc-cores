@@ -7,7 +7,7 @@ depend =
  adv_debug_sys
  altera_virtual_jtag
  mor1kx
- uart16550
+ uart16550-1.5
  elf-loader
  vlog_tb_utils
  jtag_vpi
