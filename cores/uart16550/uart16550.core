@@ -1,6 +1,13 @@
 CAPI=1
 [main]
 description = UART 16550 transceiver
+patches =
+ files/0000-remove-delay-assignments.diff
+ files/0001-fix-bit-widths.diff
+ files/0002-add-missing-wires.diff
+ files/0003-prescaler-support.diff
+ files/0005-disable-debug-output.diff
+ files/0006-fix-wb-slave-behavior.diff
 
 [verilog]
 src_files =
