@@ -40,6 +40,13 @@ src_files =
  rtl/verilog/mor1kx.v
  rtl/verilog/mor1kx_wb_mux_cappuccino.v
  rtl/verilog/mor1kx_wb_mux_espresso.v
+ rtl/verilog/pfpu32/pfpu32_addsub.v
+ rtl/verilog/pfpu32/pfpu32_cmp.v
+ rtl/verilog/pfpu32/pfpu32_f2i.v
+ rtl/verilog/pfpu32/pfpu32_i2f.v
+ rtl/verilog/pfpu32/pfpu32_muldiv.v
+ rtl/verilog/pfpu32/pfpu32_rnd.v
+ rtl/verilog/pfpu32/pfpu32_top.v
 
 include_files =
  rtl/verilog/mor1kx-defines.v
