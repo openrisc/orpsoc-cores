@@ -47,9 +47,6 @@ src_files =
  rtl/verilog/dvi_gen/serdes_n_to_1.v
  rtl/verilog/dvi_gen/synchro.v
 
-tb_private_src_files =
- bench/orpsoc_tb.v
- bench/uart_decoder.v
 include_files =
  rtl/verilog/include/or1200_defines.v
  rtl/verilog/include/orpsoc-defines.v
