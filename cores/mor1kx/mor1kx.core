@@ -64,3 +64,4 @@ name = github
 user = openrisc
 repo = mor1kx
 version = master
+cachable = false
