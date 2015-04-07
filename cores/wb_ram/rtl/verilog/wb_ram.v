@@ -30,7 +30,10 @@ module wb_ram
 
    reg 			   valid_r;
 
-   wire 		   new_cycle = valid & !valid_r;
+   reg                     is_last_r;
+   always @(posedge wb_clk_i)
+     is_last_r <= wb_is_last(wb_cti_i);
+   wire                    new_cycle = (valid & !valid_r) | is_last_r;
 
    assign next_adr = wb_next_adr(adr_r, wb_cti_i, wb_bte_i, dw);
 
