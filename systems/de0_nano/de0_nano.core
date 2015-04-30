@@ -3,16 +3,13 @@ CAPI=1
 depend =
  adv_debug_sys
  altera_virtual_jtag
- elf-loader
  gpio
  i2c
  jtag_tap
- jtag_vpi
  mor1kx
  or1200
  simple_spi
  uart16550-1.5
- vlog_tb_utils
  wb_intercon-1.0
  wb_ram
  wb_sdram_ctrl
@@ -45,10 +42,10 @@ tb_include_files =
  bench/test-defines.v
 
 [icarus]
-depend = mt48lc16m16a2
+depend = mt48lc16m16a2 elf-loader jtag_vpi vlog_tb_utils
 iverilog_options = -DICARUS_SIM -DSIM
 
 [modelsim]
-depend = mt48lc16m16a2
+depend = mt48lc16m16a2 elf-loader jtag_vpi vlog_tb_utils
 vlog_options = +define+SIM +define+MODELSIM_SIM
 vsim_options = -L altera_mf_ver -L altera_mf
