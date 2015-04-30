@@ -15,4 +15,4 @@ include_files =
 name = github
 user = olofk
 repo = i2c
-cachable = false
+version = c9ce7774fca8f4538dcdc13160ba5f1e8616369c
