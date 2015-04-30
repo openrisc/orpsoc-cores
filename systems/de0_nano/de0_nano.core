@@ -6,7 +6,7 @@ depend =
  gpio
  i2c
  jtag_tap
- mor1kx
+ mor1kx-3.1
  or1200
  simple_spi
  uart16550-1.5
