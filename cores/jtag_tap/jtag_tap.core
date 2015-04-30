@@ -9,4 +9,4 @@ src_files = tap/rtl/verilog/tap_top.v
 name = github
 user = olofk
 repo = jtag
-cachable = false
+version = 59eca842130c0065849a564cd13508bffa2cb639
