@@ -1,0 +1,12 @@
+CAPI=1
+[main]
+description = 64 Megabit Serial Flash Memory with 104 MHz SPI Bus Interface
+
+[verilog]
+tb_src_files =
+ s25fl064p.v
+
+[provider]
+name = url
+url = http://www.freemodelfoundry.com/fmf_vlog_models/flash/s25fl064p.v
+filetype = simple
