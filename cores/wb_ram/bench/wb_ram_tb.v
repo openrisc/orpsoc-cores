@@ -25,10 +25,8 @@
 
 module wb_ram_tb;
 
-   localparam MEMORY_SIZE_WORDS = 128;
+   localparam MEMORY_SIZE = 1024;
    
-   localparam WB_PORTS = 1;
-
    vlog_tb_utils vlog_tb_utils0();
 
    reg wbm_rst = 1'b1;
@@ -41,91 +39,52 @@ module wb_ram_tb;
    initial #200 wb_rst <= 1'b0;
    always #100 wb_clk <= !wb_clk;
 
-   wire [WB_PORTS*32-1:0] wb_adr;
-   wire [WB_PORTS-1:0] 	  wb_stb;
-   wire [WB_PORTS-1:0] 	  wb_cyc;
-   wire [WB_PORTS*3-1:0]  wb_cti;
-   wire [WB_PORTS*2-1:0]  wb_bte;
-   wire [WB_PORTS-1:0] 	  wb_we;
-   wire [WB_PORTS*4-1:0]  wb_sel;
-   wire [WB_PORTS*32-1:0] wb_dat;
-   wire [WB_PORTS*32-1:0] wb_rdt;
-   wire [WB_PORTS-1:0] 	  wb_ack;
+   wire [31:0] wb_adr;
+   wire [31:0] wb_dat;
+   wire [3:0]  wb_sel;
+   wire        wb_we;
+   wire        wb_cyc;
+   wire        wb_stb;
+   wire [2:0]  wb_cti;
+   wire [1:0]  wb_bte;
+   wire [31:0] wb_rdt;
+   wire        wb_ack;
    
-   wire [31:0] 	 slave_writes;
-   wire [31:0] 	 slave_reads;
-   wire [WB_PORTS-1:0] done_int;
-
-   genvar 	 i;
-   
-   generate
-      for(i=0;i<WB_PORTS;i=i+1) begin : masters
-	 wb_bfm_transactor
-	    #(.MEM_HIGH (MEMORY_SIZE_WORDS*(i+1)-1),
-	      .MEM_LOW  (MEMORY_SIZE_WORDS*i),
-	      .VERBOSE  (1))
-	 wb_bfm_transactor0
-	    (.wb_clk_i (wb_clk),
-	     .wb_rst_i (wbm_rst),
-	     .wb_adr_o (wb_adr[i*32+:32]),
-	     .wb_dat_o (wb_dat[i*32+:32]),
-	     .wb_sel_o (wb_sel[i*4+:4]),
-	     .wb_we_o  (wb_we[i] ), 
-	     .wb_cyc_o (wb_cyc[i]),
-	     .wb_stb_o (wb_stb[i]),
-	     .wb_cti_o (wb_cti[i*3+:3]),
-	     .wb_bte_o (wb_bte[i*2+:2]),
-	     .wb_dat_i (wb_rdt[i*32+:32]),
-	     .wb_ack_i (wb_ack[i]),
-	     .wb_err_i (1'b0),
-	     .wb_rty_i (1'b0),
-	     //Test Control
-	     .done(done_int[i]));
-      end // block: slaves
-   endgenerate
-   
-   integer 	 idx;
-
-   time start_time[WB_PORTS-1:0];
-   time ack_delay[WB_PORTS-1:0];
-   integer num_transactions[WB_PORTS-1:0];
-   
-   assign done = &done_int;
+   wb_bfm_transactor
+     #(.MEM_HIGH (MEMORY_SIZE-1),
+       .VERBOSE  (0))
+   master
+     (.wb_clk_i (wb_clk),
+      .wb_rst_i (wbm_rst),
+      .wb_adr_o (wb_adr),
+      .wb_dat_o (wb_dat),
+      .wb_sel_o (wb_sel),
+      .wb_we_o  (wb_we), 
+      .wb_cyc_o (wb_cyc),
+      .wb_stb_o (wb_stb),
+      .wb_cti_o (wb_cti),
+      .wb_bte_o (wb_bte),
+      .wb_dat_i (wb_rdt),
+      .wb_ack_i (wb_ack),
+      .wb_err_i (1'b0),
+      .wb_rty_i (1'b0),
+      //Test Control
+      .done(done));
    
    always @(done) begin
       if(done === 1) begin
-	 $display("Average wait times");
-	 for(idx=0;idx<WB_PORTS;idx=idx+1)
-	   $display("Master %0d : %f",idx, ack_delay[idx]/num_transactions[idx]);
 	 $display("All tests passed!");
 	 $finish;
-	 
       end
    end
 
-   generate
-      for(i=0;i<WB_PORTS;i=i+1) begin : wait_time
-	 initial begin
-	    ack_delay[i] = 0;
-	    num_transactions[i] = 0;
-	    while(1) begin
-	       @(posedge wb_cyc[i]);
-	       start_time[i] = $time;
-	       @(posedge wb_ack[i]);
-	       ack_delay[i] = ack_delay[i] + $time-start_time[i];
-	       num_transactions[i] = num_transactions[i]+1;
-	    end
-	 end
-      end
-   endgenerate
-   
    wb_ram
-     #(.depth (MEMORY_SIZE_WORDS))
-   wb_ram0
+     #(.depth (MEMORY_SIZE))
+   dut
      (// Wishbone interface
-      .wb_clk_i   (wb_clk),
-      .wb_rst_i   (wb_rst),
-      .wb_adr_i (wb_adr[$clog2(MEMORY_SIZE_WORDS)-1:0]),
+      .wb_clk_i (wb_clk),
+      .wb_rst_i (wb_rst),
+      .wb_adr_i (wb_adr[$clog2(MEMORY_SIZE)-1:0]),
       .wb_stb_i (wb_stb),
       .wb_cyc_i (wb_cyc),
       .wb_cti_i (wb_cti),
