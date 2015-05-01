@@ -14,6 +14,6 @@ missing features:
 - USB
 - Audio
 
-I fork for the DE2 115 board would be nice :-D
+A fork for the DE2 115 board would be nice :-D
 
 
