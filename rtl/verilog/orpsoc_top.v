@@ -36,13 +36,17 @@
 module orpsoc_top #(
 	parameter	rom0_aw = 6,
 	parameter	uart0_aw = 3
-)
+) 
 (
 	input		sys_clk_pad_i,
 	input		rst_n_pad_i,
 
-	output	[9:0]	led_r_pad_o,
-	inout	[7:0]	gpio0_io,
+	output	[17:0]	led_r_pad_o,
+	output 	[8:0]		led_g_pad_o,
+	input 	[17:0] 	switch_pad_i,
+	input		[3:0]		key_pad_i,
+	inout		[7:0]		gpio0_io,
+	
 
 `ifdef SIM
 	output		tdo_pad_o,
@@ -536,7 +540,7 @@ uart_top uart16550_0 (
 
 ////////////////////////////////////////////////////////////////////////
 //
-// GPIO 0
+// GPIO 0 
 //
 ////////////////////////////////////////////////////////////////////////
 
@@ -563,7 +567,7 @@ gpio gpio0 (
 	// Wishbone slave interface
 	.wb_adr_i	(wb_m2s_gpio0_adr[0]),
 	.wb_dat_i	(wb_m2s_gpio0_dat),
-	.wb_we_i	(wb_m2s_gpio0_we),
+	.wb_we_i		(wb_m2s_gpio0_we),
 	.wb_cyc_i	(wb_m2s_gpio0_cyc),
 	.wb_stb_i	(wb_m2s_gpio0_stb),
 	.wb_cti_i	(wb_m2s_gpio0_cti),
@@ -576,6 +580,172 @@ gpio gpio0 (
 	.wb_clk		(wb_clk),
 	.wb_rst		(wb_rst)
 );
+
+gpio key0 (
+	// Key bus
+	.gpio_i		({4'h0, key_pad_i}),
+	.gpio_o		(),
+	.gpio_dir_o	(),
+
+	// Wishbone slave interface
+	.wb_adr_i	(wb_m2s_key_adr[0]),
+	.wb_dat_i	(wb_m2s_key_dat),
+	.wb_we_i		(wb_m2s_key_we),
+	.wb_cyc_i	(wb_m2s_key_cyc),
+	.wb_stb_i	(wb_m2s_key_stb),
+	.wb_cti_i	(wb_m2s_key_cti),
+	.wb_bte_i	(wb_m2s_key_bte),
+	.wb_dat_o	(wb_s2m_key_dat),
+	.wb_ack_o	(wb_s2m_key_ack),
+	.wb_err_o	(wb_s2m_key_err),
+	.wb_rty_o	(wb_s2m_key_rty),
+
+	.wb_clk		(wb_clk),
+	.wb_rst		(wb_rst)
+);
+
+
+
+
+gpio ledr0 (
+	// LED R bus 0 
+	.gpio_i		(),
+	.gpio_o		(led_r_pad_o[7:0]),
+	.gpio_dir_o	(),
+
+	// Wishbone slave interface
+	.wb_adr_i	(wb_m2s_ledr0_adr[0]),
+	.wb_dat_i	(wb_m2s_ledr0_dat),
+	.wb_we_i		(wb_m2s_ledr0_we),
+	.wb_cyc_i	(wb_m2s_ledr0_cyc),
+	.wb_stb_i	(wb_m2s_ledr0_stb),
+	.wb_cti_i	(wb_m2s_ledr0_cti),
+	.wb_bte_i	(wb_m2s_ledr0_bte),
+	.wb_dat_o	(wb_s2m_ledr0_dat),
+	.wb_ack_o	(wb_s2m_ledr0_ack),
+	.wb_err_o	(wb_s2m_ledr0_err),
+	.wb_rty_o	(wb_s2m_ledr0_rty),
+
+	.wb_clk		(wb_clk),
+	.wb_rst		(wb_rst)
+);
+
+gpio ledr1 (
+	// LED R bus 1
+	.gpio_i		(),
+	.gpio_o		(led_r_pad_o[15:8]),
+	.gpio_dir_o	(),
+
+	// Wishbone slave interface
+	.wb_adr_i	(wb_m2s_ledr1_adr[0]),
+	.wb_dat_i	(wb_m2s_ledr1_dat),
+	.wb_we_i		(wb_m2s_ledr1_we),
+	.wb_cyc_i	(wb_m2s_ledr1_cyc),
+	.wb_stb_i	(wb_m2s_ledr1_stb),
+	.wb_cti_i	(wb_m2s_ledr1_cti),
+	.wb_bte_i	(wb_m2s_ledr1_bte),
+	.wb_dat_o	(wb_s2m_ledr1_dat),
+	.wb_ack_o	(wb_s2m_ledr1_ack),
+	.wb_err_o	(wb_s2m_ledr1_err),
+	.wb_rty_o	(wb_s2m_ledr1_rty),
+
+	.wb_clk		(wb_clk),
+	.wb_rst		(wb_rst)
+);
+
+gpio ledg0 (
+	// GPIO bus
+	.gpio_i		(),
+	.gpio_o		(led_g_pad_o),
+	.gpio_dir_o	(),
+
+	// Wishbone slave interface
+	.wb_adr_i	(wb_m2s_ledg0_adr[0]),
+	.wb_dat_i	(wb_m2s_ledg0_dat),
+	.wb_we_i		(wb_m2s_ledg0_we),
+	.wb_cyc_i	(wb_m2s_ledg0_cyc),
+	.wb_stb_i	(wb_m2s_ledg0_stb),
+	.wb_cti_i	(wb_m2s_ledg0_cti),
+	.wb_bte_i	(wb_m2s_ledg0_bte),
+	.wb_dat_o	(wb_s2m_ledg0_dat),
+	.wb_ack_o	(wb_s2m_ledg0_ack),
+	.wb_err_o	(wb_s2m_ledg0_err),
+	.wb_rty_o	(wb_s2m_ledg0_rty),
+
+	.wb_clk		(wb_clk),
+	.wb_rst		(wb_rst)
+);
+
+gpio switch0 (
+	// GPIO bus
+	.gpio_i		(switch_pad_i[7:0]),
+	.gpio_o		(),
+	.gpio_dir_o	(),
+
+	// Wishbone slave interface
+	.wb_adr_i	(wb_m2s_switch0_adr[0]),
+	.wb_dat_i	(wb_m2s_switch0_dat),
+	.wb_we_i		(wb_m2s_switch0_we),
+	.wb_cyc_i	(wb_m2s_switch0_cyc),
+	.wb_stb_i	(wb_m2s_switch0_stb),
+	.wb_cti_i	(wb_m2s_switch0_cti),
+	.wb_bte_i	(wb_m2s_switch0_bte),
+	.wb_dat_o	(wb_s2m_switch0_dat),
+	.wb_ack_o	(wb_s2m_switch0_ack),
+	.wb_err_o	(wb_s2m_switch0_err),
+	.wb_rty_o	(wb_s2m_switch0_rty),
+
+	.wb_clk		(wb_clk),
+	.wb_rst		(wb_rst)
+);
+
+gpio switch1 (
+	// GPIO bus
+	.gpio_i		(switch_pad_i[15:8]),
+	.gpio_o		(),
+	.gpio_dir_o	(),
+
+	// Wishbone slave interface
+	.wb_adr_i	(wb_m2s_switch1_adr[0]),
+	.wb_dat_i	(wb_m2s_switch1_dat),
+	.wb_we_i		(wb_m2s_switch1_we),
+	.wb_cyc_i	(wb_m2s_switch1_cyc),
+	.wb_stb_i	(wb_m2s_switch1_stb),
+	.wb_cti_i	(wb_m2s_switch1_cti),
+	.wb_bte_i	(wb_m2s_switch1_bte),
+	.wb_dat_o	(wb_s2m_switch1_dat),
+	.wb_ack_o	(wb_s2m_switch1_ack),
+	.wb_err_o	(wb_s2m_switch1_err),
+	.wb_rty_o	(wb_s2m_switch1_rty),
+
+	.wb_clk		(wb_clk),
+	.wb_rst		(wb_rst)
+);
+
+gpio switch2 (
+	// GPIO bus
+	.gpio_i		({6'h0, switch_pad_i[17:16]}),
+	.gpio_o		(),
+	.gpio_dir_o	(),
+
+	// Wishbone slave interface
+	.wb_adr_i	(wb_m2s_switch2_adr[0]),
+	.wb_dat_i	(wb_m2s_switch2_dat),
+	.wb_we_i		(wb_m2s_switch2_we),
+	.wb_cyc_i	(wb_m2s_switch2_cyc),
+	.wb_stb_i	(wb_m2s_switch2_stb),
+	.wb_cti_i	(wb_m2s_switch2_cti),
+	.wb_bte_i	(wb_m2s_switch2_bte),
+	.wb_dat_o	(wb_s2m_switch2_dat),
+	.wb_ack_o	(wb_s2m_switch2_ack),
+	.wb_err_o	(wb_s2m_switch2_err),
+	.wb_rty_o	(wb_s2m_switch2_rty),
+
+	.wb_clk		(wb_clk),
+	.wb_rst		(wb_rst)
+);
+
+
 
 ////////////////////////////////////////////////////////////////////////
 //
