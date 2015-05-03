@@ -14,7 +14,7 @@
 
 # Quartus II 32-bit Version 13.0.1 Build 232 06/12/2013 Service Pack 1 SJ Web Edition
 # File: /home/pe/projects/openrisc/build/de1/bld-quartus/de1.tcl
-# Generated on: Sun May  3 09:45:00 2015
+# Generated on: Sun May  3 16:40:47 2015
 
 package require ::quartus::project
 
@@ -145,25 +145,25 @@ set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to gpio0_io[7]
 set_location_assignment PIN_G26 -to key_pad_i[0]
 set_location_assignment PIN_N23 -to key_pad_i[1]
 set_location_assignment PIN_P23 -to key_pad_i[2]
-set_location_assignment PIN_N25 -to switch_pad_i[0]
-set_location_assignment PIN_N26 -to switch_pad_i[1]
+set_location_assignment PIN_B13 -to switch_pad_i[0]
+set_location_assignment PIN_A13 -to switch_pad_i[1]
 set_location_assignment PIN_V2 -to switch_pad_i[17]
 set_location_assignment PIN_V1 -to switch_pad_i[16]
-set_location_assignment PIN_U4 -to switch_pad_i[15]
-set_location_assignment PIN_U3 -to switch_pad_i[14]
-set_location_assignment PIN_T7 -to switch_pad_i[13]
-set_location_assignment PIN_P2 -to switch_pad_i[12]
-set_location_assignment PIN_P1 -to switch_pad_i[11]
-set_location_assignment PIN_N1 -to switch_pad_i[10]
-set_location_assignment PIN_A13 -to switch_pad_i[9]
-set_location_assignment PIN_B13 -to switch_pad_i[8]
-set_location_assignment PIN_C13 -to switch_pad_i[7]
-set_location_assignment PIN_AC13 -to switch_pad_i[6]
-set_location_assignment PIN_AD13 -to switch_pad_i[5]
+set_location_assignment PIN_C13 -to switch_pad_i[15]
+set_location_assignment PIN_AC13 -to switch_pad_i[14]
+set_location_assignment PIN_AD13 -to switch_pad_i[13]
+set_location_assignment PIN_AF14 -to switch_pad_i[12]
+set_location_assignment PIN_AE14 -to switch_pad_i[11]
+set_location_assignment PIN_P25 -to switch_pad_i[10]
+set_location_assignment PIN_N26 -to switch_pad_i[9]
+set_location_assignment PIN_N25 -to switch_pad_i[8]
+set_location_assignment PIN_U4 -to switch_pad_i[7]
+set_location_assignment PIN_U3 -to switch_pad_i[6]
+set_location_assignment PIN_T7 -to switch_pad_i[5]
 set_location_assignment PIN_AA13 -to led_r_pad_o[10]
-set_location_assignment PIN_AF14 -to switch_pad_i[4]
-set_location_assignment PIN_AE14 -to switch_pad_i[3]
-set_location_assignment PIN_P25 -to switch_pad_i[2]
+set_location_assignment PIN_P2 -to switch_pad_i[4]
+set_location_assignment PIN_P1 -to switch_pad_i[3]
+set_location_assignment PIN_N1 -to switch_pad_i[2]
 set_location_assignment PIN_AD25 -to sd_clk_pad_o
 set_location_assignment PIN_AD24 -to sd_dat_pad_i
 set_location_assignment PIN_AC23 -to sd_dat3_pad_o
