@@ -41,6 +41,7 @@
 `include "orpsoc-defines.v"
 
 module orpsoc_top #(
+	parameter       BOOTROM_FILE = "../src/de0_nano/sw/clear_r3_and_jump_to_0x100.vh",
 	parameter	uart0_aw = 3,
         parameter       HV1_SADR = 8'h45,
         parameter       i2c0_wb_adr_width = 3,
@@ -488,7 +489,7 @@ adbg_top dbg_if0 (
    
 wb_ram
   #(.depth (WB_RAM_MEM_DEPTH),
-    .memfile ("../src/de0_nano/sw/clear_r3_and_jump_to_0x100.vh"))
+    .memfile (BOOTROM_FILE))
    wb_ram0
      (//Wishbone Master interface
       .wb_clk_i (wb_clk),
