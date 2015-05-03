@@ -78,6 +78,28 @@ jtag_vpi jtag_vpi0
 	.enable		(enable_jtag_vpi),
 	.init_done	(orpsoc_tb.dut.wb_rst));
 
+////////////////////////////////////////////////////////////////////////
+//
+// SPI Flash
+//
+////////////////////////////////////////////////////////////////////////
+
+   wire spi0_sck;
+   wire spi0_mosi;
+   wire spi0_miso;
+   wire spi0_ss;
+
+   s25fl064p
+     #(.UserPreload (1'b1),
+       .mem_file_name ("../src/de0_nano/sw/spi_image.vh"))
+       spi_flash
+     (.SCK     (spi0_sck),
+      .SI      (spi0_mosi),
+      .CSNeg   (spi0_ss),
+      .HOLDNeg (), //Internal pull-up
+      .WPNeg   (), //Internal pull-up
+      .SO      (spi0_miso));
+
 orpsoc_top dut
 (
 	.sys_clk_pad_i		(clk),
@@ -114,11 +136,11 @@ orpsoc_top dut
 `endif
 
 `ifdef SPI0
- .spi0_sck_o  (),
- .spi0_mosi_o (),
- .spi0_miso_i (),
+ .spi0_sck_o  (spi0_sck),
+ .spi0_mosi_o (spi0_mosi),
+ .spi0_miso_i (spi0_miso),
  `ifdef SPI0_SLAVE_SELECTS
- .spi0_ss_o (),
+ .spi0_ss_o (spi0_ss),
  `endif
 `endif
 

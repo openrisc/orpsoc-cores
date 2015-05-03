@@ -39,13 +39,14 @@ include_files =
  sw/clear_r3_and_jump_to_0x100.vh
 
 tb_include_files =
+ sw/spi_image.vh
  bench/test-defines.v
 
 [icarus]
-depend = mt48lc16m16a2 elf-loader jtag_vpi vlog_tb_utils
-iverilog_options = -DICARUS_SIM -DSIM
+depend = elf-loader jtag_vpi mt48lc16m16a2 s25fl064p-1.7 vlog_tb_utils
+iverilog_options = -DICARUS_SIM -DSIM -DSPEEDSIM
 
 [modelsim]
-depend = mt48lc16m16a2 elf-loader jtag_vpi vlog_tb_utils
+depend = elf-loader jtag_vpi mt48lc16m16a2 s25fl064p-1.7 vlog_tb_utils
 vlog_options = +define+SIM +define+MODELSIM_SIM
 vsim_options = -L altera_mf_ver -L altera_mf
