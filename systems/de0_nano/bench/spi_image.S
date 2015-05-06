@@ -1,4 +1,3 @@
-	.word 0x00000118
 	.org 0x100
 	l.movhi r0, 0
 	l.movhi   r3, hi(0xdeadbeef)

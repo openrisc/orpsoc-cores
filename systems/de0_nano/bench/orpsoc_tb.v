@@ -9,7 +9,7 @@ module orpsoc_tb;
 //
 ////////////////////////////////////////////////////////////////////////
    localparam BOOTROM_FILE = "../src/de0_nano/sw/clear_r3_and_jump_to_0x100.vh";
-   //localparam BOOTROM_FILE = "../src/de0_nano/sw/spi_loader.vh";
+   //localparam BOOTROM_FILE = "../src/de0_nano/sw/spi_uimage_loader.vh";
    
 
 reg clk   = 0;
@@ -100,7 +100,7 @@ jtag_vpi jtag_vpi0
 
    s25fl064p
      #(.UserPreload (1'b1),
-       .mem_file_name ("../src/de0_nano/sw/spi_image.vh"))
+       .mem_file_name ("../src/de0_nano/bench/spi_image.vh"))
        spi_flash
      (.SCK     (spi0_sck),
       .SI      (spi0_mosi),
