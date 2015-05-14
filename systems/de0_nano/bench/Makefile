@@ -16,6 +16,7 @@ all: $(IMAGE).vh
 	-A or1k \
 	-C none \
 	-T standalone \
+	-a 0x100 \
 	-e $(RESET_VECTOR) \
 	-n '$@' \
 	-d $< \
