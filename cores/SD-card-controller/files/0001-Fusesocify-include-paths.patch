@@ -1,0 +1,62 @@
+From c3d591d5a40a70d4374721658cc4fc90dad518da Mon Sep 17 00:00:00 2001
+From: Olof Kindgren <olof.kindgren@gmail.com>
+Date: Fri, 15 May 2015 22:33:47 +0200
+Subject: [PATCH] Fusesocify include paths
+
+---
+ bench/verilog/sdModel.v               | 4 ++--
+ bench/verilog/sd_controller_top_tb.sv | 2 +-
+ bench/verilog/wb_model_defines.h      | 2 +-
+ 3 files changed, 4 insertions(+), 4 deletions(-)
+
+diff --git a/bench/verilog/sdModel.v b/bench/verilog/sdModel.v
+index 0fd9d4f..3646ed1 100644
+--- a/bench/verilog/sdModel.v
++++ b/bench/verilog/sdModel.v
+@@ -178,7 +178,7 @@ reg [5:0] startUppCnt;
+ 
+ reg q_start_bit;
+ //Card initinCMd
+-initial $readmemh("../bin/ramdisk2.hex",FLASHmem);
++initial $readmemh("../src/SD-card-controller/sim/rtl_sim/bin/ramdisk2.hex",FLASHmem);
+ 
+ //integer k;
+ //initial begin
+@@ -944,7 +944,7 @@ integer sdModel_file_desc;
+ 
+ initial
+ begin
+-  sdModel_file_desc = $fopen("../log/sd_model.log");
++  sdModel_file_desc = $fopen("sd_model.log");
+   if (sdModel_file_desc < 2)
+   begin
+     $display("*E Could not open/create testbench log file in /log/ directory!");
+diff --git a/bench/verilog/sd_controller_top_tb.sv b/bench/verilog/sd_controller_top_tb.sv
+index 7100559..c3a06c1 100644
+--- a/bench/verilog/sd_controller_top_tb.sv
++++ b/bench/verilog/sd_controller_top_tb.sv
+@@ -49,7 +49,7 @@
+ `include "wb_model_defines.h"
+ `include "sd_defines.h"
+ 
+-`define LOG_DIR "../log"
++`define LOG_DIR "."
+ 
+ `define SD_BASE 32'hd0000000
+ `define CMD2 16'h200
+diff --git a/bench/verilog/wb_model_defines.h b/bench/verilog/wb_model_defines.h
+index eab3a81..e86331a 100644
+--- a/bench/verilog/wb_model_defines.h
++++ b/bench/verilog/wb_model_defines.h
+@@ -50,7 +50,7 @@
+ //
+ 
+ // binary data memory files directory
+-`define BIN_DIR "../bin"
++`define BIN_DIR "../src/SD-card-controller/sim/rtl_sim/bin"
+ 
+ // WISHBONE frequency in GHz
+ `define WB_FREQ 0.100
+-- 
+2.0.5
+
