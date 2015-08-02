@@ -1,0 +1,18 @@
+SAPI=1
+[main]
+name = neek
+description = "Altera NEEK board OpenRISC system"
+
+backend = quartus
+
+[quartus]
+family = "Cyclone III"
+device = EP3C25F324C6
+sdc_files = data/neek.sdc
+            data/ddr_ctrl_ip_phy_ddr_timing.sdc
+tcl_files = data/pinmap.tcl
+            data/options.tcl
+
+[scripts]
+pre_build_scripts = scripts/copy_ddr_tcl_file
+post_build_scripts = scripts/build_summary

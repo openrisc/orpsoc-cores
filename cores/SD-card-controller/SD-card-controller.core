@@ -1,0 +1,61 @@
+CAPI=1
+[main]
+
+simulators = modelsim
+
+patches = files/0001-Fusesocify-include-paths.patch
+
+[verilog]
+src_files =
+ rtl/verilog/sd_data_xfer_trig.v
+ rtl/verilog/sd_crc_16.v
+ rtl/verilog/generic_fifo_dc_gray.v
+ rtl/verilog/sd_clock_divider.v
+ rtl/verilog/sd_cmd_master.v
+ rtl/verilog/sd_crc_7.v
+ rtl/verilog/sd_cmd_serial_host.v
+ rtl/verilog/generic_dpram.v
+ rtl/verilog/sdc_controller.v
+ rtl/verilog/monostable_domain_cross.v
+ rtl/verilog/sd_wb_sel_ctrl.v
+ rtl/verilog/sd_data_serial_host.v
+ rtl/verilog/sd_controller_wb.v
+ rtl/verilog/sd_data_master.v
+ rtl/verilog/bistable_domain_cross.v
+ rtl/verilog/sd_fifo_filler.v
+ rtl/verilog/byte_en_reg.v
+ rtl/verilog/edge_detect.v
+include_files =
+ rtl/verilog/sd_defines.h
+tb_private_src_files =
+ bench/verilog/byte_en_reg_tb.sv
+ bench/verilog/sd_cmd_serial_host_tb.sv
+ bench/verilog/sdModel.v
+ bench/verilog/monostable_domain_cross_tb.sv
+ bench/verilog/sd_cmd_master_tb.sv
+ bench/verilog/sd_data_master_tb.sv
+ bench/verilog/wb_master32.v
+ bench/verilog/sd_fifo_filler_tb.sv
+ bench/verilog/bistable_domain_cross_tb.sv
+ bench/verilog/wb_master_behavioral.v
+ bench/verilog/sd_controller_wb_tb.sv
+ bench/verilog/wb_bus_mon.v
+ bench/verilog/sd_wb_sel_ctrl_tb.sv
+ bench/verilog/edge_detect_tb.sv
+ bench/verilog/wb_slave_behavioral.v
+ bench/verilog/sd_data_xfer_trig_tb.sv
+ bench/verilog/sd_data_serial_host_tb.sv
+ bench/verilog/sd_controller_top_tb.sv
+tb_include_files =
+ bench/verilog/wb_model_defines.h
+ sim/rtl_sim/bin/ramdisk2.hex
+ sim/rtl_sim/bin/wb_memory.txt
+
+[simulator]
+toplevel = sd_controller_top_tb
+
+[provider]
+name = github
+user = mczerski
+repo = SD-card-controller
+version = c25b4a819f90b8af52d46790fafb47ceabc2ca95

@@ -1,0 +1,28 @@
+CAPI=1
+[main]
+description = "minimalistic ethernet MAC"
+depend = csrbrg
+simulators = icarus
+
+[verilog]
+src_files =
+ cores/minimac2/rtl/minimac2.v
+ cores/minimac2/rtl/minimac2_ctlif.v
+ cores/minimac2/rtl/minimac2_memory.v
+ cores/minimac2/rtl/minimac2_psync.v
+ cores/minimac2/rtl/minimac2_rx.v
+ cores/minimac2/rtl/minimac2_sync.v
+ cores/minimac2/rtl/minimac2_tx.v
+
+tb_private_src_files =
+ cores/minimac2/test/RAMB16BWER.v
+ cores/minimac2/test/tb_minimac.v
+
+[simulator]
+toplevel = tb_minimac
+
+[provider]
+name = github
+user = m-labs
+repo = milkymist
+version = 7d944d3dcffb5e528a44937b10123ff65a0aecbc

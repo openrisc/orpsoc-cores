@@ -1,0 +1,18 @@
+CAPI=1
+[main]
+description = "OpenCores I2C Controller core (with slave additions)"
+
+[verilog]
+src_files =
+ rtl/verilog/i2c_master_bit_ctrl.v
+ rtl/verilog/i2c_master_byte_ctrl.v
+ rtl/verilog/i2c_master_top.v
+
+include_files =
+ rtl/verilog/i2c_master_defines.v
+
+[provider]
+name = github
+user = olofk
+repo = i2c
+version = c9ce7774fca8f4538dcdc13160ba5f1e8616369c

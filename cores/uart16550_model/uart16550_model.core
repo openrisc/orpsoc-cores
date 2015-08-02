@@ -1,0 +1,7 @@
+CAPI=1
+[main]
+description = Simulation model for uart16550
+
+[verilog]
+tb_src_files = uart16550_model.v
+src_files = wb_uart_wrapper.v

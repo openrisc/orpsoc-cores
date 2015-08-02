@@ -1,0 +1,51 @@
+From 593d4f1efe903f4c032a400a19ebb03c861c7e47 Mon Sep 17 00:00:00 2001
+From: Franck Jullien <franck.jullien@gmail.com>
+Date: Sat, 21 Sep 2013 09:44:10 +0200
+Subject: [PATCH 4/4] Add init_clear_mem banks parameter
+
+---
+ mt48lc16m16a2.v |   14 ++++++++++++++
+ 1 files changed, 14 insertions(+), 0 deletions(-)
+
+diff --git a/mt48lc16m16a2.v b/mt48lc16m16a2.v
+index 032af9c..2df51fe 100644
+--- a/mt48lc16m16a2.v
++++ b/mt48lc16m16a2.v
+@@ -45,6 +45,7 @@ module mt48lc16m16a2 (Dq, Addr, Ba, Clk, Cke, Cs_n, Ras_n, Cas_n, We_n, Dqm);
+     parameter data_bits =      16;
+     parameter col_bits  =       9;
+     parameter mem_sizes = 4194303;
++    parameter init_clear_mem_banks = "NO";
+ 
+     inout     [data_bits - 1 : 0] Dq;
+     input     [addr_bits - 1 : 0] Addr;
+@@ -156,6 +157,7 @@ module mt48lc16m16a2 (Dq, Addr, Ba, Clk, Cke, Cs_n, Ras_n, Cas_n, We_n, Dqm);
+     time  RAS_chk0, RAS_chk1, RAS_chk2, RAS_chk3;
+     time  RCD_chk0, RCD_chk1, RCD_chk2, RCD_chk3;
+     time  RP_chk0, RP_chk1, RP_chk2, RP_chk3;
++    integer mem_cnt;
+ 
+     initial begin
+         Dq_reg = {data_bits{1'bz}};
+@@ -171,6 +173,18 @@ module mt48lc16m16a2 (Dq, Addr, Ba, Clk, Cke, Cs_n, Ras_n, Cas_n, We_n, Dqm);
+         RC_chk0 = 0; RC_chk1 = 0; RC_chk2 = 0; RC_chk3 = 0;
+         RP_chk0 = 0; RP_chk1 = 0; RP_chk2 = 0; RP_chk3 = 0;
+         $timeformat (-9, 1, " ns", 12);
++
++        if (init_clear_mem_banks == "YES") begin
++            $display("Initialize the SDRAM memory with '0'\n");
++            for (mem_cnt = 0; mem_cnt < mem_sizes; mem_cnt = mem_cnt + 1)
++            begin
++                Bank0[mem_cnt] = 0;
++                Bank1[mem_cnt] = 0;
++                Bank2[mem_cnt] = 0;
++                Bank3[mem_cnt] = 0;
++            end
++        end
++
+     end
+ 
+     // System clock generator
+-- 
+1.7.1
+

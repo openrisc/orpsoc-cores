@@ -1,0 +1,40 @@
+CAPI=1
+[main]
+simulators = icarus modelsim
+depend = fifo-1.0
+
+[verilog]
+src_files =
+ rtl/verilog/stream_upsizer.v
+ rtl/verilog/stream_downsizer.v
+ rtl/verilog/stream_fifo_if.v
+ rtl/verilog/stream_dual_clock_fifo.v
+ rtl/verilog/stream_mux.v
+
+tb_src_files =
+ bench/stream_writer.v
+ bench/stream_reader.v
+
+tb_private_src_files =
+ bench/stream_upsizer_tb.v
+ bench/stream_downsizer_tb.v
+ bench/stream_dual_clock_fifo_tb.v
+
+[simulator]
+toplevel = stream_dual_clock_fifo_tb
+
+[icarus]
+depend = vlog_tb_utils
+
+[modelsim]
+depend = vlog_tb_utils
+
+[plusargs]
+read_rate = str Stream read rate
+write_rate = str Stream write rate
+
+[provider]
+name = github
+user = olofk
+repo = stream_utils
+version = v1.0

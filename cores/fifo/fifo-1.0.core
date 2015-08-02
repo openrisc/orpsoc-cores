@@ -1,0 +1,31 @@
+CAPI=1
+[main]
+description = Generic FIFO
+simulators = icarus modelsim
+depend = vlog_tb_utils
+
+[verilog]
+src_files =
+ rtl/verilog/simple_dpram_sclk.v
+ rtl/verilog/fifo.v
+ rtl/verilog/fifo_fwft_adapter.v
+ rtl/verilog/fifo_fwft.v
+ rtl/verilog/dual_clock_fifo.v
+tb_src_files =
+ bench/fifo_reader.v
+ bench/fifo_writer.v
+tb_private_src_files =
+ bench/fifo_tb.v
+
+[plusargs]
+read_rate = str FIFO read rate
+write_rate = str FIFO write rate
+
+[simulator]
+toplevel = fifo_tb
+
+[provider]
+name = github
+user = olofk
+repo = fifo
+version = v1.0

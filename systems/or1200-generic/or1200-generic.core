@@ -1,0 +1,37 @@
+CAPI=1
+[main]
+description = "Minimal OR1200 simulation environment"
+depend = 
+ mmuart
+ or1200
+ ram_wb
+ uart16550-1.5
+ uart16550_model
+ vlog_tb_utils
+ verilator_tb_utils
+ wb_bfm
+ wb_intercon
+ jtag_vpi
+ jtag_tap
+ adv_debug_sys
+
+simulators = icarus modelsim
+
+[verilog]
+src_files =
+ bench/verilog/wb_intercon.v
+ bench/verilog/orpsoc_top.v
+ bench/verilog/orpsoc_tb.v
+include_files =
+ bench/verilog/include/or1200_defines.v
+ bench/verilog/include/uart_defines.v
+ bench/verilog/include/timescale.v
+ bench/verilog/wb_intercon.vh
+
+[icarus]
+iverilog_options = -DSIM
+
+[verilator]
+verilator_options = -Wno-fatal --trace
+tb_toplevel   = bench/verilator/tb.cpp
+top_module    = orpsoc_top

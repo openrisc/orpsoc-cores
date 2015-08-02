@@ -1,0 +1,14 @@
+CAPI=1
+[main]
+description = Scalable arbiter
+
+[verilog]
+src_files = rtl/verilog/arbiter.v
+include_files = rtl/verilog/functions.v
+
+[provider]
+name = opencores
+repo_name = scalable_arbiter
+repo_root = trunk
+revision = 12
+

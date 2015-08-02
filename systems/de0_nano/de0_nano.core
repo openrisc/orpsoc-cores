@@ -1,0 +1,54 @@
+CAPI=1
+[main]
+depend =
+ adv_debug_sys
+ altera_virtual_jtag
+ gpio
+ i2c
+ jtag_tap
+ mor1kx-3.1
+ or1200
+ or1k_bootloaders-0.9
+ simple_spi
+ uart16550-1.5
+ wb_intercon-1.0
+ wb_ram
+ wb_sdram_ctrl
+
+simulators =
+ icarus
+ modelsim
+
+[verilog]
+src_files =
+ rtl/verilog/clkgen.v
+ rtl/verilog/orpsoc_top.v
+ backend/rtl/verilog/pll.v
+ rtl/verilog/wb_intercon.v
+ rtl/verilog/wb_intercon_dbg.v
+
+tb_private_src_files =
+ bench/orpsoc_tb.v
+ bench/uart_decoder.v
+include_files =
+ rtl/verilog/include/or1200_defines.v
+ rtl/verilog/include/orpsoc-defines.v
+ rtl/verilog/include/timescale.v
+ rtl/verilog/include/uart_defines.v
+ rtl/verilog/wb_intercon.vh
+ rtl/verilog/wb_intercon_dbg.vh
+ sw/clear_r3_and_jump_to_0x100.vh
+ sw/spi_uimage_loader.vh
+
+tb_include_files =
+ bench/spi_image.vh
+ bench/test-defines.v
+
+[icarus]
+depend = elf-loader jtag_vpi mt48lc16m16a2 s25fl064p-1.7 vlog_tb_utils
+iverilog_options = -DICARUS_SIM -DSIM -DSPEEDSIM
+
+[modelsim]
+depend = elf-loader jtag_vpi mt48lc16m16a2 s25fl064p-1.7 vlog_tb_utils
+vlog_options = +define+SIM +define+MODELSIM_SIM
+vsim_options = -L altera_mf_ver -L altera_mf

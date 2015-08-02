@@ -1,0 +1,74 @@
+Index: ethmac/bench/verilog/tb_ethernet.v
+===================================================================
+--- ethmac.orig/bench/verilog/tb_ethernet.v
++++ ethmac/bench/verilog/tb_ethernet.v
+@@ -380,46 +380,46 @@ integer     tb_log_file;
+ 
+ initial
+ begin
+-  tb_log_file = $fopen("../log/eth_tb.log");
++  tb_log_file = $fopen("eth_tb.log");
+   if (tb_log_file < 2)
+   begin
+-    $display("*E Could not open/create testbench log file in ../log/ directory!");
++    $display("*E Could not open/create testbench log file in  directory!");
+     $finish;
+   end
+   $fdisplay(tb_log_file, "========================== ETHERNET IP Core Testbench results ===========================");
+   $fdisplay(tb_log_file, " ");
+ 
+-  phy_log_file_desc = $fopen("../log/eth_tb_phy.log");
++  phy_log_file_desc = $fopen("eth_tb_phy.log");
+   if (phy_log_file_desc < 2)
+   begin
+-    $fdisplay(tb_log_file, "*E Could not open/create eth_tb_phy.log file in ../log/ directory!");
++    $fdisplay(tb_log_file, "*E Could not open/create eth_tb_phy.log file in  directory!");
+     $finish;
+   end
+   $fdisplay(phy_log_file_desc, "================ PHY Module  Testbench access log ================");
+   $fdisplay(phy_log_file_desc, " ");
+ 
+-  memory_log_file_desc = $fopen("../log/eth_tb_memory.log");
++  memory_log_file_desc = $fopen("eth_tb_memory.log");
+   if (memory_log_file_desc < 2)
+   begin
+-    $fdisplay(tb_log_file, "*E Could not open/create eth_tb_memory.log file in ../log/ directory!");
++    $fdisplay(tb_log_file, "*E Could not open/create eth_tb_memory.log file in  directory!");
+     $finish;
+   end
+   $fdisplay(memory_log_file_desc, "=============== MEMORY Module Testbench access log ===============");
+   $fdisplay(memory_log_file_desc, " ");
+ 
+-  host_log_file_desc = $fopen("../log/eth_tb_host.log");
++  host_log_file_desc = $fopen("eth_tb_host.log");
+   if (host_log_file_desc < 2)
+   begin
+-    $fdisplay(tb_log_file, "*E Could not open/create eth_tb_host.log file in ../log/ directory!");
++    $fdisplay(tb_log_file, "*E Could not open/create eth_tb_host.log file in  directory!");
+     $finish;
+   end
+   $fdisplay(host_log_file_desc, "================ HOST Module Testbench access log ================");
+   $fdisplay(host_log_file_desc, " ");
+ 
+-  wb_s_mon_log_file_desc = $fopen("../log/eth_tb_wb_s_mon.log");
++  wb_s_mon_log_file_desc = $fopen("eth_tb_wb_s_mon.log");
+   if (wb_s_mon_log_file_desc < 2)
+   begin
+-    $fdisplay(tb_log_file, "*E Could not open/create eth_tb_wb_s_mon.log file in ../log/ directory!");
++    $fdisplay(tb_log_file, "*E Could not open/create eth_tb_wb_s_mon.log file in  directory!");
+     $finish;
+   end
+   $fdisplay(wb_s_mon_log_file_desc, "============== WISHBONE Slave Bus Monitor error log ==============");
+@@ -427,10 +427,10 @@ begin
+   $fdisplay(wb_s_mon_log_file_desc, "   Only ERRONEOUS conditions are logged !");
+   $fdisplay(wb_s_mon_log_file_desc, " ");
+ 
+-  wb_m_mon_log_file_desc = $fopen("../log/eth_tb_wb_m_mon.log");
++  wb_m_mon_log_file_desc = $fopen("eth_tb_wb_m_mon.log");
+   if (wb_m_mon_log_file_desc < 2)
+   begin
+-    $fdisplay(tb_log_file, "*E Could not open/create eth_tb_wb_m_mon.log file in ../log/ directory!");
++    $fdisplay(tb_log_file, "*E Could not open/create eth_tb_wb_m_mon.log file in  directory!");
+     $finish;
+   end
+   $fdisplay(wb_m_mon_log_file_desc, "============= WISHBONE Master Bus Monitor  error log =============");
