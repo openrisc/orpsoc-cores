@@ -1,25 +1,20 @@
 CAPI=1
 [main]
 depend =
- adv_debug_sys
- jtag_tap
- simple_spi
- gpio
- vga_lcd
- ethmac
  ac97
- ps2
+ adv_debug_sys
  diila
- mor1kx
+ ethmac
+ gpio
+ jtag_tap
+ mor1kx-3.1
  or1200
- elf-loader
+ ps2
+ simple_spi
  uart16550-1.5
- vlog_tb_utils
- wb_intercon
+ vga_lcd
+ wb_intercon-1.0
  wb_sdram_ctrl
-
-simulators =
- icarus
 
 [verilog]
 src_files =
