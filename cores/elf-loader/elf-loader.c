@@ -54,9 +54,9 @@ uint8_t *dump_program_data(Elf *elf_object, int *size)
 		printf("Program header %d: addr 0x%08X,", i, (unsigned int)phdr.p_paddr);
 		printf(" size 0x%08X\n", (unsigned int)phdr.p_filesz);
 
-		if (phdr.p_paddr >= max_paddr) {
-			buffer = realloc(buffer, phdr.p_paddr + phdr.p_filesz);
+		if (phdr.p_paddr + phdr.p_filesz >= max_paddr) {
 			max_paddr = phdr.p_paddr + phdr.p_filesz;
+			buffer = realloc(buffer, max_paddr);
 		}
 
 		data = elf_getdata_rawchunk(elf_object, phdr.p_offset, phdr.p_filesz, ELF_T_BYTE);
@@ -77,7 +77,7 @@ uint8_t *dump_section_data(Elf *elf_object, int *size)
 	uint8_t *buffer = NULL;
 	Elf_Data *data = NULL;
 	size_t shdr_num;
-	size_t max_paddr = 0;
+	size_t max_saddr = 0;
 	GElf_Shdr shdr;
 	size_t shstrndx;
 	char *name = NULL;
@@ -110,9 +110,9 @@ uint8_t *dump_section_data(Elf *elf_object, int *size)
 			printf("Loading section %s, size 0x%08X lma 0x%08X\n",
 				name ? name : "??", (unsigned int)shdr.sh_size, (unsigned int)shdr.sh_addr);
 
-			if (shdr.sh_addr >= max_paddr) {
-				buffer = realloc(buffer, shdr.sh_addr + shdr.sh_size);
-				max_paddr = shdr.sh_addr + shdr.sh_size;
+			if (shdr.sh_addr + shdr.sh_size >= max_saddr) {
+				max_saddr = shdr.sh_addr + shdr.sh_size;
+				buffer = realloc(buffer, max_saddr);
 			}
 
 			data = elf_getdata(cur_section, data);
@@ -125,7 +125,7 @@ uint8_t *dump_section_data(Elf *elf_object, int *size)
 		}
 	}
 
-	*size = max_paddr;
+	*size = max_saddr;
 	return buffer;
 }
 
