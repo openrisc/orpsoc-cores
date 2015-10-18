@@ -8,7 +8,7 @@ depend =
  gpio
  jtag_tap
  mor1kx-3.1
- or1200
+ or1200-r1
  ps2
  simple_spi
  uart16550-1.5

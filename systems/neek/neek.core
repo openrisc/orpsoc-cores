@@ -2,7 +2,7 @@ CAPI=1
 [main]
 depend =
  wb_intercon
- or1200
+ or1200-r1
  uart16550-1.5
  elf-loader
  vlog_tb_utils

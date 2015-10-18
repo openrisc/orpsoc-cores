@@ -9,7 +9,7 @@ depend =
  jtag_vpi
  mor1kx
  mt48lc16m16a2
- or1200
+ or1200-r1
  uart16550-1.5
  vlog_tb_utils
  wb_intercon
