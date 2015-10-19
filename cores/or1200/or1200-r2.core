@@ -89,4 +89,4 @@ tb_include_files = bench/or1200_monitor_defines.v
 name = github
 user = openrisc
 repo = or1200
-version = 46e5ef33aa39d913b92d8520ebc9d38c077d0606
+version = cdd2d2aac7e31be2945e18ae2f82f11802580cdf
