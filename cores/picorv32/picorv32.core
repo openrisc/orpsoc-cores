@@ -1,0 +1,20 @@
+CAPI=1
+
+[main]
+description = PicoRV32 - A Size-Optimized RISC-V CPU
+simulators = icarus
+
+[verilog]
+src_files = picorv32.v
+tb_private_src_files = testbench.v
+
+[simulator]
+toplevel = testbench
+
+[icarus]
+depend = elf-loader vlog_tb_utils
+
+[provider]
+name = github
+user = cliffordwolf
+repo = picorv32
