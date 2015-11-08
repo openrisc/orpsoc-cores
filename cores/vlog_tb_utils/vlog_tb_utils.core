@@ -12,3 +12,27 @@ heartbeat = int Display a heartbeat message every n*heartbeat
 testcase = str Name of testcase (Used for VCD filename)
 timeout = int "Abort test case after n cycles"
 vcd     = bool "Enable VCD logging"
+
+[parameter heartbeat]
+datatype    = int
+description = Display a heartbeat message every n*heartbeat time unit
+paramtype   = plusarg
+scope       = public
+
+[parameter testcase]
+datatype    = str
+description = Name of testcase (Used for VCD filename)
+paramtype   = plusarg
+scope       = public
+
+[parameter timeout]
+datatype    = int
+description = Abort test case after n cycles
+paramtype   = plusarg
+scope       = public
+
+[parameter vcd]
+datatype    = bool
+description = Enable VCD logging
+paramtype   = plusarg
+scope       = public

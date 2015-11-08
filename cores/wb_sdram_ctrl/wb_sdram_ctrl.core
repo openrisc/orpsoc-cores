@@ -20,6 +20,12 @@ tb_private_src_files =
 [plusargs]
 transactions = int "Number of wishbone transactions"
 
+[parameter transactions]
+datatype    = int
+description = Number of wishbone transactions to run in test bench
+paramtype   = plusarg
+scope       = private
+
 [simulator]
 toplevel = wb_sdram_ctrl_tb
 

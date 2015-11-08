@@ -33,6 +33,18 @@ depend = vlog_tb_utils
 read_rate = str Stream read rate
 write_rate = str Stream write rate
 
+[parameter read_rate]
+datatype    = str
+description = Stream read rate
+paramtype   = plusarg
+scope       = private
+
+[parameter write_rate]
+datatype    = str
+description = Stream write rate
+paramtype   = plusarg
+scope       = private
+
 [provider]
 name = github
 user = olofk

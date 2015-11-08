@@ -20,3 +20,9 @@ tb_private_src_files =
 
 [plusargs]
 transactions = int "Number of wishbone transactions to run in test bench"
+
+[parameter transactions]
+datatype    = int
+description = Number of wishbone transactions to run in test bench
+paramtype   = plusarg
+scope       = private

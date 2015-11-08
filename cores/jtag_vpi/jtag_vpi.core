@@ -11,6 +11,12 @@ src_files = jtag_vpi.c
 [plusargs]
 jtag-vpi-enable = bool "Enable JTAG debug interface"
 
+[parameter jtag-vpi-enable]
+datatype    = bool
+description = Enable JTAG debug interface
+paramtype   = plusarg
+scope       = public
+
 [provider]
 name = github
 user = fjullien

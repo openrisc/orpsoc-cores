@@ -59,6 +59,18 @@ tb_src_files = bench/verilog/mor1kx_monitor.v
 trace_enable = bool "Enable trace"
 trace_to_screen = bool "Output trace to screen"
 
+[parameter trace_enable]
+datatype    = bool
+description = Enable mor1kx instruction trace
+paramtype   = plusarg
+scope       = public
+
+[parameter trace_to_screen]
+datatype    = bool
+description = Output mor1kx instruction trace to screen
+paramtype   = plusarg
+scope       = public
+
 [provider]
 name = github
 user = openrisc

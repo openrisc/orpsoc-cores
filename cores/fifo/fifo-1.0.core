@@ -21,6 +21,18 @@ tb_private_src_files =
 read_rate = str FIFO read rate
 write_rate = str FIFO write rate
 
+[parameter read_rate]
+datatype    = str
+description = FIFO read rate
+paramtype   = plusarg
+scope       = private
+
+[parameter write_rate]
+datatype    = str
+description = FIFO write rate
+paramtype   = plusarg
+scope       = private
+
 [simulator]
 toplevel = fifo_tb
 

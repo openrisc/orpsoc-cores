@@ -25,6 +25,12 @@ toplevel = wb_intercon_tb
 [plusargs]
 transactions = int Number of wishbone transactions to run in test bench
 
+[parameter transactions]
+datatype    = int
+description = Number of wishbone transactions to run in test bench
+paramtype   = plusarg
+scope       = private
+
 [icarus]
 depend = vlog_tb_utils wb_bfm
 

@@ -15,5 +15,11 @@ libs          = -lelf
 [plusargs]
 elf-load = file ELF file to preload to memory
 
+[parameter elf-load]
+datatype    = file
+description = ELF file to preload to memory
+paramtype   = plusarg
+scope       = public
+
 [scripts]
 pre_build_scripts = check_libelf.sh

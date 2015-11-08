@@ -74,6 +74,12 @@ include_files =
 transactions =
  int "Number of wishbone transactions"
 
+[parameter transactions]
+datatype    = int
+description = Number of wishbone transactions to run in test bench
+paramtype   = plusarg
+scope       = private
+
 [simulator]
 toplevel =
  wb_ddr_ctrl_tb
