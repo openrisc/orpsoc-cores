@@ -6,6 +6,7 @@ simulators = icarus
 
 [verilog]
 src_files = picorv32.v
+tb_src_files = axi4_memory.v
 tb_private_src_files = testbench.v
 
 [simulator]
@@ -18,3 +19,15 @@ depend = elf-loader vlog_tb_utils
 name = github
 user = cliffordwolf
 repo = picorv32
+
+[parameter axi_test]
+datatype    = bool
+description = Randomize AXI delays
+paramtype   = plusarg
+scope       = private
+
+[parameter verbose]
+datatype    = bool
+description = Enable verbose memory logging
+paramtype   = plusarg
+scope       = private
