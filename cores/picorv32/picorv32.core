@@ -2,7 +2,7 @@ CAPI=1
 
 [main]
 description = PicoRV32 - A Size-Optimized RISC-V CPU
-simulators = icarus
+simulators = icarus verilator
 
 [verilog]
 src_files = axi4_memory.v picorv32.v picorv32_top.v
@@ -13,6 +13,14 @@ toplevel = testbench
 
 [icarus]
 depend = elf-loader vlog_tb_utils
+
+[verilator]
+verilator_options = -Wno-fatal --trace
+tb_toplevel   = picorv32_tb.cpp
+top_module    = picorv32_top
+source_type   = CPP
+src_files =    picorv32_tb.cpp
+depend = verilator_tb_utils
 
 [provider]
 name = github
