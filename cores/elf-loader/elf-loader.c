@@ -191,8 +191,8 @@ unsigned int read_32(uint8_t *bin_file, unsigned int address)
 	return (bin_file[address] << 24) | (bin_file[address + 1] << 16) |
 	       (bin_file[address + 2] << 8) | (bin_file[address + 3]);
   else
-	return (bin_file[address+3] << 24) | (bin_file[address + 2] << 16) |
-	       (bin_file[address + 1] << 8) | (bin_file[address + 0]);
+	return (bin_file[address + 3] << 24) | (bin_file[address + 2] << 16) |
+	       (bin_file[address + 1] <<  8) | (bin_file[address + 0]);
 }
 
 unsigned short read_16(uint8_t *bin_file, unsigned int address)
