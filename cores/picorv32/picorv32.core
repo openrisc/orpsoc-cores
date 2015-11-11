@@ -5,8 +5,7 @@ description = PicoRV32 - A Size-Optimized RISC-V CPU
 simulators = icarus
 
 [verilog]
-src_files = picorv32.v
-tb_src_files = axi4_memory.v
+src_files = axi4_memory.v picorv32.v picorv32_top.v
 tb_private_src_files = testbench.v
 
 [simulator]

@@ -29,29 +29,7 @@ module axi4_memory
 		input             mem_axi_rready,
 		output reg [31:0] mem_axi_rdata);
 
-	reg [31:0]   memory [0:64*1024/4-1];
-	integer      mem_words;
-	integer      i;
-	reg [31:0]   mem_word;
-	reg [1023:0] elf_file;
-
-	initial begin
-		if($value$plusargs("elf_load=%s", elf_file)) begin
-			$elf_load_file(elf_file);
-
-			mem_words = $elf_get_size/4;
-			$display("Loading %d words", mem_words);
-			for(i=0; i < mem_words; i = i+1) begin
-				mem_word = $elf_read_32(i*4);
-				memory[i] = {mem_word[ 7: 0],
-				             mem_word[15: 8],
-				             mem_word[23:16],
-			                     mem_word[31:24]};
-			end
-		end else
-			$display("No ELF file specified");
-	end
-
+	reg [31:0]   memory [0:64*1024/4-1] /* verilator public */;
 	reg VERBOSE;
 	initial VERBOSE = $test$plusargs("verbose");
 
@@ -142,12 +120,14 @@ if (VERBOSE)
 		if (latched_waddr == 32'h1000_0000) begin
 if (VERBOSE) begin
 			if (32 <= latched_wdata && latched_wdata < 128)
-				$display("OUT: '%c'", latched_wdata);
+				$display("OUT: '%c'", latched_wdata[7:0]);
 			else
 				$display("OUT: %3d", latched_wdata);
 end else begin
-			$write("%c", latched_wdata);
+			$write("%c", latched_wdata[7:0]);
+`ifndef VERILATOR
 			$fflush();
+`endif
 end
 		end else begin
 			$display("OUT-OF-BOUNDS MEMORY WRITE TO %08x", latched_waddr);

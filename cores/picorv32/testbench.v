@@ -13,108 +13,47 @@ module testbench;
 
    vlog_tb_utils vtu();
    
-	reg clk = 1;
-	reg resetn = 0;
-	reg [31:0] irq;
-	wire trap;
+   reg clk = 1;
+   reg resetn = 0;
 
-	always @* begin
-		irq = 0;
-		irq[4] = &uut.picorv32_core.count_cycle[12:0];
-		irq[5] = &uut.picorv32_core.count_cycle[15:0];
-	end
+   always #5 clk = ~clk;
 
-	always #5 clk = ~clk;
+   initial begin
+      repeat (100) @(posedge clk);
+      resetn <= 1;
+   end
 
-	initial begin
-		repeat (100) @(posedge clk);
-		resetn <= 1;
-	end
+   integer      mem_words;
+   integer      i;
+   reg [31:0] 	mem_word;
+   reg [1023:0]      elf_file;
 
-	wire        mem_axi_awvalid;
-	wire        mem_axi_awready;
-	wire [31:0] mem_axi_awaddr;
-	wire [ 2:0] mem_axi_awprot;
+   initial begin
+      if($value$plusargs("elf_load=%s", elf_file)) begin
+	 $elf_load_file(elf_file);
 
-	wire        mem_axi_wvalid;
-	wire        mem_axi_wready;
-	wire [31:0] mem_axi_wdata;
-	wire [ 3:0] mem_axi_wstrb;
+	 mem_words = $elf_get_size/4;
+	 $display("Loading %d words", mem_words);
+	 for(i=0; i < mem_words; i = i+1) begin
+	    top.mem.memory[i] = $elf_read_32(i*4);
+	 end
+      end else
+	$display("No ELF file specified");
+   end
 
-	wire        mem_axi_bvalid;
-	wire        mem_axi_bready;
+   integer cycle_counter;
+   always @(posedge clk) begin
+      cycle_counter <= resetn ? cycle_counter + 1 : 0;
+      if (resetn && trap) begin
+	 repeat (10) @(posedge clk);
+	 $display("TRAP after %1d clock cycles", cycle_counter);
+	 $finish;
+      end
+   end
 
-	wire        mem_axi_arvalid;
-	wire        mem_axi_arready;
-	wire [31:0] mem_axi_araddr;
-	wire [ 2:0] mem_axi_arprot;
+   picorv32_top top
+     (.clk    (clk),
+      .resetn (resetn),
+      .trap   (trap));
 
-	wire        mem_axi_rvalid;
-	wire        mem_axi_rready;
-	wire [31:0] mem_axi_rdata;
-
-	axi4_memory mem
-		(
-		.clk           (clk             ),
-		.mem_axi_awvalid (mem_axi_awvalid ),
-		.mem_axi_awready (mem_axi_awready ),
-		.mem_axi_awaddr  (mem_axi_awaddr  ),
-		.mem_axi_awprot  (mem_axi_awprot  ),
-
-		.mem_axi_wvalid  (mem_axi_wvalid  ),
-		.mem_axi_wready  (mem_axi_wready  ),
-		.mem_axi_wdata   (mem_axi_wdata   ),
-		.mem_axi_wstrb   (mem_axi_wstrb   ),
-
-		.mem_axi_bvalid  (mem_axi_bvalid  ),
-		.mem_axi_bready  (mem_axi_bready  ),
-
-		.mem_axi_arvalid (mem_axi_arvalid ),
-		.mem_axi_arready (mem_axi_arready ),
-		.mem_axi_araddr  (mem_axi_araddr  ),
-		.mem_axi_arprot  (mem_axi_arprot  ),
-
-		.mem_axi_rvalid  (mem_axi_rvalid  ),
-		.mem_axi_rready  (mem_axi_rready  ),
-		.mem_axi_rdata   (mem_axi_rdata   ));
-
-	picorv32_axi #(
-`ifdef SP_TEST
-		.ENABLE_REGS_DUALPORT(0),
-`endif
-		.ENABLE_MUL(1),
-		.ENABLE_IRQ(1)
-	) uut (
-		.clk            (clk            ),
-		.resetn         (resetn         ),
-		.trap           (trap           ),
-		.mem_axi_awvalid(mem_axi_awvalid),
-		.mem_axi_awready(mem_axi_awready),
-		.mem_axi_awaddr (mem_axi_awaddr ),
-		.mem_axi_awprot (mem_axi_awprot ),
-		.mem_axi_wvalid (mem_axi_wvalid ),
-		.mem_axi_wready (mem_axi_wready ),
-		.mem_axi_wdata  (mem_axi_wdata  ),
-		.mem_axi_wstrb  (mem_axi_wstrb  ),
-		.mem_axi_bvalid (mem_axi_bvalid ),
-		.mem_axi_bready (mem_axi_bready ),
-		.mem_axi_arvalid(mem_axi_arvalid),
-		.mem_axi_arready(mem_axi_arready),
-		.mem_axi_araddr (mem_axi_araddr ),
-		.mem_axi_arprot (mem_axi_arprot ),
-		.mem_axi_rvalid (mem_axi_rvalid ),
-		.mem_axi_rready (mem_axi_rready ),
-		.mem_axi_rdata  (mem_axi_rdata  ),
-		.irq            (irq            )
-	);
-
-	integer cycle_counter;
-	always @(posedge clk) begin
-		cycle_counter <= resetn ? cycle_counter + 1 : 0;
-		if (resetn && trap) begin
-			repeat (10) @(posedge clk);
-			$display("TRAP after %1d clock cycles", cycle_counter);
-			$finish;
-		end
-	end
 endmodule
