@@ -26,6 +26,8 @@
 #include <gelf.h>
 #include <fcntl.h>
 
+uint8_t big_endian;
+
 uint8_t *dump_program_data(Elf *elf_object, int *size)
 {
 	uint8_t *buffer = NULL;
@@ -132,6 +134,7 @@ uint8_t *dump_section_data(Elf *elf_object, int *size)
 uint8_t *load_elf_file(char *elf_file_name, int *size)
 {
 	uint8_t *buf = NULL;
+	char *id;
 
 	if (elf_version(EV_CURRENT) == EV_NONE)
 		return NULL;
@@ -156,6 +159,21 @@ uint8_t *load_elf_file(char *elf_file_name, int *size)
 		return NULL;
 	}
 
+	if (( id = elf_getident (elf_object , NULL )) == NULL )
+		printf (" getident () failed : % s . " ,
+		elf_errmsg ( -1));
+
+	if (id[EI_DATA] == ELFDATA2LSB)
+		big_endian = 0;
+	else if (id[EI_DATA] == ELFDATA2MSB)
+		big_endian = 1;
+	else {
+		printf("%s has unknown endianness '%d'\n", elf_file_name, id[EI_DATA]);
+		elf_end(elf_object);
+		close(fd);
+		return NULL;
+	}
+
 	buf = dump_program_data(elf_object, size);
 
 	if (buf == NULL)
@@ -169,8 +187,12 @@ uint8_t *load_elf_file(char *elf_file_name, int *size)
 
 unsigned int read_32(uint8_t *bin_file, unsigned int address)
 {
+  if (big_endian)
 	return (bin_file[address] << 24) | (bin_file[address + 1] << 16) |
 	       (bin_file[address + 2] << 8) | (bin_file[address + 3]);
+  else
+	return (bin_file[address+3] << 24) | (bin_file[address + 2] << 16) |
+	       (bin_file[address + 1] << 8) | (bin_file[address + 0]);
 }
 
 unsigned short read_16(uint8_t *bin_file, unsigned int address)
