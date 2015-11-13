@@ -1,0 +1,32 @@
+CAPI=1
+[main]
+description = "Minimal RISC-V/VScale simulation environment"
+depend =
+ wb_riscvscale
+ mmuart
+ ram_wb
+ uart16550-1.5
+ uart16550_model
+ or1k_bootloaders-0.9
+ wb_intercon-1.0
+
+simulators = icarus
+
+[verilog]
+src_files =
+ rtl/verilog/vscale_top.v
+ rtl/verilog/wb_intercon.v
+tb_private_src_files =
+ bench/verilog/vscale_tb.v
+include_files =
+ rtl/verilog/wb_intercon.vh
+ bench/verilog/include/uart_defines.v
+ bench/verilog/include/timescale.v
+ sw/bootrom.vh
+
+[icarus]
+iverilog_options = -DSIM
+depend = vlog_tb_utils elf-loader
+
+[simulator]
+toplevel = vscale_tb 
