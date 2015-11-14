@@ -535,8 +535,8 @@ wire        wb_s2m_resize_spi0_rty;
 
 wb_mux
   #(.num_slaves (2),
-    .MATCH_ADDR ({32'h00000000, 32'hf0000100}),
-    .MATCH_MASK ({32'hf8000000, 32'hffffffc0}))
+    .MATCH_ADDR ({32'h00000000, 32'hf0000000}),
+    .MATCH_MASK ({32'hf8000000, 32'hfffffc00}))
  wb_mux_or1k_i
    (.wb_clk_i  (wb_clk_i),
     .wb_rst_i  (wb_rst_i),
