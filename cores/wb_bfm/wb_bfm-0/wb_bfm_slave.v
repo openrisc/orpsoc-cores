@@ -53,6 +53,7 @@ module wb_bfm_slave
 	 //Make sure that wb_cyc_i is still asserted at next clock edge to avoid glitches
 	 while(wb_cyc_i !== 1'b1)
 	   @(posedge wb_clk);
+         #Tp;
 	 if(DEBUG) $display("%0d : Got wb_cyc_i", $time);
 
 	 cycle_type = get_cycle_type(wb_cti_i);

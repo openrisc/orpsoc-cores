@@ -64,7 +64,7 @@ module wb_master
    
    integer 		      transaction;
 	
-   integer 		      tmp, burst_wrap;
+   integer 		      tmp, burst_wrap, word_size;
    
    reg 			      err;
 	
@@ -77,17 +77,59 @@ module wb_master
 	 address = {20'h0000,tmp[11:0]};//FIXME Check address range against memory model
 			
 	 burst_length = ({$random(SEED)} % MAX_BURST_LEN) + 1;
-			
-	 for(word = 0; word < burst_length; word = word + 1)
-	   write_data[dw*word+:dw] = $random;
-	 
 	 burst_type = ({$random(SEED)} % 4);
-	 
-	 bfm.write_burst(address, write_data, 4'hf, burst_length, burst_type, err);
-	 @(posedge wb_clk_i);
-	 bfm.read_burst(address, read_data, 4'hf, burst_length, burst_type, err);
-	 @(posedge wb_clk_i);
-	 
+
+	 word_size = ({$random(SEED)} % 3) + 1;
+	 //word_size = 3;
+         if (word_size == 3) begin
+            word_size = 4;
+         end else begin
+            burst_length = 1;
+            burst_type = LINEAR_BURST;
+         end
+
+         if (burst_length == 1) begin
+            case (word_size)
+              1:
+                begin
+                   write_data = 0;
+	           write_data[7:0] = $random;
+	           bfm.write_byte(address, write_data[7:0], err);
+	           @(posedge wb_clk_i);
+                   read_data = 0;
+	           //bfm.read(address, read_data, 4'hf, err);
+	           bfm.read_byte(address, read_data[7:0], err);
+	           @(posedge wb_clk_i);
+                end // case: 1
+              2:
+                begin
+                   write_data = 0;
+	           write_data[15:0] = $random;
+	           bfm.write_half_word(address, write_data[15:0], err);
+	           @(posedge wb_clk_i);
+                   read_data = 0;
+	           //bfm.read(address, read_data, 4'hf, err);
+	           bfm.read_half_word(address, read_data[15:0], err);
+	           @(posedge wb_clk_i);
+                end // case: 2
+              4:
+                begin
+	           write_data[dw-1:0] = $random;
+	           bfm.write(address, write_data, 4'hf, err);
+	           @(posedge wb_clk_i);
+	           bfm.read(address, read_data, 4'hf, err);
+	           @(posedge wb_clk_i);
+                end // case: 4
+            endcase // case (word_size)
+         end else begin // if (burst_length == 1)
+	    for(word = 0; word < burst_length; word = word + 1)
+	      write_data[dw*word+:dw] = $random;
+	    bfm.write_burst(address, write_data, 4'hf, burst_length, burst_type, err);
+	    @(posedge wb_clk_i);
+	    bfm.read_burst(address, read_data, 4'hf, burst_length, burst_type, err);
+	    @(posedge wb_clk_i);
+         end // else: !if(burst_length == 1)
+
 	 case (burst_type)
 	   LINEAR_BURST   : burst_wrap = burst_length;
 	   WRAP_4_BURST   : burst_wrap = 4;
@@ -108,7 +150,7 @@ module wb_master
 	 end
 	 for(word = 0 ; word < burst_length ; word = word +1)
 	   if(read_data[word*dw+:dw] !== expected_data[word*dw+:dw]) begin
-	      $error("Read data mismatch on address %h (burst length=%0d, burst_type=%0d, iteration %0d)", address, burst_length, burst_type, word);
+	      $error("Read data mismatch on address %h (burst length=%0d, burst_type=%0d, word_size=%0d, iteration %0d)", address, burst_length, burst_type, word_size, word);
 	      $error("Expected %h", expected_data[word*dw+:dw]);
 	      $error("Got      %h", read_data[word*dw+:dw]);
 	      
