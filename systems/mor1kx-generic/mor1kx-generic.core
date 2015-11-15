@@ -8,8 +8,8 @@ depend =
  uart16550-1.5.1
  vlog_tb_utils
  verilator_tb_utils
- wb_bfm
- wb_intercon
+ wb_bfm-1.0
+ wb_intercon-1.0
  jtag_vpi
  jtag_tap
  adv_debug_sys
