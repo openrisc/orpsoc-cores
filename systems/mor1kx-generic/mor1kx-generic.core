@@ -5,7 +5,7 @@ depend =
  mmuart
  mor1kx
  ram_wb
- uart16550-1.5.1
+ uart16550-1.5.2
  vlog_tb_utils
  verilator_tb_utils
  wb_bfm-1.0

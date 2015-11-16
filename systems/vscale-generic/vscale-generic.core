@@ -5,7 +5,7 @@ depend =
  wb_riscvscale
  mmuart
  ram_wb
- uart16550-1.5.1
+ uart16550-1.5.2
  or1k_bootloaders-0.9
  wb_intercon-1.0
 
