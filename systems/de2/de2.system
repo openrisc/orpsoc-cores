@@ -1,0 +1,16 @@
+SAPI=1
+[main]
+name = de2
+description = "Altera de2 board OpenRISC system"
+
+backend = quartus
+
+[quartus]
+family = "Cyclone II"
+device = EP2C35F672C6
+sdc_files = data/de2.sdc
+tcl_files = data/pinmap.tcl
+            data/options.tcl
+
+[scripts]
+post_build_scripts = scripts/build_summary
