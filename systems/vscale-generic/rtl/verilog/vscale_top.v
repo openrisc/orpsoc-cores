@@ -120,29 +120,38 @@ ram_wb_b3 #(
 
 wire uart_irq;
 
-wb_uart_wrapper #(
-	.DEBUG	(0),
+uart_top #(
+	.uart_data_width (8),
+	.uart_addr_width (3),
+	.debug	(0),
 	.SIM	(UART_SIM)
-) wb_uart_wrapper0 (
+) uart16550 (
 	//Wishbone Master interface
 	.wb_clk_i	(wb_clk_i),
 	.wb_rst_i	(wb_rst_i),
-	.rx		(1'b0),
-	.tx		(uart),
-        .int_o		(uart_irq),
-	.wb_adr_i	(wb_m2s_uart0_adr),
+
+  .wb_adr_i	(wb_m2s_uart0_adr[2:0]),
 	.wb_dat_i	(wb_m2s_uart0_dat),
+  .wb_sel_i	(4'h0),
 	.wb_we_i	(wb_m2s_uart0_we),
 	.wb_cyc_i	(wb_m2s_uart0_cyc),
 	.wb_stb_i	(wb_m2s_uart0_stb),
-	.wb_cti_i	(wb_m2s_uart0_cti),
-	.wb_bte_i	(wb_m2s_uart0_bte),
 	.wb_dat_o	(wb_s2m_uart0_dat),
 	.wb_ack_o	(wb_s2m_uart0_ack),
-	.wb_err_o	(wb_s2m_uart0_err),
-	.wb_rty_o	(wb_s2m_uart0_rty)
+  .int_o		(uart_irq),
+	.srx_pad_i	(1'b0),
+	.stx_pad_o	(uart),
+	.rts_pad_o	(),
+	.cts_pad_i	(1'b0),
+	.dtr_pad_o	(),
+	.dsr_pad_i	(1'b0),
+	.ri_pad_i	(1'b0),
+	.dcd_pad_i	(1'b0)
 );
 
+assign wb_s2m_uart0_err = 1'b0;
+assign wb_s2m_uart0_rty = 1'b0;
+ 
 `ifdef VERILATOR
 wire [7:0]	uart_rx_data;
 wire		uart_rx_done;
