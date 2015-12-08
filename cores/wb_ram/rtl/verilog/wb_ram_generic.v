@@ -9,7 +9,7 @@ module wb_ram_generic
    input [$clog2(depth)-1:0] 	 raddr,
    output reg [31:0] dout);
 
-   reg [31:0] 	 mem [0:depth-1];
+   reg [31:0] 	 mem [0:depth-1] /* verilator public */;
    
    always @(posedge clk) begin
       if (we[0]) mem[waddr][7:0]   <= din[7:0];
