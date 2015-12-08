@@ -5,9 +5,9 @@ depend =
  adv_debug_sys
  jtag_tap
  mor1kx
- ram_wb
  uart16550-1.5.2
  wb_intercon-1.0
+ wb_ram-1.0
 
 simulators = icarus modelsim
 

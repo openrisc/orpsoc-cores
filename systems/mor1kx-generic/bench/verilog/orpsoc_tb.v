@@ -45,7 +45,7 @@ module orpsoc_tb;
 	 mem_words = $elf_get_size/4;
 	 $display("Loading %d words", mem_words);
 	 for(i=0; i < mem_words; i = i+1)
-	   orpsoc_tb.dut.wb_bfm_memory0.mem[i] = $elf_read_32(i*4);
+	   orpsoc_tb.dut.wb_bfm_memory0.ram0.mem[i] = $elf_read_32(i*4);
       end else
 	$display("No ELF file specified");
 

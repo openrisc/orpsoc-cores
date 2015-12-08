@@ -208,14 +208,13 @@ mor1kx #(
 // Generic main RAM
 //
 ////////////////////////////////////////////////////////////////////////
-ram_wb_b3 #(
-	.mem_size_bytes	(2**MEM_SIZE_BITS*(wb_dw/8)),
-	.mem_adr_width	(MEM_SIZE_BITS)
+wb_ram #(
+	.depth	(2**MEM_SIZE_BITS)
 ) wb_bfm_memory0 (
 	//Wishbone Master interface
 	.wb_clk_i	(wb_clk_i),
 	.wb_rst_i	(wb_rst_i),
-	.wb_adr_i	(wb_m2s_mem_adr & (2**MEM_SIZE_BITS-1)),
+	.wb_adr_i	(wb_m2s_mem_adr[MEM_SIZE_BITS-1:0]),
 	.wb_dat_i	(wb_m2s_mem_dat),
 	.wb_sel_i	(wb_m2s_mem_sel),
 	.wb_we_i	(wb_m2s_mem_we),
@@ -225,9 +224,9 @@ ram_wb_b3 #(
 	.wb_bte_i	(wb_m2s_mem_bte),
 	.wb_dat_o	(wb_s2m_mem_dat),
 	.wb_ack_o	(wb_s2m_mem_ack),
-	.wb_err_o	(wb_s2m_mem_err),
-	.wb_rty_o	(wb_s2m_mem_rty)
+	.wb_err_o	(wb_s2m_mem_err)
 );
+   assign wb_s2m_mem_rty = 1'b0;
 
 wire uart_irq;
 

@@ -35,6 +35,15 @@ static bool done;
 
 #define RESET_TIME		2
 
+vluint64_t main_time = 0;       // Current simulation time
+// This is a 64-bit integer to reduce wrap over issues and
+// allow modulus.  You can also use a double, if you wish.
+
+double sc_time_stamp () {       // Called by $time in Verilog
+  return main_time;           // converts to double, to match
+  // what SystemC does
+}
+
 void INThandler(int signal)
 {
 	printf("\nCaught ctrl-c\n");
@@ -77,7 +86,7 @@ int main(int argc, char **argv, char **env)
 
 	Vorpsoc_top* top = new Vorpsoc_top;
 	VerilatorTbUtils* tbUtils =
-		new VerilatorTbUtils(top->v->wb_bfm_memory0->mem);
+		new VerilatorTbUtils(top->v->wb_bfm_memory0->ram0->mem);
 
 	parse_args(argc, argv, tbUtils);
 
