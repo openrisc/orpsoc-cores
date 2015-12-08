@@ -12,7 +12,7 @@ depend =
  simple_spi
  uart16550-1.5
  wb_intercon-1.0
- wb_ram
+ wb_ram-1.0
  wb_sdram_ctrl
 
 simulators =
