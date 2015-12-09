@@ -1,9 +1,10 @@
 //////////////////////////////////////////////////////////////////////
 ///                                                               ////
-/// ORPSoC top for Altera de1 board                               ////
+/// ORPSoC top for Altera de2 board                               ////
 ///                                                               ////
 /// Franck Jullien, franck.jullien@gmail.com                      ////
-///                                                               ////
+/// edited by:													  ////
+//  Patric Erdmann, pe@perdmann.de								  ////
 //////////////////////////////////////////////////////////////////////
 ////                                                              ////
 //// Copyright (C) 2009, 2010 Authors and OPENCORES.ORG           ////

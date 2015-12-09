@@ -583,7 +583,7 @@ wire        wb_s2m_resize_ledgr0_rty;
 
 wb_mux
   #(.num_slaves (2),
-    .MATCH_ADDR ({32'h00000000, 32'hf0000100}),
+    .MATCH_ADDR ({32'h00000000, 32'hf0000000}),
     .MATCH_MASK ({32'hff800000, 32'hffffffc0}))
  wb_mux_or1k_i
    (.wb_clk_i  (wb_clk_i),

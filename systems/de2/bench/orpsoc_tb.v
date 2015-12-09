@@ -1,6 +1,6 @@
 //////////////////////////////////////////////////////////////////////
 ///                                                               ////
-/// ORPSoC testbench for Altera de1 board                         ////
+/// ORPSoC testbench for Altera de2 board                         ////
 ///                                                               ////
 /// Franck Jullien, franck.jullien@gmail.com                      ////
 ///                                                               ////
