@@ -23,11 +23,11 @@ include_files =
  bench/verilog/include/uart_defines.v
 
 [icarus]
-depend = elf-loader jtag_vpi vlog_tb_utils wb_bfm-1.0
+depend = elf-loader jtag_vpi-r1 vlog_tb_utils wb_bfm-1.0
 iverilog_options = -DSIM
 
 [modelsim]
-depend = elf-loader jtag_vpi vlog_tb_utils wb_bfm-1.0
+depend = elf-loader jtag_vpi-r1 vlog_tb_utils wb_bfm-1.0
 
 [verilator]
 depend = mmuart verilator_tb_utils
