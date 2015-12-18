@@ -1,5 +1,3 @@
-`include "timescale.v"
-
 module orpsoc_tb;
 
    vlog_tb_utils vlog_tb_utils0();

@@ -3,7 +3,7 @@ CAPI=1
 description = "Minimal mor1kx simulation environment"
 depend =
  adv_debug_sys
- jtag_tap
+ jtag_tap-1.13
  mor1kx
  uart16550-1.5.3
  wb_intercon-1.0
@@ -21,7 +21,6 @@ include_files =
  rtl/verilog/wb_intercon.vh
  bench/verilog/include/test-defines.v
  bench/verilog/include/uart_defines.v
- bench/verilog/include/timescale.v
 
 [icarus]
 depend = elf-loader jtag_vpi vlog_tb_utils wb_bfm-1.0
