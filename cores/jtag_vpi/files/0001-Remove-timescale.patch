@@ -1,0 +1,25 @@
+From 290fd5de4186f609f23a4ef143d9347dd16c1f57 Mon Sep 17 00:00:00 2001
+From: Olof Kindgren <olof.kindgren@gmail.com>
+Date: Fri, 18 Dec 2015 21:40:58 +0100
+Subject: [PATCH] Remove timescale
+
+---
+ jtag_vpi.v | 2 --
+ 1 file changed, 2 deletions(-)
+
+diff --git a/jtag_vpi.v b/jtag_vpi.v
+index a55c50f..0fe85ec 100644
+--- a/jtag_vpi.v
++++ b/jtag_vpi.v
+@@ -19,8 +19,6 @@
+  *
+  */
+ 
+-`timescale 1ns/10ps
+-
+ `define CMD_RESET		0
+ `define CMD_TMS_SEQ		1
+ `define CMD_SCAN_CHAIN		2
+-- 
+2.4.9
+
