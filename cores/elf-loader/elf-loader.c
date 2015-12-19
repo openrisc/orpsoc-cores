@@ -160,8 +160,8 @@ uint8_t *load_elf_file(char *elf_file_name, int *size)
 	}
 
 	if (( id = elf_getident (elf_object , NULL )) == NULL )
-		printf (" getident () failed : % s . " ,
-		elf_errmsg ( -1));
+		printf("getident() failed : %s.",
+		elf_errmsg(-1));
 
 	if (id[EI_DATA] == ELFDATA2LSB)
 		big_endian = 0;
