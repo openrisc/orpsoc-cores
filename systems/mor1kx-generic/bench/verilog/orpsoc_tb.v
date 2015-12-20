@@ -73,7 +73,6 @@ module orpsoc_tb;
    //
    ////////////////////////////////////////////////////////////////////////
    orpsoc_top
-     #(.UART_SIM (1))
    dut
      (.wb_clk_i (syst_clk),
       .wb_rst_i (syst_rst),
