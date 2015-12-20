@@ -1,5 +1,3 @@
-`include "timescale.v"
-
 module vscale_tb;
 
    vlog_tb_utils vtu();

@@ -5,7 +5,7 @@ depend =
  wb_riscvscale
  mmuart
  ram_wb
- uart16550-1.5.2
+ uart16550-1.5.3
  or1k_bootloaders-0.9
  wb_intercon-1.0
 
@@ -20,7 +20,6 @@ tb_private_src_files =
 include_files =
  rtl/verilog/wb_intercon.vh
  bench/verilog/include/uart_defines.v
- bench/verilog/include/timescale.v
  sw/bootrom.vh
 
 [icarus]
