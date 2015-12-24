@@ -405,6 +405,19 @@ mor1kx #(
 
 	.irq_i(or1k_irq),
 
+	.traceport_exec_valid_o  (),
+	.traceport_exec_pc_o     (),
+	.traceport_exec_insn_o   (),
+	.traceport_exec_wbdata_o (),
+	.traceport_exec_wbreg_o  (),
+	.traceport_exec_wben_o   (),
+
+	.multicore_coreid_i   (32'd0),
+	.multicore_numcores_i (32'd0),
+
+	.snoop_adr_i (32'd0),
+	.snoop_en_i  (1'b0),
+
 	.du_addr_i(or1k_dbg_adr_i[15:0]),
 	.du_stb_i(or1k_dbg_stb_i),
 	.du_dat_i(or1k_dbg_dat_i),
