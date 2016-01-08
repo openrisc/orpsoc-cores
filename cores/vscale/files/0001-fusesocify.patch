@@ -1,0 +1,75 @@
+From 825b53c00ce1495ed2a268ba0e5b6b319157ca72 Mon Sep 17 00:00:00 2001
+From: Olof Kindgren <olof.kindgren@gmail.com>
+Date: Fri, 8 Jan 2016 20:41:53 +0100
+Subject: [PATCH] fusesocify
+
+---
+ src/test/verilog/vscale_hex_tb.v | 22 +++++++++++++---------
+ 1 file changed, 13 insertions(+), 9 deletions(-)
+
+diff --git a/src/test/verilog/vscale_hex_tb.v b/src/test/verilog/vscale_hex_tb.v
+index bb875a1..2d41269 100644
+--- a/src/test/verilog/vscale_hex_tb.v
++++ b/src/test/verilog/vscale_hex_tb.v
+@@ -5,6 +5,8 @@ module vscale_hex_tb();
+ 
+    localparam hexfile_words = 8192;
+ 
++   vlog_tb_utils vtu();
++
+    reg clk;
+    reg reset;
+ 
+@@ -44,10 +46,11 @@ module vscale_hex_tb();
+    integer j = 0;
+ 
+    initial begin
+-      $value$plusargs("max-cycles=%d", max_cycles);
+-      $value$plusargs("loadmem=%s", loadmem);
+-      $value$plusargs("vpdfile=%s", vpdfile);
+-      if (loadmem) begin
++      if($value$plusargs("max-cycles=%d", max_cycles))
++	$display("Setting max-cycles");
++      if($value$plusargs("vpdfile=%s", vpdfile));
++      if($value$plusargs("loadmem=%s", loadmem)) begin
++	 $display("Loading %s", loadmem);
+          $readmemh(loadmem, hexfile);
+          for (i = 0; i < hexfile_words; i = i + 1) begin
+             for (j = 0; j < 4; j = j + 1) begin
+@@ -55,8 +58,8 @@ module vscale_hex_tb();
+             end
+          end
+       end
+-      $vcdplusfile(vpdfile);
+-      $vcdpluson();
++      //$vcdplusfile(vpdfile);
++      //$vcdpluson();
+       // $vcdplusmemon();
+       #100 reset = 0;
+    end // initial begin
+@@ -70,10 +73,11 @@ module vscale_hex_tb();
+       if (!reset) begin
+          if (htif_pcr_resp_valid && htif_pcr_resp_data != 0) begin
+             if (htif_pcr_resp_data == 1) begin
+-               $vcdplusclose;
++	       $display("Exiting");
++               //$vcdplusclose;
+                $finish;
+             end else begin
+-               $vcdplusclose;
++               //$vcdplusclose;
+                $sformat(reason, "tohost = %d", htif_pcr_resp_data >> 1);
+             end
+          end
+@@ -82,7 +86,7 @@ module vscale_hex_tb();
+ 
+       if (reason) begin
+          $fdisplay(stderr, "*** FAILED *** (%s) after %d simulation cycles", reason, trace_count);
+-         $vcdplusclose;
++         //$vcdplusclose;
+          $finish;
+       end
+    end
+-- 
+2.4.9
+
