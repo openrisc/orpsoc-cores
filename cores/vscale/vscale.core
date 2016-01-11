@@ -2,8 +2,9 @@ CAPI=1
 [main]
 
 patches = files/0001-fusesocify.patch
+ files/0002-Fix-missing-includes.patch
 
-simulators = icarus
+simulators = icarus modelsim
 
 [verilog]
 src_files =
@@ -37,6 +38,9 @@ tb_private_src_files =
 toplevel = vscale_hex_tb
 
 [icarus]
+depend = vlog_tb_utils
+
+[modelsim]
 depend = vlog_tb_utils
 
 [parameter loadmem]

@@ -1,0 +1,34 @@
+From 1f1438138a17ae1edc87f05a0a281a01b1a4a9ab Mon Sep 17 00:00:00 2001
+From: Olof Kindgren <olof.kindgren@gmail.com>
+Date: Mon, 11 Jan 2016 10:51:49 +0100
+Subject: [PATCH] Fix missing includes
+
+---
+ src/main/verilog/vscale_core.v    | 1 +
+ src/main/verilog/vscale_mul_div.v | 1 +
+ 2 files changed, 2 insertions(+)
+
+diff --git a/src/main/verilog/vscale_core.v b/src/main/verilog/vscale_core.v
+index 085b78b..3cac456 100644
+--- a/src/main/verilog/vscale_core.v
++++ b/src/main/verilog/vscale_core.v
+@@ -1,4 +1,5 @@
+ `include "vscale_hasti_constants.vh"
++`include "vscale_ctrl_constants.vh"
+ `include "vscale_csr_addr_map.vh"
+ 
+ module vscale_core(
+diff --git a/src/main/verilog/vscale_mul_div.v b/src/main/verilog/vscale_mul_div.v
+index aae0cd4..cb9f944 100644
+--- a/src/main/verilog/vscale_mul_div.v
++++ b/src/main/verilog/vscale_mul_div.v
+@@ -1,5 +1,6 @@
+ `include "vscale_md_constants.vh"
+ `include "vscale_ctrl_constants.vh"
++`include "rv32_opcodes.vh"
+ 
+ module vscale_mul_div(
+                       input                         clk,
+-- 
+2.4.9
+
