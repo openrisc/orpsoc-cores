@@ -24,5 +24,8 @@ include_files =
 iverilog_options = -DSIM
 depend = vlog_tb_utils elf-loader
 
+[modelsim]
+depend = vlog_tb_utils elf-loader
+
 [simulator]
 toplevel = vscale_tb 
