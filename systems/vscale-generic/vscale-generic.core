@@ -3,7 +3,7 @@ CAPI=1
 description = "Minimal RISC-V/VScale simulation environment"
 depend =
  wb_riscvscale
- ram_wb
+ wb_ram-1.0
  uart16550-1.5.4
  or1k_bootloaders-0.9
  wb_intercon-1.0
