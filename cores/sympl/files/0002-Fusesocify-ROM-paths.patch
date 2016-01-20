@@ -1,0 +1,80 @@
+From e7c9c5b1cf6a12c041fbf9222a02a21193fd07c2 Mon Sep 17 00:00:00 2001
+From: Olof Kindgren <olof.kindgren@gmail.com>
+Date: Wed, 20 Jan 2016 22:23:18 +0100
+Subject: [PATCH 2/2] Fusesocify ROM paths
+
+---
+ Stimulus/RISC_V_tb/vscale_sympl_tb.v | 4 ++--
+ Verilog/cgsROM.v                     | 4 ++--
+ Verilog/cpuROM.v                     | 4 ++--
+ Verilog/shdrROM.v                    | 4 ++--
+ 4 files changed, 8 insertions(+), 8 deletions(-)
+
+diff --git a/Stimulus/RISC_V_tb/vscale_sympl_tb.v b/Stimulus/RISC_V_tb/vscale_sympl_tb.v
+index 6d245df..2cfb007 100644
+--- a/Stimulus/RISC_V_tb/vscale_sympl_tb.v
++++ b/Stimulus/RISC_V_tb/vscale_sympl_tb.v
+@@ -46,13 +46,13 @@ module vscale_sympl_tb();
+    initial begin
+    
+         if(!$value$plusargs("hexfile=%s", fname))
+-          fname = "risc_v_test.hex";
++          fname = "../src/sympl/Stimulus/RISC_V_tb/risc_v_test.HEX";
+         file = $fopen(fname, "rb");   
+         r = $fread(DUT.hasti_mem.mem[0], file, 16'h0080);    // load RISC V program memory with its program, starting at byte address 0x0200 
+         $fclose(file);
+    
+         if(!$value$plusargs("stlfile=%s", fname))
+-          fname = "olive.stl";
++          fname = "../src/sympl/Stimulus/RISC_V_tb/olive.stl";
+         file = $fopen(fname, "rb");   
+         r = $fread(STL_mem8[0], file);       // "olive.stl" loaded into 8-bit test bench memory
+         $fclose(file);  
+diff --git a/Verilog/cgsROM.v b/Verilog/cgsROM.v
+index 49c2304..006406a 100644
+--- a/Verilog/cgsROM.v
++++ b/Verilog/cgsROM.v
+@@ -85,8 +85,8 @@ initial begin
+     #1 
+ //    $readmemh("CGS_olive_dma.v",triportRAMA);    
+ //    $readmemh("CGS_olive_dma.v",triportRAMB);          
+-    $readmemh("CGS_olive_dma_SIL.v",triportRAMA);    
+-    $readmemh("CGS_olive_dma_SIL.v",triportRAMB);          
++    $readmemh("../src/sympl/ASM/CGS_olive_dma_SIL.v",triportRAMA);    
++    $readmemh("../src/sympl/ASM/CGS_olive_dma_SIL.v",triportRAMB);          
+ end
+ 
+ reg [DATA_WIDTH-1:0] rddataA;
+diff --git a/Verilog/cpuROM.v b/Verilog/cpuROM.v
+index 743d628..8cac091 100644
+--- a/Verilog/cpuROM.v
++++ b/Verilog/cpuROM.v
+@@ -87,8 +87,8 @@ initial begin
+ //    $readmemh("mem_test.v",triportRAMA);    
+ //    $readmemh("mem_test.v",triportRAMB);          
+ 
+-    $readmemh("MP_RISC_SIL.v",triportRAMA);    
+-    $readmemh("MP_RISC_SIL.v",triportRAMB);          
++    $readmemh("../src/sympl/ASM/MP_RISC_SIL.v",triportRAMA);    
++    $readmemh("../src/sympl/ASM/MP_RISC_SIL.v",triportRAMB);          
+ 
+ end
+ 
+diff --git a/Verilog/shdrROM.v b/Verilog/shdrROM.v
+index 451225d..554b742 100644
+--- a/Verilog/shdrROM.v
++++ b/Verilog/shdrROM.v
+@@ -87,8 +87,8 @@ initial begin
+     rddataB = 32'h0000_0000;
+     
+     #1 
+-    $readmemh("Shader_olive_SIL.v",triportRAMA);	
+-    $readmemh("Shader_olive_SIL.v",triportRAMB);
++    $readmemh("../src/sympl/ASM/Shader_olive_SIL.v",triportRAMA);	
++    $readmemh("../src/sympl/ASM/Shader_olive_SIL.v",triportRAMB);
+ end
+ 
+ 
+-- 
+2.4.9
+

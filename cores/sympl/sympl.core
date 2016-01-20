@@ -1,0 +1,137 @@
+CAPI=1
+[main]
+
+description = SYMPL GP-GPU-Compute Engine
+depend = vscale
+patches = 
+ files/0001-Allow-setting-hex-and-stl-files-as-plusargs.patch
+ files/0002-Fusesocify-ROM-paths.patch
+simulators = xsim
+
+[fileset flopoco]
+files =
+ FloPoCo_operators/Mul_Clk9.vhdl
+ FloPoCo_operators/Add_Clk9.vhdl
+ FloPoCo_operators/FP_To_FXP.vhdl
+ FloPoCo_operators/IEEE754_To_FP.vhdl
+ FloPoCo_operators/Mul_Clk_expert_9_1.vhdl
+ FloPoCo_operators/Div_Clk9.vhdl
+ FloPoCo_operators/FP9_To_IEEE754.vhdl
+ FloPoCo_operators/FXP_To_FP.vhdl
+ FloPoCo_operators/Log_Clk9.vhdl
+ FloPoCo_operators/FP_To_IEEE754.vhdl
+ FloPoCo_operators/Sqrt_Clk9.vhdl
+ FloPoCo_operators/Mul_Clk_expert_9_38.vhdl
+ FloPoCo_operators/Exp_Clk9.vhdl
+ FloPoCo_operators/IEEE754_To_FP9.vhdl
+ FloPoCo_operators/Add_Clk_9_38.vhdl
+file_type = vhdlSource
+usage = sim
+
+[fileset rtl_files]
+files =
+ Verilog/func_mul_CPU.v
+ Verilog/exc_capture_CPU.v
+ Verilog/_16_shader.v
+ Verilog/FP325.v
+ Verilog/int_cntrl.v
+ Verilog/func_sqrt_CPU.v
+ Verilog/func_fma.v
+ Verilog/Fma_Clk.v
+ Verilog/Fma_Clk_CPU.v
+ Verilog/_4_shader.v
+ Verilog/shdrROM.v
+ Verilog/round_sel.v
+ Verilog/RAM_tp.v
+ Verilog/func_div.v
+ Verilog/cgs.v
+ Verilog/RAM_func.v
+ Verilog/cpuROM.v
+ Verilog/datapool_64k_x_32.v
+ Verilog/sched_stack.v
+ Verilog/func_sqrt.v
+ Verilog/_2_shader.v
+ Verilog/func_ftoi_CPU.v
+ Verilog/func_log_CPU.v
+ Verilog/IEEE754_To_FP_filtered.v
+ Verilog/func_exp.v
+ Verilog/func_ftoi.v
+ Verilog/RAM_tdp_dpool.v
+ Verilog/rcp.v
+ Verilog/RAM_tdp.v
+ Verilog/func_add.v
+ Verilog/aSYMPL_DMA.v
+ Verilog/CGS_int_cntrl.v
+ Verilog/aSYMPL_func.v
+ Verilog/adder_32.v
+ Verilog/func_fma_CPU.v
+ Verilog/trigd.v
+ Verilog/func_atomic.v
+ Verilog/exc_capture.v
+ Verilog/func_exp_CPU.v
+ Verilog/RAM_tp_byte.v
+ Verilog/cgsROM.v
+ Verilog/func_div_CPU.v
+ Verilog/func_itof.v
+ Verilog/FP3211.v
+ Verilog/func_itof_CPU.v
+ Verilog/func_mul.v
+ Verilog/FP323.v
+ Verilog/_1_shader.v
+ Verilog/_8_shader.v
+ Verilog/func_add_CPU.v
+ Verilog/int_cntrl_CPU.v
+ Verilog/SYMPL_CPU.v
+ Verilog/arg_sel_CGS.v
+ Verilog/cpu.v
+ Verilog/arn_sel.v
+ Verilog/arg_sel_CPU.v
+ Verilog/func_log.v
+ Verilog/PDB_IRB_1k_4k.v
+ Verilog/gpu.v
+ Verilog/aSYMPL_func_CPU.v
+ Verilog/IEEE754_To_FP9_filtered.v
+file_type=verilogSource
+usage=sim
+
+[fileset stimuli_files]
+files =
+ ASM/CGS_olive_dma_SIL.v
+ ASM/MP_RISC_SIL.v
+ ASM/mem_test.v
+ ASM/MP_RISC.v
+ ASM/Shader_olive_SIL.v
+ Stimulus/RISC_V_tb/Shader_olive.v
+ Stimulus/RISC_V_tb/CGS_olive_dma.v
+ Stimulus/RISC_V_tb/risc_v_test.HEX
+ Stimulus/RISC_V_tb/olive.stl
+is_include_file = true
+usage=sim
+
+[fileset tb_files]
+files =
+ Stimulus/RISC_V_tb/vscale_sympl_tb.v
+ Stimulus/RISC_V_tb/vscale_dp_hasti_sram.v
+file_type=verilogSource
+usage=sim
+
+[simulator]
+toplevel=vscale_sympl_tb
+
+[parameter hexfile]
+datatype    = file
+description = RISC-V program file to preload to memory
+paramtype   = plusarg
+scope       = private
+
+[parameter stlfile]
+datatype    = file
+description = STL file to preload to memory
+paramtype   = plusarg
+scope       = private
+
+[provider]
+name = github
+user = jerry-D
+repo = SYMPL-GP-GPU-Compute-Engines
+version = 3207421cb94439690a4d31d47b4885c973fc344d

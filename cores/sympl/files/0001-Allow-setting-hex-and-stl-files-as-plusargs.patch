@@ -1,0 +1,38 @@
+From a6efcf491ccb4f28656f4df08427302b150dbf93 Mon Sep 17 00:00:00 2001
+From: Olof Kindgren <olof.kindgren@gmail.com>
+Date: Wed, 20 Jan 2016 22:22:08 +0100
+Subject: [PATCH 1/2] Allow setting hex and stl files as plusargs
+
+---
+ Stimulus/RISC_V_tb/vscale_sympl_tb.v | 10 +++++++---
+ 1 file changed, 7 insertions(+), 3 deletions(-)
+
+diff --git a/Stimulus/RISC_V_tb/vscale_sympl_tb.v b/Stimulus/RISC_V_tb/vscale_sympl_tb.v
+index 038a4dc..6d245df 100644
+--- a/Stimulus/RISC_V_tb/vscale_sympl_tb.v
++++ b/Stimulus/RISC_V_tb/vscale_sympl_tb.v
+@@ -42,14 +42,18 @@ module vscale_sympl_tb();
+    end
+ 
+    always #5 clk = !clk;
+-
++   reg [255*8-1:0] fname;
+    initial begin
+    
+-        file = $fopen("risc_v_test.hex", "rb");   
++        if(!$value$plusargs("hexfile=%s", fname))
++          fname = "risc_v_test.hex";
++        file = $fopen(fname, "rb");   
+         r = $fread(DUT.hasti_mem.mem[0], file, 16'h0080);    // load RISC V program memory with its program, starting at byte address 0x0200 
+         $fclose(file);
+    
+-        file = $fopen("olive.stl", "rb");   
++        if(!$value$plusargs("stlfile=%s", fname))
++          fname = "olive.stl";
++        file = $fopen(fname, "rb");   
+         r = $fread(STL_mem8[0], file);       // "olive.stl" loaded into 8-bit test bench memory
+         $fclose(file);  
+ 
+-- 
+2.4.9
+
