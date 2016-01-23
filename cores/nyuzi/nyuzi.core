@@ -1,0 +1,165 @@
+CAPI=1
+[main]
+
+description = GPGPU processor architecture
+simulators = verilator
+
+[fileset rtl_files]
+files =
+ hardware/core/sram_2r1w.sv
+ hardware/core/cache_lru.sv
+ hardware/core/thread_select_stage.sv
+ hardware/core/ifetch_data_stage.sv
+ hardware/core/l2_cache_tag_stage.sv
+ hardware/core/operand_fetch_stage.sv
+ hardware/core/core.sv
+ hardware/core/l1_l2_interface.sv
+ hardware/core/instruction_decode_stage.sv
+ hardware/core/nyuzi.sv
+ hardware/core/interrupt_controller.sv
+ hardware/core/oh_to_idx.sv
+ hardware/core/l1_load_miss_queue.sv
+ hardware/core/l2_axi_bus_interface.sv
+ hardware/core/config.sv
+ hardware/core/l1_store_queue.sv
+ hardware/core/l2_cache_update_stage.sv
+ hardware/core/io_interconnect.sv
+ hardware/core/dcache_data_stage.sv
+ hardware/core/cam.sv
+ hardware/core/fp_execute_stage3.sv
+ hardware/core/fp_execute_stage5.sv
+ hardware/core/l2_cache_arb_stage.sv
+ hardware/core/fp_execute_stage2.sv
+ hardware/core/l2_cache_read_stage.sv
+ hardware/core/fp_execute_stage4.sv
+ hardware/core/performance_counters.sv
+ hardware/core/l2_cache_pending_miss_cam.sv
+ hardware/core/fp_execute_stage1.sv
+ hardware/core/idx_to_oh.sv
+ hardware/core/io_request_queue.sv
+ hardware/core/tlb.sv
+ hardware/core/defines.sv[is_include_file]
+ hardware/core/l2_cache.sv
+ hardware/core/dcache_tag_stage.sv
+ hardware/core/ifetch_tag_stage.sv
+ hardware/core/rr_arbiter.sv
+ hardware/core/int_execute_stage.sv
+ hardware/core/reciprocal_rom.sv
+ hardware/core/control_registers.sv
+ hardware/core/writeback_stage.sv
+ hardware/core/sync_fifo.sv
+ hardware/core/sram_1r1w.sv
+file_type = systemVerilogSource
+usage = sim synth
+
+[fileset common_files]
+files =
+ hardware/fpga/common/logic_analyzer.sv
+ hardware/fpga/common/ps2_controller.sv
+ hardware/fpga/common/spi_controller.sv
+ hardware/fpga/common/vga_sequencer.sv
+ hardware/fpga/common/synchronizer.sv
+ hardware/fpga/common/gpio_controller.sv
+ hardware/fpga/common/vga_controller.sv
+ hardware/fpga/common/axi_interconnect.sv
+ hardware/fpga/common/uart_receive.sv
+ hardware/fpga/common/axi_async_bridge.sv
+ hardware/fpga/common/sdram_controller.sv
+ hardware/fpga/common/axi_rom.sv
+ hardware/fpga/common/axi_sram.sv
+ hardware/fpga/common/uart.sv
+ hardware/fpga/common/uart_transmit.sv
+ hardware/fpga/common/async_fifo.sv
+ hardware/fpga/de2-115/de2_115_top.sv
+file_type = systemVerilogSource
+scope = private
+usage = sim synth
+
+[fileset tb_files]
+files =
+ hardware/testbench/sim_ps2.sv
+ hardware/testbench/sim_sdmmc.sv
+ hardware/testbench/trace_logger.sv
+ hardware/testbench/sim_sdram.sv
+ hardware/testbench/verilator_tb.sv
+file_type = systemVerilogSource
+usage = sim synth
+
+[parameter autoflushl2]
+datatype    = bool
+description = Auto flush L2 cache
+paramtype   = plusarg
+scope       = private
+
+[parameter bin]
+datatype    = file
+description = Program file (in hex format) to preload to memory
+paramtype   = plusarg
+scope       = private
+
+[parameter block]
+datatype    = file
+description = Block device to use for SD card image
+paramtype   = plusarg
+scope       = private
+
+[parameter dumpmems]
+datatype    = bool
+description = Print memory parameters
+paramtype   = plusarg
+scope       = private
+
+[parameter memdumpfile]
+datatype    = file
+description = File to use for memory dump after simulation
+paramtype   = plusarg
+scope       = private
+
+[parameter memdumpbase]
+datatype    = int
+description = Base address of memory dump
+paramtype   = plusarg
+scope       = private
+
+[parameter memdumplen]
+datatype    = int
+description = Length of memory dump
+paramtype   = plusarg
+scope       = private
+
+[parameter profile]
+datatype    = bool
+description = Enable memory profiling
+paramtype   = plusarg
+scope       = private
+
+[parameter statetrace]
+datatype    = bool
+description = Dump thread states
+paramtype   = plusarg
+scope       = private
+
+[parameter trace]
+datatype    = bool
+description = Enable instruction trace
+paramtype   = plusarg
+scope       = private
+
+[verilator]
+verilator_options =
+ --unroll-count 512
+ --assert
+ -Wno-fatal
+ -Werror-IMPLICIT
+ -Wwarn-syncasyncnet
+ -Wwarn-blkseq
+ -DSIMULATION=1
+cli_parser    = fusesoc
+tb_toplevel   = hardware/testbench/verilator_main.cpp
+top_module    = verilator_tb
+
+[provider]
+name = github
+user = jbush001
+repo = NyuziProcessor
+version = master
