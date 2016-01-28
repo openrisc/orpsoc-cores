@@ -2,4 +2,4 @@
 
 # This file is used by ddr_ctrl_ip_phy_ddr_timing.sdc
 
-cp ${SYSTEM_ROOT}/data/ddr_ctrl_ip_phy_ddr_pins.tcl ${BUILD_ROOT}/bld-quartus/data
+cp ${SYSTEM_ROOT}/data/ddr_ctrl_ip_phy_ddr_pins.tcl ${BUILD_ROOT}/src/neek/data
