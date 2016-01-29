@@ -8,7 +8,7 @@ module orpsoc_tb;
 // Boot ROM selection
 //
 ////////////////////////////////////////////////////////////////////////
-   localparam BOOTROM_FILE = "../src/de0_nano/sw/clear_r3_and_jump_to_0x100.vh";
+   parameter bootrom_file = "../src/de0_nano/sw/clear_r3_and_jump_to_0x100.vh";
    //localparam BOOTROM_FILE = "../src/de0_nano/sw/spi_uimage_loader.vh";
    
 
@@ -110,7 +110,7 @@ jtag_vpi jtag_vpi0
       .SO      (spi0_miso));
 
 orpsoc_top
-  #(.BOOTROM_FILE (BOOTROM_FILE))
+  #(.bootrom_file (bootrom_file))
    dut
 (
 	.sys_clk_pad_i		(clk),
@@ -137,41 +137,26 @@ orpsoc_top
 	.uart0_srx_pad_i	(),
 	.uart0_stx_pad_o	(uart_tx),
 
-`ifdef I2C0
         .i2c0_sda_io (),
 	.i2c0_scl_io (),
-`endif
-`ifdef I2C1
+
         .i2c1_sda_io (),
 	.i2c1_scl_io (),
-`endif
 
-`ifdef SPI0
  .spi0_sck_o  (spi0_sck),
  .spi0_mosi_o (spi0_mosi),
  .spi0_miso_i (spi0_miso),
- `ifdef SPI0_SLAVE_SELECTS
  .spi0_ss_o (spi0_ss),
- `endif
-`endif
 
-`ifdef SPI1
  .spi1_sck_o  (),
  .spi1_mosi_o (),
  .spi1_miso_i (),
- `ifdef SPI1_SLAVE_SELECTS
  .spi1_ss_o (),
- `endif
-`endif
 
-`ifdef SPI2
  .spi2_sck_o  (),
  .spi2_mosi_o (),
  .spi2_miso_i (),
- `ifdef SPI2_SLAVE_SELECTS
  .spi2_ss_o (),
- `endif
-`endif
 
  .accelerometer_cs_o (),
  .accelerometer_irq_i (1'b0)
