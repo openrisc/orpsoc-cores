@@ -4,12 +4,12 @@ depend =
  adv_debug_sys
  altera_virtual_jtag
  gpio
- i2c
- jtag_tap
+ i2c-1.13
+ jtag_tap-1.13
  mor1kx-3.1
 # or1200-r2
  or1k_bootloaders-0.9
- simple_spi
+ simple_spi-1.6
  uart16550-1.5.4
  wb_intercon-1.0
  wb_ram-1.0
@@ -33,7 +33,6 @@ tb_private_src_files =
 include_files =
  rtl/verilog/include/or1200_defines.v
  rtl/verilog/include/orpsoc-defines.v
- rtl/verilog/include/timescale.v
  rtl/verilog/wb_intercon.vh
  rtl/verilog/wb_intercon_dbg.vh
  sw/clear_r3_and_jump_to_0x100.vh
@@ -44,10 +43,10 @@ tb_include_files =
  bench/test-defines.v
 
 [icarus]
-depend = elf-loader jtag_vpi mt48lc16m16a2 s25fl064p-1.7 vlog_tb_utils
+depend = elf-loader jtag_vpi-r2 mt48lc16m16a2 s25fl064p-1.7 vlog_tb_utils
 iverilog_options = -DICARUS_SIM -DSIM -DSPEEDSIM
 
 [modelsim]
-depend = elf-loader jtag_vpi mt48lc16m16a2 s25fl064p-1.7 vlog_tb_utils
-vlog_options = +define+SIM +define+MODELSIM_SIM
+depend = elf-loader jtag_vpi-r2 mt48lc16m16a2 s25fl064p-1.7 vlog_tb_utils
+vlog_options = +define+SIM +define+MODELSIM_SIM -timescale 1ns/1ps
 vsim_options = -L altera_mf_ver -L altera_mf

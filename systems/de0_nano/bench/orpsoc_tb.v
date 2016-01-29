@@ -1,4 +1,4 @@
-`include "timescale.v"
+`timescale 1ns/1ps
 `include "orpsoc-defines.v"
 
 module orpsoc_tb;

@@ -32,7 +32,6 @@
 ////                                                              ////
 //////////////////////////////////////////////////////////////////////
 
-`include "timescale.v"
 `include "orpsoc-defines.v"
 
 module clkgen
