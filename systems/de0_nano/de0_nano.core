@@ -10,7 +10,7 @@ depend =
  or1200-r2
  or1k_bootloaders-0.9
  simple_spi
- uart16550-1.5
+ uart16550-1.5.4
  wb_intercon-1.0
  wb_ram-1.0
  wb_sdram_ctrl
@@ -34,7 +34,6 @@ include_files =
  rtl/verilog/include/or1200_defines.v
  rtl/verilog/include/orpsoc-defines.v
  rtl/verilog/include/timescale.v
- rtl/verilog/include/uart_defines.v
  rtl/verilog/wb_intercon.vh
  rtl/verilog/wb_intercon_dbg.vh
  sw/clear_r3_and_jump_to_0x100.vh
