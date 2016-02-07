@@ -1,0 +1,16 @@
+CAPI=1
+[main]
+
+description = Nyuzi SoC for DE2-115
+depend = nyuzi
+
+[fileset de2_files]
+files =
+ rtl/verilog/de2_115_top.sv
+file_type = systemVerilogSource
+usage = synth
+
+[parameter bootrom]
+datatype    = file
+description = Boot ROM in Verilog hex format
+paramtype   = vlogparam

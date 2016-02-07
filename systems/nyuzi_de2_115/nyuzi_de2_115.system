@@ -1,0 +1,14 @@
+SAPI=1
+[main]
+name = nyuzi_de2_115
+description = Nyuzi SoC for de2-115
+
+backend = quartus
+
+[quartus]
+family = "Cyclone IV E"
+device = EP4CE115F29C7
+sdc_files = data/de2_115.sdc
+tcl_files = data/pinmap.tcl
+            data/options.tcl
+top_module = de2_115_top
