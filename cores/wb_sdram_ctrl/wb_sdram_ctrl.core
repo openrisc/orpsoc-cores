@@ -40,4 +40,4 @@ depend = mt48lc16m16a2 vlog_tb_utils wb_bfm
 name = github
 user = skristiansson
 repo = wb_sdram_ctrl
-branch = master
+version = 07eb97fc4afa5ca7bd6c17e88a5bb02474480808
