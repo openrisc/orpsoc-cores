@@ -14,7 +14,6 @@ depend =
  uart16550-1.5
  vga_lcd
  wb_intercon-1.0
- wb_sdram_ctrl
 
 [verilog]
 src_files =
