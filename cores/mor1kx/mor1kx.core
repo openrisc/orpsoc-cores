@@ -55,10 +55,6 @@ include_files =
 
 tb_src_files = bench/verilog/mor1kx_monitor.v
 
-[plusargs]
-trace_enable = bool "Enable trace"
-trace_to_screen = bool "Output trace to screen"
-
 [parameter trace_enable]
 datatype    = bool
 description = Enable mor1kx instruction trace
