@@ -70,9 +70,7 @@ files =
  hardware/fpga/common/uart.sv
  hardware/fpga/common/uart_transmit.sv
  hardware/fpga/common/async_fifo.sv
- hardware/fpga/de2-115/de2_115_top.sv
 file_type = systemVerilogSource
-scope = private
 usage = sim synth
 
 [fileset tb_files]
@@ -83,7 +81,7 @@ files =
  hardware/testbench/sim_sdram.sv
  hardware/testbench/verilator_tb.sv
 file_type = systemVerilogSource
-usage = sim synth
+usage = sim verilator
 
 [parameter autoflushl2]
 datatype    = bool
