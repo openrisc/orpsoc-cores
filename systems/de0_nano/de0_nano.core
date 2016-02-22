@@ -13,7 +13,7 @@ depend =
  uart16550-1.5.4
  wb_intercon-1.0
  wb_ram-1.0
- wb_sdram_ctrl
+ wb_sdram_ctrl-r1
 
 simulators =
  icarus
