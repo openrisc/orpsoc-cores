@@ -5,15 +5,13 @@ depend =
  altera_virtual_jtag
  elf-loader
  gpio
- jtag_tap
- jtag_vpi
- mor1kx
- mt48lc16m16a2
+ jtag_tap-1.13
+ mor1kx-4.1
  or1200-r2
- uart16550-1.5
- vlog_tb_utils
- wb_intercon
- wb_sdram_ctrl
+ uart16550-1.5.4
+ vlog_tb_utils-1.0
+ wb_intercon-1.0
+ wb_sdram_ctrl-r1
  wiredelay
 
 simulators =
@@ -44,7 +42,9 @@ tb_include_files =
 
 [icarus]
 iverilog_options = -DICARUS_SIM -DSIM
+depend = jtag_vpi-r2 mt48lc16m16a2
 
 [modelsim]
 vlog_options = +define+SIM +define+MODELSIM_SIM
 vsim_options = -L altera_mf_ver -L altera_mf
+depend = jtag_vpi-r2 mt48lc16m16a2
