@@ -4,11 +4,11 @@ depend =
  adv_debug_sys
  altera_virtual_jtag
  gpio
- jtag_tap
- mor1kx
- uart16550
- wb_intercon
- wb_sdram_ctrl
+ jtag_tap-1.13
+ mor1kx-4.1
+ uart16550-1.5.4
+ wb_intercon-1.0
+ wb_sdram_ctrl-r1
 
 simulators =
  icarus
@@ -37,8 +37,9 @@ tb_include_files =
 
 [icarus]
 iverilog_options = -DICARUS_SIM -DSIM
-depend = elf-loader jtag_vpi mt48lc16m16a2 vlog_tb_utils wiredelay
+depend = elf-loader jtag_vpi-r2 mt48lc16m16a2 vlog_tb_utils-1.0 wiredelay
+
 [modelsim]
 vlog_options = +define+SIM +define+MODELSIM_SIM
 vsim_options = -L altera_mf_ver -L altera_mf
-depend = elf-loader jtag_vpi mt48lc16m16a2 vlog_tb_utils wiredelay
+depend = elf-loader jtag_vpi mt48lc16m16a2 vlog_tb_utils-1.0 wiredelay
