@@ -183,5 +183,6 @@ assign riscv_irq[27] = 0;
 assign riscv_irq[28] = 0;
 assign riscv_irq[29] = 0;
 assign riscv_irq[30] = 0;
+assign riscv_irq[31] = 0;
 
 endmodule
