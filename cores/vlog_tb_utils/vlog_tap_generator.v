@@ -46,7 +46,7 @@ module vlog_tap_generator
       input [MAX_STRING_LEN*8-1:0] description;
       input 			   ok_i;
       begin
-	 if (!f) begin
+	 if (f === 32'dx) begin
 	    if(tapfile == 0)
 	      $display("No TAP file specified");
 	    else
