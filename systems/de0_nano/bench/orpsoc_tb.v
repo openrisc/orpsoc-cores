@@ -9,7 +9,7 @@ module orpsoc_tb;
 //
 ////////////////////////////////////////////////////////////////////////
    parameter bootrom_file = "../src/de0_nano/sw/clear_r3_and_jump_to_0x100.vh";
-   //localparam BOOTROM_FILE = "../src/de0_nano/sw/spi_uimage_loader.vh";
+   //parameter bootrom_file = "../src/de0_nano/sw/spi_uimage_loader.vh";
    
 
 reg clk   = 0;

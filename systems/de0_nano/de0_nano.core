@@ -50,3 +50,9 @@ iverilog_options = -DICARUS_SIM -DSIM -DSPEEDSIM
 depend = elf-loader jtag_vpi-r2 mt48lc16m16a2 s25fl064p-1.7 vlog_tb_utils
 vlog_options = +define+SIM +define+MODELSIM_SIM -timescale 1ns/1ps
 vsim_options = -L altera_mf_ver -L altera_mf
+
+[parameter bootrom_file]
+datatype    = file
+description = Initial boot ROM contents (in Verilog hex format)
+paramtype   = vlogparam
+scope       = private
