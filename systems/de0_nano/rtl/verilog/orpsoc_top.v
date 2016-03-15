@@ -525,6 +525,7 @@ wb_sdram_ctrl #(
 `endif
 	.CLK_FREQ_MHZ			(100),	// sdram_clk freq in MHZ
 	.POWERUP_DELAY			(200),	// power up delay in us
+	.REFRESH_MS			(32),	// delay between refresh cycles im ms
 	.WB_PORTS			(2),	// Number of wishbone ports
 	.ROW_WIDTH			(13),	// Row width
 	.COL_WIDTH			(9),	// Column width
