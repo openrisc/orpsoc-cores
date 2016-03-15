@@ -3,8 +3,8 @@ CAPI=1
 description = "SDRAM controller with multiple wishbone slave ports"
 simulators = icarus modelsim xsim
 
-[verilog]
-src_files =
+[fileset rtl_files]
+files =
  rtl/verilog/wb_port_arbiter.v
  rtl/verilog/bufram.v
  rtl/verilog/dpram_altera.v
@@ -13,9 +13,12 @@ src_files =
  rtl/verilog/sdram_ctrl.v
  rtl/verilog/wb_port.v
  rtl/verilog/wb_sdram_ctrl.v
+usage = sim synth
 
-tb_private_src_files =
- bench/wb_sdram_ctrl_tb.v
+[fileset tb]
+files = bench/wb_sdram_ctrl_tb.v
+scope = private
+usage = sim
 
 [parameter transactions]
 datatype    = int
