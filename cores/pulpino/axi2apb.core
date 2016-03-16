@@ -1,0 +1,16 @@
+CAPI=1
+[main]
+
+[fileset rtl_files]
+files =
+ AXI_2_APB.sv
+ AXI_2_APB_32.sv
+
+file_type = systemVerilogSource
+usage = sim synth
+
+[provider]
+name = github
+user = pulp-platform
+repo = axi2apb
+version = 3fa7129

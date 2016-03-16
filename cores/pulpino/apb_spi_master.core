@@ -1,0 +1,17 @@
+CAPI=1
+[main]
+
+depend = axi_spi_master
+
+[fileset rtl_files]
+files =
+ spi_master_apb_if.sv
+ apb_spi_master.sv
+file_type = systemVerilogSource
+usage = sim synth
+
+[provider]
+name = github
+user = pulp-platform
+repo = apb_spi_master
+version = e631067

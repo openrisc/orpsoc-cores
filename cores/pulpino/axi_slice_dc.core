@@ -1,0 +1,22 @@
+CAPI=1
+[main]
+
+[fileset rtl_files]
+files =
+ dc_token_ring.v
+ axi_slice_dc_slave.sv
+ dc_data_buffer.v
+ dc_token_ring_fifo_din.v
+ dc_token_ring_fifo_dout.v
+ dc_synchronizer.v
+ dc_full_detector.v
+ axi_slice_dc_master.sv
+
+file_type = systemVerilogSource
+usage = sim synth
+
+[provider]
+name = github
+user = pulp-platform
+repo = axi_slice_dc
+version = d6aeb3b 

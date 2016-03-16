@@ -1,0 +1,21 @@
+CAPI=1
+[main]
+
+[fileset rtl_files]
+files =
+ axi_aw_buffer.sv
+ axi_r_buffer.sv
+ axi_ar_buffer.sv
+ axi_b_buffer.sv
+ axi_slice.sv
+ axi_buffer.sv
+ axi_w_buffer.sv
+
+file_type = systemVerilogSource
+usage = sim synth
+
+[provider]
+name = github
+user = pulp-platform
+repo = axi_slice
+version = 26fcb7e

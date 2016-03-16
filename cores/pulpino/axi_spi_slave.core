@@ -1,0 +1,24 @@
+CAPI=1
+[main]
+depend = axi_slice_dc
+
+[fileset rtl_files]
+files =
+ spi_slave_regs.sv
+ spi_slave_tx.sv
+ spi_slave_axi_plug.sv
+ spi_slave_dc_fifo.sv
+ axi_spi_slave.sv
+ spi_slave_controller.sv
+ spi_slave_cmd_parser.sv
+ spi_slave_rx.sv
+ spi_slave_syncro.sv
+
+file_type = systemVerilogSource
+usage = sim synth
+
+[provider]
+name = github
+user = pulp-platform
+repo = axi_spi_slave
+version = f900688

@@ -1,0 +1,18 @@
+CAPI=1
+[main]
+
+[fileset rtl_files]
+files =
+ i2c_master_defines.sv[is_include_file]
+ apb_i2c.sv
+ i2c_master_byte_ctrl.sv
+ i2c_master_bit_ctrl.sv
+
+file_type = systemVerilogSource
+usage = sim synth
+
+[provider]
+name = github
+user = pulp-platform
+repo = apb_i2c
+version = 8485541

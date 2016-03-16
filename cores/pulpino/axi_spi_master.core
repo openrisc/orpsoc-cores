@@ -1,0 +1,20 @@
+CAPI=1
+[main]
+
+[fileset rtl_files]
+files =
+ spi_master_axi_if.sv
+ spi_master_rx.sv
+ spi_master_tx.sv
+ spi_master_clkgen.sv
+ spi_master_fifo.sv
+ axi_spi_master.sv
+ spi_master_controller.sv
+file_type = systemVerilogSource
+usage = sim synth
+
+[provider]
+name = github
+user = pulp-platform
+repo = axi_spi_master
+version = b1f1e6d

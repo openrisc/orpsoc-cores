@@ -1,0 +1,16 @@
+CAPI=1
+[main]
+
+[fileset rtl_files]
+files =
+ apb_timer.sv
+ timer.sv
+
+file_type = systemVerilogSource
+usage = sim synth
+
+[provider]
+name = github
+user = pulp-platform
+repo = apb_timer
+version = 8b3b649

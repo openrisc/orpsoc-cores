@@ -1,0 +1,28 @@
+CAPI=1
+[main]
+depend = axi_slice
+
+[fileset rtl_files]
+files =
+ axi_mem_if_SP.sv
+ axi_read_only_ctrl.sv
+ axi_mem_if_DP.sv
+ axi_mem_if_DP_hybr.sv
+ axi_write_only_ctrl.sv
+file_type = systemVerilogSource
+usage = sim synth
+
+[fileset tb_files]
+files =
+ tb_axi_DP.sv
+ tb_axi_read_only.sv
+ tb_axi_write_only.sv
+file_type = verilogSource
+scope = private
+usage = sim
+
+[provider]
+name = github
+user = pulp-platform
+repo = axi_mem_if_DP
+version = b1ee636 

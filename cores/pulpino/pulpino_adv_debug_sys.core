@@ -1,0 +1,31 @@
+CAPI=1
+[main]
+
+[fileset rtl_files]
+files =
+ rtl/adbg_tap_defines.v[is_include_file]
+ rtl/syncflop.v
+ rtl/adbg_or1k_status_reg.sv
+ rtl/adbg_axionly_top.sv
+ rtl/adbg_crc32.v
+ rtl/adbg_top.sv
+ rtl/bytefifo.v
+ rtl/adbg_or1k_module.sv
+ rtl/adbg_defines.v[is_include_file]
+ rtl/adbg_axi_biu.sv
+ rtl/adbg_axi_module.sv
+ rtl/adbg_or1k_biu.sv
+ rtl/adv_dbg_if.sv
+ rtl/adbg_axi_defines.v[is_include_file]
+ rtl/adbg_or1k_defines.v[is_include_file]
+ rtl/syncreg.v
+ rtl/adbg_tap_top.v
+
+file_type = systemVerilogSource
+usage = sim synth
+
+[provider]
+name = github
+user = pulp-platform
+repo = adv_dbg_if
+version = aa9c608

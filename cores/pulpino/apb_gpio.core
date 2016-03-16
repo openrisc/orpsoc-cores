@@ -1,0 +1,14 @@
+CAPI=1
+[main]
+
+[fileset rtl_files]
+files =
+ apb_gpio.sv
+file_type = systemVerilogSource
+usage = sim synth
+
+[provider]
+name = github
+user = pulp-platform
+repo = apb_gpio
+version = 63bd36a

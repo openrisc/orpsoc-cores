@@ -1,0 +1,26 @@
+CAPI=1
+[main]
+
+[fileset rtl_files]
+files =
+ uart_interrupt.vhd
+ slib_input_filter.vhd
+ uart_baudgen.vhd
+ apb_uart.vhd
+ slib_counter.vhd
+ uart_receiver.vhd
+ slib_edge_detect.vhd
+ uart_transmitter.vhd
+ slib_input_sync.vhd
+ slib_mv_filter.vhd
+ slib_clock_div.vhd
+ slib_fifo.vhd
+
+file_type = vhdlSource
+usage = sim synth
+
+[provider]
+name = github
+user = pulp-platform
+repo = apb_uart
+version = 3bc0006

@@ -1,0 +1,98 @@
+CAPI=1
+[main]
+
+depend =
+ pulpino_adv_debug_sys
+ apb_event_unit
+ apb_ffl_if
+ apb_gpio
+ apb_i2c
+ apb_pulpino
+ apb_spi_master
+ apb_timer
+ apb_uart
+ axi2apb
+ axi_mem_if_DP
+ axi_node
+ axi_spi_slave
+ ri5cy
+
+simulators = modelsim
+
+[fileset component_files]
+files =
+ rtl/components/cluster_clock_gating.sv
+ rtl/components/cluster_clock_inverter.sv
+ rtl/components/cluster_clock_mux2.sv
+ rtl/components/dp_ram.sv
+ rtl/components/generic_fifo.sv
+ rtl/components/pulp_clock_inverter.sv
+ rtl/components/pulp_clock_mux2.sv
+ rtl/components/rstgen.sv
+ rtl/components/sp_ram.sv
+file_type = systemVerilogSource
+usage = sim synth
+
+[fileset rtl_files]
+files =
+ rtl/include/config.sv[is_include_file]
+ rtl/include/axi_bus.sv[is_include_file]
+ rtl/axi2apb_wrap.sv
+ rtl/axi_mem_if_SP_wrap.sv
+ rtl/axi_node_intf_wrap.sv
+ rtl/axi_slice_wrap.sv
+ rtl/axi_spi_slave_wrap.sv
+ rtl/boot_code.sv
+ rtl/boot_rom_wrap.sv
+ rtl/clk_rst_gen.sv
+ rtl/core2axi.sv
+ rtl/core_region.sv
+ rtl/dp_ram_wrap.sv
+ rtl/instr_ram_wrap.sv
+ rtl/peripherals.sv
+ rtl/ram_mux.sv
+ rtl/random_stalls.sv
+ rtl/sp_ram_wrap.sv
+ rtl/top.sv
+file_type = systemVerilogSource
+usage = sim synth
+
+[fileset tb_files]
+files =
+ tb/tb_mem_pkg.sv[is_include_file]
+ tb/tb_spi_pkg.sv[is_include_file]
+ tb/tb_jtag_pkg.sv[is_include_file]
+ tb/uart.sv
+ tb/tb.sv
+file_type = systemVerilogSource
+usage = sim
+
+[simulator]
+toplevel = tb
+
+[icarus]
+iverilog_options = -g2012
+
+[modelsim]
+vlog_options = +define+RISCV -timescale 1ns/1ps
+
+[xsim]
+xsim_options = -d RISCV
+
+[parameter l2_imem]
+datatype    = file
+description = Initial instruction memory contents (Verilog hex file)
+paramtype   = plusarg
+scope       = private
+
+[parameter l2_dmem]
+datatype    = file
+description = Initial data memory contents (Verilog hex file)
+paramtype   = plusarg
+scope       = private
+
+[provider]
+name = github
+user = olofk
+repo = pulpino
+version = 5d6bd536997bb01ba515d660c7b8fc2070354774
