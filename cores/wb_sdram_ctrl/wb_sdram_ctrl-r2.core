@@ -13,10 +13,12 @@ files =
  rtl/verilog/sdram_ctrl.v
  rtl/verilog/wb_port.v
  rtl/verilog/wb_sdram_ctrl.v
+file_type = verilogSource
 usage = sim synth
 
 [fileset tb]
 files = bench/wb_sdram_ctrl_tb.v
+file_type = verilogSource
 scope = private
 usage = sim
 
