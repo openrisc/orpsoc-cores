@@ -1,0 +1,39 @@
+CAPI=1
+[main]
+description = AXI Stream utilities
+depend = libstorage-1.0 osvvm-2015.06
+
+[fileset src_files]
+files =
+ rtl/vhdl/suv/axis_sync_fifo.vhd
+ rtl/vhdl/suv/axis_framer.vhd
+ rtl/vhdl/suv/axis_packet_fifo.vhd
+file_type = vhdlSource-2008
+logical_name=libaxis_1
+usage = sim synth
+
+[fileset sim_files]
+files =
+ bench/vhdl/suv/axis_bfm.vhd
+file_type = vhdlSource-2008
+logical_name=libaxis_1
+usage = sim
+
+[fileset tb_files]
+files =
+ bench/vhdl/suv/tb_axis_packet_fifo.vhd
+ bench/vhdl/suv/tb_axis_framer.vhd
+ bench/vhdl/suv/tb_axis_sync_fifo.vhd
+file_type = vhdlSource-2008
+logical_name=libaxis_1
+scope = private
+usage = sim
+
+[simulator]
+toplevel = libaxis_1.tb_axis_sync_fifo
+
+[provider]
+name = github
+user = olofk
+repo = libaxis
+version = v1.0
