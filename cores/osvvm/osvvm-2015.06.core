@@ -1,0 +1,28 @@
+CAPI=1
+[main]
+description = Open Source VHDL Verification Methodology" (OS-VVM)
+
+[fileset files]
+files =
+ TextUtilPkg.vhd
+ NamePkg.vhd
+ TranscriptPkg.vhd
+ OsvvmGlobalPkg.vhd
+ AlertLogPkg.vhd
+ MessagePkg.vhd
+ SortListPkg_int.vhd
+ RandomBasePkg.vhd
+ RandomPkg.vhd
+ CoveragePkg.vhd
+# MakeBin_Debug.vhd
+ MemoryPkg.vhd
+# OsvvmContext.vhd
+file_type = vhdlSource-2008
+logical_name = osvvm
+usage = sim
+
+[provider]
+name = github
+user = UnofficialRepos
+repo = OSVVM
+version = 2015.06
