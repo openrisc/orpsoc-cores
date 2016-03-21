@@ -1,0 +1,24 @@
+CAPI=1
+[main]
+description = UVVM Utility Library is an open source VHDL testbench (TB) infrastructure library for verification of FPGA and ASIC
+
+[fileset tb_files]
+files =
+ uvvm_util/src/types_pkg.vhd
+ uvvm_util/src/adaptations_pkg.vhd
+ uvvm_util/src/string_methods_pkg.vhd
+ uvvm_util/src/protected_types_pkg.vhd
+ uvvm_util/src/hierarchy_linked_list_pkg.vhd
+ uvvm_util/src/alert_hierarchy_pkg.vhd
+ uvvm_util/src/license_pkg.vhd
+ uvvm_util/src/methods_pkg.vhd
+ uvvm_util/src/bfm_common_pkg.vhd
+ uvvm_util/src/uvvm_util_context.vhd
+file_type = vhdlSource-2008
+logical_name = uvvm_util
+
+[provider]
+name = github
+user = UVVM
+repo = UVVM_Utility_Library
+version = v1.2.0
