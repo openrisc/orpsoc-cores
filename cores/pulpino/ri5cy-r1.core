@@ -1,0 +1,58 @@
+CAPI=1
+[main]
+
+simulators = modelsim
+
+[fileset rtl_files]
+files =
+ mult.sv
+ include/riscv_defines.sv[is_include_file]
+ debug_unit.sv
+ if_stage.sv
+ prefetch_L0_buffer.sv
+ alu.sv
+ alu_div.sv
+ prefetch_buffer.sv
+ exc_controller.sv
+ riscv_core.sv
+ hwloop_controller.sv
+ decoder.sv
+ compressed_decoder.sv
+ register_file_ff.sv
+ id_stage.sv
+ ex_stage.sv
+ hwloop_regs.sv
+ cs_registers.sv
+ controller.sv
+ load_store_unit.sv
+ register_file.sv
+file_type = systemVerilogSource
+usage = sim synth
+
+[fileset riscv_vip]
+files =
+ include/riscv_tracer_defines.sv[is_include_file]
+ riscv_tracer.sv
+ riscv_simchecker.sv
+file_type = systemVerilogSource
+usage = sim
+
+[fileset tb]
+files =
+ tb/serDiv/tb_urem.sv[is_include_file]
+ tb/serDiv/tb_rem.sv[is_include_file]
+ tb/serDiv/tb_div.sv[is_include_file]
+ tb/serDiv/tb_udiv.sv[is_include_file]
+ tb/serDiv/tb.sv
+file_type = systemVerilogSource
+scope = private
+usage = sim
+
+[simulator]
+toplevel = tb
+
+[provider]
+name = github
+user = pulp-platform
+repo = riscv
+version = 6ee9f3fe924d81564202e94deb63b8c394e7a038
