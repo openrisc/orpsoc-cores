@@ -1,0 +1,81 @@
+CAPI=1
+[main]
+description = RIDECORE (RIsc-v Dynamic Execution CORE) is an Out-of-Order processor written in Verilog HDL
+patches = files/0000-add_init_file_parameter.patch
+
+simulators = icarus modelsim
+
+[fileset rtl]
+files =
+ src/fpga/rv32_opcodes.vh[is_include_file]
+ src/fpga/constants.vh[is_include_file]
+ src/fpga/alu_ops.vh[is_include_file]
+ src/fpga/imem.v
+ src/fpga/reorderbuf.v
+ src/fpga/srcsel.v
+ src/fpga/prioenc.v
+ src/fpga/rs_branch.v
+ src/fpga/src_manager.v
+ src/fpga/exunit_alu.v
+ src/fpga/dualport_ram.v
+ src/fpga/alu.v
+ src/fpga/srcopr_manager.v
+ src/fpga/brimm_gen.v
+ src/fpga/search_be.v
+ src/fpga/multiplier.v
+ src/fpga/dmem.v
+ src/fpga/exunit_ldst.v
+ src/fpga/rrf.v
+ src/fpga/rs_mul.v
+ src/fpga/uart.v
+ src/fpga/imem_outa.v
+ src/fpga/ram_sync.v
+ src/fpga/btb.v
+ src/fpga/define.v
+ src/fpga/imm_gen.v
+ src/fpga/pipeline_if.v
+ src/fpga/storebuf.v
+ src/fpga/pipeline.v
+ src/fpga/mpft.v
+ src/fpga/alloc_issue_ino.v
+ src/fpga/decoder.v
+ src/fpga/arf.v
+ src/fpga/gshare.v
+ src/fpga/rrf_freelistmanager.v
+ src/fpga/rs_reqgen.v
+ src/fpga/rs_alu.v
+ src/fpga/tag_generator.v
+ src/fpga/exunit_branch.v
+ src/fpga/exunit_mul.v
+ src/fpga/system.v
+ src/fpga/rs_ldst.v
+ src/fpga/oldest_finder.v
+ src/fpga/ram_sync_nolatch.v
+file_type = verilogSource
+
+[fileset synth]
+files =
+ src/fpga/top.v
+usage = synth
+file_type = verilogSource
+
+[fileset tb]
+files =
+ src/fpga/topsim.v
+ src/test/ridecore/sim/testbench.v
+file_type = verilogSource
+
+[simulator]
+toplevel = testbench
+
+[parameter init_file]
+datatype    = file
+description = Init file (in binary format)
+paramtype   = vlogparam
+scope       = private
+
+[provider]
+name=github
+user = ridecore
+repo = ridecore
+version=fe5a3ebe951199cefc6a145d37233b086cf4a8e6
