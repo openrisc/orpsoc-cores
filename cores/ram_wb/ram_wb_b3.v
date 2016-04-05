@@ -33,7 +33,7 @@ module ram_wb_b3
    reg [dw-1:0] 	mem [ 0 : mem_words-1 ]   /* verilator public */ /* synthesis ram_style = no_rw_check */;
 
    // Register to address internal memory array
-   reg [(mem_adr_width-adr_width_for_num_word_bytes)-1:0] adr;
+   reg [(mem_adr_width-adr_width_for_num_word_bytes)-1:0] addr_reg;
    
 
    // Register to indicate if the cycle is a Wishbone B3-registered feedback 
@@ -41,7 +41,10 @@ module ram_wb_b3
    reg 				   wb_b3_trans;
    
    // Register to use for counting the addresses when doing burst accesses
-   reg [mem_adr_width-adr_width_for_num_word_bytes-1:0]  burst_adr_counter;
+   reg [(mem_adr_width-adr_width_for_num_word_bytes)-1:0] burst_adr_r;
+
+   // Combinatorial next address calculation for bust accesses
+   reg [(mem_adr_width-adr_width_for_num_word_bytes)-1:0] adr;
 
    // Logic to detect if there's a burst access going on
    wire wb_b3_trans_start = ((wb_cti_i == 3'b001)|(wb_cti_i == 3'b010)) & 
@@ -69,35 +72,48 @@ module ram_wb_b3
 
    // Burst address generation logic
    always @(wb_ack_o or wb_b3_trans or wb_b3_trans_start
-	    or wb_bte_i_r or wb_cti_i_r or wb_adr_i or adr)
+	    or wb_bte_i_r or wb_cti_i_r or wb_adr_i or burst_adr_r)
      if (wb_b3_trans_start)
-       // Kick off burst_adr_counter, this assumes 4-byte words when getting
+       // Kick off adr, this assumes 4-byte words when getting
        // address off incoming Wishbone bus address! 
        // So if dw is no longer 4 bytes, change this!
-       burst_adr_counter = wb_adr_i[mem_adr_width-1:2];
+       adr = wb_adr_i[mem_adr_width-1:2];
      else if ((wb_cti_i_r == 3'b010) & wb_ack_o & wb_b3_trans) // Incrementing burst
        case(wb_bte_i_r)
-	 2'b00 : burst_adr_counter      = adr + 1; // Linear burst
-	 2'b01 : burst_adr_counter[1:0] = adr[1:0] + 1; // 4-beat wrap burst
-	 2'b10 : burst_adr_counter[2:0] = adr[2:0] + 1; // 8-beat wrap burst
-	 2'b11 : burst_adr_counter[3:0] = adr[3:0] + 1; // 16-beat wrap burst
+	 2'b00 : adr  = burst_adr_r + 1; // Linear burst
+	 2'b01 : begin
+	       adr[1:0] = burst_adr_r[1:0] + 1; // 4-beat wrap burst
+	       adr[(mem_adr_width-adr_width_for_num_word_bytes)-1:2] = burst_adr_r[(mem_adr_width-adr_width_for_num_word_bytes)-1:2];
+	    end
+	 2'b10 : begin
+	       // 8-beat wrap burst
+	       adr[2:0] = burst_adr_r[2:0] + 1;
+	       adr[(mem_adr_width-adr_width_for_num_word_bytes)-1:3] = burst_adr_r[(mem_adr_width-adr_width_for_num_word_bytes)-1:3];
+	    end
+	 2'b11 : begin
+	       // 16-beat wrap burst
+	       adr[3:0] = burst_adr_r[3:0] + 1;
+	       adr[(mem_adr_width-adr_width_for_num_word_bytes)-1:4] = burst_adr_r[(mem_adr_width-adr_width_for_num_word_bytes)-1:4];
+	    end
+	 default: adr  = wb_adr_i[mem_adr_width-1:2];
        endcase
+     else
+       adr = wb_adr_i[mem_adr_width-1:2];
 
    wire using_burst_adr = wb_b3_trans;
    
    wire burst_access_wrong_wb_adr = (using_burst_adr & 
-				     (adr != wb_adr_i[mem_adr_width-1:2]));
+				     (burst_adr_r != wb_adr_i[mem_adr_width-1:2]));
 
-   // Address registering logic
+   // Address registering logic only for read
    always@(posedge wb_clk_i)
      if(wb_rst_i)
-       adr <= 0;
+       burst_adr_r <= 0;
      else if (using_burst_adr)
-       adr <= burst_adr_counter;
+        burst_adr_r <= adr;
      else if (wb_cyc_i & wb_stb_i)
-       adr <= wb_adr_i[mem_adr_width-1:2];
+       burst_adr_r <= wb_adr_i[mem_adr_width-1:2];
 
-   
    assign wb_rty_o = 0;
 
    // mux for data to ram, RMW on part sel != 4'hf
@@ -109,12 +125,16 @@ module ram_wb_b3
    
    wire ram_we = wb_we_i & wb_ack_o;
 
-   assign wb_dat_o = mem[adr];
+   assign wb_dat_o = mem[addr_reg];
     
    // Write logic
    always @ (posedge wb_clk_i)
      if (ram_we)
 	  mem[adr] <= wr_data;
+
+   // Read logic
+   always @ (posedge wb_clk_i)
+      addr_reg <= adr;
 
    // Ack Logic
    reg wb_ack_o_r;
@@ -198,4 +218,3 @@ module ram_wb_b3
 //synthesis translate_on
 
 endmodule // ram_wb_b3
-
