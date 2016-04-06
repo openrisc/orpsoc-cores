@@ -10,7 +10,12 @@ module orpsoc_tb;
 ////////////////////////////////////////////////////////////////////////
    parameter bootrom_file = "../src/de0_nano/sw/clear_r3_and_jump_to_0x100.vh";
    //parameter bootrom_file = "../src/de0_nano/sw/spi_uimage_loader.vh";
-   
+
+   /*
+    When the SPI uimage loader is used, the following parameter can be
+    set to provide alternative SPI Flash contents
+    */
+   parameter spi_flash_file = "../src/de0_nano/bench/spi_image.vh";
 
 reg clk   = 0;
 reg rst_n = 0;
@@ -100,7 +105,7 @@ jtag_vpi jtag_vpi0
 
    s25fl064p
      #(.UserPreload (1'b1),
-       .mem_file_name ("../src/de0_nano/bench/spi_image.vh"))
+       .mem_file_name (spi_flash_file))
        spi_flash
      (.SCK     (spi0_sck),
       .SI      (spi0_mosi),

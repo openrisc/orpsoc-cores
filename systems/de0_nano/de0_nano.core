@@ -56,3 +56,9 @@ datatype    = file
 description = Initial boot ROM contents (in Verilog hex format)
 paramtype   = vlogparam
 scope       = private
+
+[parameter spi_flash_file]
+datatype    = file
+description = Initial SPI Flash contents (in Verilog hex format)
+paramtype   = vlogparam
+scope       = private
