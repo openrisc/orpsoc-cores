@@ -6,12 +6,12 @@ depend =
  jtag_tap-1.13
  jtag_vpi-r2
  or1200-r2
- ram_wb
  uart16550-1.5.4
  verilator_tb_utils
  vlog_tb_utils
  wb_bfm-1.0
  wb_intercon-1.0
+ wb_ram-1.0
 
 simulators = icarus modelsim
 
