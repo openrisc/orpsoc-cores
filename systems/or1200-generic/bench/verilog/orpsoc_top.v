@@ -1,6 +1,5 @@
-module orpsoc_top #(
-		parameter UART_SIM = 0
-)(
+module orpsoc_top
+(
 		input wb_clk_i,
 		input wb_rst_i,
 		output tdo_pad_o,
@@ -244,10 +243,8 @@ ram_wb_b3 #(
 wire uart_irq;
 
 uart_top #(
-	.uart_data_width (8),
-	.uart_addr_width (3),
 	.debug	(0),
-	.SIM	(UART_SIM)
+	.SIM	(1)
 ) uart16550 (
 	//Wishbone Master interface
 	.wb_clk_i	(wb_clk_i),
@@ -262,7 +259,7 @@ uart_top #(
 	.wb_ack_o	(wb_s2m_uart_ack),
         .int_o		(uart_irq),
 	.srx_pad_i	(1'b0),
-	.stx_pad_o	(uart),
+	.stx_pad_o	(),
 	.rts_pad_o	(),
 	.cts_pad_i	(1'b0),
 	.dtr_pad_o	(),
@@ -272,35 +269,6 @@ uart_top #(
 );
    assign wb_s2m_uart_err = 1'b0;
    assign wb_s2m_uart_rty = 1'b0;
-
-`ifdef VERILATOR
-wire [7:0]	uart_rx_data;
-wire		uart_rx_done;
-
-uart_transceiver uart_transceiver0 (
-	.sys_rst	(wb_rst_i),
-	.sys_clk	(wb_clk_i),
-
-	.uart_rx	(uart),
-	.uart_tx	(),
-
-	.divisor	(16'd26),
-
-	.rx_data	(uart_rx_data),
-	.rx_done	(uart_rx_done),
-
-	.tx_data	(8'h00),
-	.tx_wr		(1'b0),
-	.tx_done	(),
-
-	.rx_break	()
-);
-
-always @(posedge wb_clk_i)
-	if(uart_rx_done)
-		$write("%c", uart_rx_data);
-
-`endif
 
 ////////////////////////////////////////////////////////////////////////
 //

@@ -5,7 +5,7 @@ depend =
  mmuart
  or1200
  ram_wb
- uart16550-1.5.2
+ uart16550-1.5.4
  vlog_tb_utils
  verilator_tb_utils
  wb_bfm
@@ -23,7 +23,6 @@ src_files =
  bench/verilog/orpsoc_tb.v
 include_files =
  bench/verilog/include/or1200_defines.v
- bench/verilog/include/uart_defines.v
  bench/verilog/include/timescale.v
  bench/verilog/wb_intercon.vh
 
