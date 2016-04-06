@@ -2,29 +2,33 @@ CAPI=1
 [main]
 description = "Minimal OR1200 simulation environment"
 depend = 
- mmuart
- or1200
+ adv_debug_sys
+ jtag_tap-1.13
+ jtag_vpi-r2
+ or1200-r2
  ram_wb
  uart16550-1.5.4
- vlog_tb_utils
  verilator_tb_utils
- wb_bfm
- wb_intercon
- jtag_vpi
- jtag_tap
- adv_debug_sys
+ vlog_tb_utils
+ wb_bfm-1.0
+ wb_intercon-1.0
 
 simulators = icarus modelsim
 
-[verilog]
-src_files =
+[fileset rtl]
+files =
+ bench/verilog/include/or1200_defines.v[is_include_file]
+ bench/verilog/wb_intercon.vh[is_include_file]
  bench/verilog/wb_intercon.v
  bench/verilog/orpsoc_top.v
+file_type = verilogSource
+
+[fileset tb]
+files =
+ bench/verilog/include/timescale.v[is_include_file]
  bench/verilog/orpsoc_tb.v
-include_files =
- bench/verilog/include/or1200_defines.v
- bench/verilog/include/timescale.v
- bench/verilog/wb_intercon.vh
+file_type = verilogSource
+usage = sim
 
 [icarus]
 iverilog_options = -DSIM
