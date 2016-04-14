@@ -911,53 +911,22 @@ assign	wb_s2m_rom0_ack_o = 0;
 ////////////////////////////////////////////////////////////////////////
 
 ram_wb #(
-	.aw(wb_aw),
-	.dw(wb_dw),
-	.mem_size_bytes(65536), // 64KB
-	.mem_adr_width($clog2(65536))
+	.depth(65536)) // 64KB
 ) ram_wb0 (
-	// Wishbone slave interface 0
-	.wbm0_dat_i		(wb_m2s_sram0_dat),
-	.wbm0_adr_i		(wb_m2s_sram0_adr),
-	.wbm0_sel_i		(wb_m2s_sram0_sel),
-	.wbm0_cti_i		(wb_m2s_sram0_cti),
-	.wbm0_bte_i		(wb_m2s_sram0_bte),
-	.wbm0_we_i		(wb_m2s_sram0_we),
-	.wbm0_cyc_i		(wb_m2s_sram0_cyc),
-	.wbm0_stb_i		(wb_m2s_sram0_stb),
-	.wbm0_dat_o		(wb_s2m_sram0_dat),
-	.wbm0_ack_o		(wb_s2m_sram0_ack),
-	.wbm0_err_o		(wb_s2m_sram0_err),
-	.wbm0_rty_o		(wb_s2m_sram0_rty),
-	// Wishbone slave interface 1
-	.wbm1_dat_i		(32'd0),
-	.wbm1_adr_i		(32'd0),
-	.wbm1_sel_i		(4'd0),
-	.wbm1_cti_i		(3'd0),
-	.wbm1_bte_i		(2'd0),
-	.wbm1_we_i		(1'd0),
-	.wbm1_cyc_i		(1'd0),
-	.wbm1_stb_i		(1'd0),
-	.wbm1_dat_o		(),
-	.wbm1_ack_o		(),
-	.wbm1_err_o		(),
-	.wbm1_rty_o		(),
-	// Wishbone slave interface 2
-	.wbm2_dat_i		(32'd0),
-	.wbm2_adr_i		(32'd0),
-	.wbm2_sel_i		(4'd0),
-	.wbm2_cti_i		(3'd0),
-	.wbm2_bte_i		(2'd0),
-	.wbm2_we_i		(1'd0),
-	.wbm2_cyc_i		(1'd0),
-	.wbm2_stb_i		(1'd0),
-	.wbm2_dat_o		(),
-	.wbm2_ack_o		(),
-	.wbm2_err_o		(),
-	.wbm2_rty_o		(),
-	// Clock, reset
 	.wb_clk_i		(wb_clk),
-	.wb_rst_i		(wb_rst)
+	.wb_rst_i		(wb_rst),
+	.wb_adr_i		(wb_m2s_sram0_adr),
+	.wb_dat_i		(wb_m2s_sram0_dat),
+	.wb_sel_i		(wb_m2s_sram0_sel),
+	.wb_we_i		(wb_m2s_sram0_we),
+	.wb_cyc_i		(wb_m2s_sram0_cyc),
+	.wb_stb_i		(wb_m2s_sram0_stb),
+	.wb_cti_i		(wb_m2s_sram0_cti),
+	.wb_bte_i		(wb_m2s_sram0_bte),
+	.wb_dat_o		(wb_s2m_sram0_dat),
+	.wb_ack_o		(wb_s2m_sram0_ack),
+	.wb_err_o		(wb_s2m_sram0_err),
+	.wb_rty_o		(wb_s2m_sram0_rty)
 );
 
 ////////////////////////////////////////////////////////////////////////

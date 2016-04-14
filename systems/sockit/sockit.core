@@ -3,6 +3,7 @@ CAPI=1
 depend =
  jtag_tap
  wb_intercon
+ wb_ram-1.0
  wb_avalon_bridge
  adv_debug_sys
  altera_virtual_jtag
@@ -11,7 +12,6 @@ depend =
  elf-loader
  vlog_tb_utils
  jtag_vpi
- ram_wb
  gpio
  vga_lcd
  i2c
