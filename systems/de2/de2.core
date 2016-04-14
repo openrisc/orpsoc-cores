@@ -40,6 +40,6 @@ iverilog_options = -DICARUS_SIM -DSIM
 depend = elf-loader jtag_vpi-r2 mt48lc16m16a2 vlog_tb_utils-1.0 wiredelay
 
 [modelsim]
-vlog_options = +define+SIM +define+MODELSIM_SIM
+vlog_options = +define+SIM +define+MODELSIM_SIM -timescale 1ns/1ps
 vsim_options = -L altera_mf_ver -L altera_mf
-depend = elf-loader jtag_vpi mt48lc16m16a2 vlog_tb_utils-1.0 wiredelay
+depend = elf-loader jtag_vpi-r2 mt48lc16m16a2 vlog_tb_utils-1.0 wiredelay
