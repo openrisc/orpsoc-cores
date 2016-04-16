@@ -16,7 +16,7 @@ files =
  axi_multiplexer.sv
  axi_BR_allocator.sv
  axi_address_decoder_AW.sv
- defines.v
+ defines.v[is_include_file]
  axi_node_wrap.sv
  axi_request_block.sv
  axi_address_decoder_AR.sv
