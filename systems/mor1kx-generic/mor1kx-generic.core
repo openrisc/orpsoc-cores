@@ -22,11 +22,11 @@ include_files =
  bench/verilog/include/test-defines.v
 
 [icarus]
-depend = elf-loader jtag_vpi-r2 vlog_tb_utils-1.0 wb_bfm-1.0
+depend = elf-loader jtag_vpi-r2 vlog_tb_utils-1.0
 iverilog_options = -DSIM
 
 [modelsim]
-depend = elf-loader jtag_vpi-r2 vlog_tb_utils-1.0 wb_bfm-1.0
+depend = elf-loader jtag_vpi-r2 vlog_tb_utils-1.0
 
 [verilator]
 depend = verilator_tb_utils
