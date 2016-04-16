@@ -30,11 +30,11 @@ scope       = private
 toplevel = wb_sdram_ctrl_tb
 
 [icarus]
-depend = mt48lc16m16a2 vlog_tb_utils wb_bfm
+depend = mt48lc16m16a2 vlog_tb_utils-1.0 wb_bfm
 
 [modelsim]
 vsim_options = -t 1ps
-depend = mt48lc16m16a2 vlog_tb_utils wb_bfm
+depend = mt48lc16m16a2 vlog_tb_utils-1.0 wb_bfm
 
 [provider]
 name = github

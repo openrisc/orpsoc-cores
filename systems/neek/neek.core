@@ -5,7 +5,7 @@ depend =
  or1200-r2
  uart16550-1.5
  elf-loader
- vlog_tb_utils
+ vlog_tb_utils-1.0
  wiredelay
  adv_debug_sys
  mor1kx

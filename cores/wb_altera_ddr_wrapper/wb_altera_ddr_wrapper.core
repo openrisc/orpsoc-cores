@@ -89,6 +89,6 @@ vlog_options = +define+sg5B +define+x16 +define+FULL_MEM
 vsim_options = -t 1ps
 depend =
  mt46v16m16p
- vlog_tb_utils
+ vlog_tb_utils-1.0
  wb_bfm
 

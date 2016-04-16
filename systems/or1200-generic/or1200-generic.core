@@ -8,7 +8,7 @@ depend =
  or1200-r2
  uart16550-1.5.4
  verilator_tb_utils
- vlog_tb_utils
+ vlog_tb_utils-1.0
  wb_bfm-1.0
  wb_intercon-1.0
  wb_ram-1.0

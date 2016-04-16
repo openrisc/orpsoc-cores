@@ -10,7 +10,7 @@ depend =
  mor1kx
  uart16550-1.5
  elf-loader
- vlog_tb_utils
+ vlog_tb_utils-1.0
  gpio
  vga_lcd
  i2c

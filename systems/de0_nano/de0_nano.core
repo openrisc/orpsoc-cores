@@ -43,11 +43,11 @@ tb_include_files =
  bench/test-defines.v
 
 [icarus]
-depend = elf-loader jtag_vpi-r2 mt48lc16m16a2 s25fl064p-1.7 vlog_tb_utils
+depend = elf-loader jtag_vpi-r2 mt48lc16m16a2 s25fl064p-1.7 vlog_tb_utils-1.0
 iverilog_options = -DICARUS_SIM -DSIM -DSPEEDSIM
 
 [modelsim]
-depend = elf-loader jtag_vpi-r2 mt48lc16m16a2 s25fl064p-1.7 vlog_tb_utils
+depend = elf-loader jtag_vpi-r2 mt48lc16m16a2 s25fl064p-1.7 vlog_tb_utils-1.0
 vlog_options = +define+SIM +define+MODELSIM_SIM -timescale 1ns/1ps
 vsim_options = -L altera_mf_ver -L altera_mf
 

@@ -22,10 +22,10 @@ include_files =
 
 [icarus]
 iverilog_options = -DSIM
-depend = vlog_tb_utils elf-loader
+depend = vlog_tb_utils-1.0 elf-loader
 
 [modelsim]
-depend = vlog_tb_utils elf-loader
+depend = vlog_tb_utils-1.0 elf-loader
 
 [simulator]
 toplevel = vscale_tb 

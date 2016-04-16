@@ -2,7 +2,7 @@ CAPI=1
 [main]
 description = Generic FIFO
 simulators = icarus modelsim
-depend = vlog_tb_utils
+depend = vlog_tb_utils-1.0
 
 [verilog]
 src_files =

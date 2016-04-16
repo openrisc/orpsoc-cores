@@ -12,7 +12,7 @@ tb_private_src_files = testbench.v
 toplevel = testbench
 
 [icarus]
-depend = elf-loader vlog_tb_utils
+depend = elf-loader vlog_tb_utils-1.0
 
 [verilator]
 verilator_options = -Wno-fatal --trace
