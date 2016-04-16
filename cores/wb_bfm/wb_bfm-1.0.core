@@ -11,9 +11,16 @@ tb_src_files =
  wb_bfm_memory.v
  wb_bfm_transactor.v
 tb_private_src_files = bench/wb_bfm_tb.v
+file_type = verilogSource-2005
 
 [simulator]
 toplevel=wb_bfm_tb
+
+[parameter transactions]
+datatype    = int
+description = Number of wishbone transactions to run in test bench
+paramtype   = plusarg
+scope       = private
 
 [provider]
 name = github
