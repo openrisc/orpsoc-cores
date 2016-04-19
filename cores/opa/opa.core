@@ -2,7 +2,7 @@ CAPI=1
 [main]
 
 description = Open Processor Architecture
-simulators = ghdl modelsim xsim
+simulators = modelsim xsim
 
 [fileset rtl]
 files =
