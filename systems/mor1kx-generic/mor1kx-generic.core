@@ -33,3 +33,9 @@ depend = verilator_tb_utils
 verilator_options = -Wno-fatal --trace
 tb_toplevel   = bench/verilator/tb.cpp
 top_module    = orpsoc_top
+
+[parameter clear_ram]
+datatype    = bool
+description = Preset RAM to a known value (0)
+paramtype   = plusarg
+scope       = private

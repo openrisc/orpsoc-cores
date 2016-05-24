@@ -39,6 +39,12 @@ module orpsoc_tb;
    reg [1023:0] elf_file;
 
    initial begin
+      if ($test$plusargs("clear_ram")) begin
+	 $display("Clearing RAM");
+	 for(i=0; i < MEM_SIZE/4; i = i+1)
+	   orpsoc_tb.dut.wb_bfm_memory0.ram0.mem[i] = 32'h00000000;
+      end
+
       if($value$plusargs("elf_load=%s", elf_file)) begin
 	 $elf_load_file(elf_file);
 
