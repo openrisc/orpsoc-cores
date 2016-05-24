@@ -1,4 +1,5 @@
 module orpsoc_top
+  #(parameter MEM_SIZE = 32'h02000000)
 (
 		input wb_clk_i,
 		input wb_rst_i,
@@ -10,8 +11,6 @@ module orpsoc_top
 
 localparam wb_aw = 32;
 localparam wb_dw = 32;
-
-localparam MEM_SIZE_BITS = 25;
 
 ////////////////////////////////////////////////////////////////////////
 //
@@ -208,12 +207,12 @@ mor1kx #(
 //
 ////////////////////////////////////////////////////////////////////////
 wb_ram #(
-	.depth	(2**MEM_SIZE_BITS)
+	.depth	(MEM_SIZE/4)
 ) wb_bfm_memory0 (
 	//Wishbone Master interface
 	.wb_clk_i	(wb_clk_i),
 	.wb_rst_i	(wb_rst_i),
-	.wb_adr_i	(wb_m2s_mem_adr[MEM_SIZE_BITS-1:0]),
+	.wb_adr_i	(wb_m2s_mem_adr[$clog2(MEM_SIZE)-3:0]),
 	.wb_dat_i	(wb_m2s_mem_dat),
 	.wb_sel_i	(wb_m2s_mem_sel),
 	.wb_we_i	(wb_m2s_mem_we),

@@ -1,5 +1,7 @@
 module orpsoc_tb;
 
+   localparam MEM_SIZE = 32'h02000000; //Set default memory size to 32MB
+
    vlog_tb_utils vlog_tb_utils0();
 
     ////////////////////////////////////////////////////////////////////////
@@ -73,6 +75,7 @@ module orpsoc_tb;
    //
    ////////////////////////////////////////////////////////////////////////
    orpsoc_top
+     #(.MEM_SIZE (MEM_SIZE))
    dut
      (.wb_clk_i (syst_clk),
       .wb_rst_i (syst_rst),
