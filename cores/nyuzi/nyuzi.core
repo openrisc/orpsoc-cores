@@ -16,7 +16,6 @@ files =
  hardware/core/l1_l2_interface.sv
  hardware/core/instruction_decode_stage.sv
  hardware/core/nyuzi.sv
- hardware/core/interrupt_controller.sv
  hardware/core/oh_to_idx.sv
  hardware/core/l1_load_miss_queue.sv
  hardware/core/l2_axi_bus_interface.sv
@@ -70,6 +69,7 @@ files =
  hardware/fpga/common/uart.sv
  hardware/fpga/common/uart_transmit.sv
  hardware/fpga/common/async_fifo.sv
+ hardware/fpga/common/timer.sv
 file_type = systemVerilogSource
 usage = sim synth
 
