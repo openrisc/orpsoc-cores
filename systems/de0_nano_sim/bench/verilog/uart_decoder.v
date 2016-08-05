@@ -1,14 +1,20 @@
 //////////////////////////////////////////////////////////////////////
 ////                                                              ////
-//// orpsoc-defines                                               ////
+////  ORPSoC Testbench UART Decoder                               ////
 ////                                                              ////
-//// Top level ORPSoC defines file                                ////
+////  Description                                                 ////
+////  ORPSoC Testbench UART output decoder                        ////
 ////                                                              ////
-//// Included in toplevel and testbench                           ////
+////  To Do:                                                      ////
+////                                                              ////
+////                                                              ////
+////  Author(s):                                                  ////
+////      - jb, jb@orsoc.se                                       ////
+////                                                              ////
 ////                                                              ////
 //////////////////////////////////////////////////////////////////////
 ////                                                              ////
-//// Copyright (C) 2009, 2010 Authors and OPENCORES.ORG           ////
+//// Copyright (C) 2009 Authors and OPENCORES.ORG                 ////
 ////                                                              ////
 //// This source file may be used and distributed without         ////
 //// restriction provided that this copyright statement is not    ////
@@ -33,10 +39,64 @@
 ////                                                              ////
 //////////////////////////////////////////////////////////////////////
 
-// Included modules: define to include
 
-//`define MOR1KX
-`ifndef MOR1KX
-`define OR1200
-`endif
-// end of included module defines - keep this comment line here
+// Receieves and decodes 8-bit,  1 stop bit, no parity UART signals.
+`timescale 1ns/1ns
+module uart_decoder(clk, uart_tx);
+
+   parameter uart_baudrate_period_ns = 8680;
+
+   input clk;   
+   input uart_tx;
+
+   // Something to trigger the task
+   always @(posedge clk)
+     uart_decoder;
+   
+   task uart_decoder;
+      reg [7:0] tx_byte;
+      begin
+	 while (uart_tx !== 1'b1)
+	   @(uart_tx); 
+	 // Wait for start bit
+	 while (uart_tx !== 1'b0)
+           @(uart_tx);
+	 
+	 #(uart_baudrate_period_ns * 1.5)
+	 tx_byte[0] = uart_tx;
+	 //$write("%d  ", uart_tx);
+	 #uart_baudrate_period_ns
+	 tx_byte[1] = uart_tx;
+	 //$write("%d  ", uart_tx);
+	 #uart_baudrate_period_ns
+	 tx_byte[2] = uart_tx;
+	 //$write("%d  ", uart_tx);
+	 #uart_baudrate_period_ns
+	 tx_byte[3] = uart_tx;
+	 //$write("%d  ", uart_tx);
+	 #uart_baudrate_period_ns
+	 tx_byte[4] = uart_tx;
+	 //$write("%d  ", uart_tx);
+	 #uart_baudrate_period_ns
+	 tx_byte[5] = uart_tx;
+	 //$write("%d  ", uart_tx);
+	 #uart_baudrate_period_ns
+	 tx_byte[6] = uart_tx;
+	 //$write("%d  ", uart_tx);
+	 #uart_baudrate_period_ns
+	 tx_byte[7] = uart_tx;
+	 //$write("%d  \n", uart_tx);
+	 #uart_baudrate_period_ns
+	 //Check for stop bit
+	 if (uart_tx !== 1'b1)
+	   begin
+	      // Wait for return to idle
+	      while (uart_tx !== 1'b1)
+		@(uart_tx);
+	   end
+	 // display the char
+	 $write("%c", tx_byte);
+      end
+   endtask // user_uart_read_byte
+
+endmodule // uart_decoder

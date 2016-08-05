@@ -1,0 +1,72 @@
+CAPI=1
+[main]
+depend =
+ adv_debug_sys
+ gpio
+ jtag_tap
+ mor1kx
+# or1200
+ elf-loader
+ uart16550
+ vlog_tb_utils
+ wb_intercon
+ ram_wb 
+
+simulators =
+ icarus
+ verilator
+
+[verilog]
+src_files =
+ rtl/verilog/orpsoc_top.v
+ rtl/verilog/rom.v
+ rtl/verilog/wb_intercon.v
+
+tb_private_src_files =
+ bench/verilog/orpsoc_tb.v
+ bench/verilog/uart_decoder.v
+
+include_files =
+ rtl/verilog/include/or1200_defines.v
+ rtl/verilog/include/orpsoc-defines.v
+ rtl/verilog/include/timescale.v
+ rtl/verilog/include/uart_defines.v
+ rtl/verilog/wb_intercon.vh
+
+[verilator]
+source_type = systemC
+verilator_options = -Wno-fatal --trace
+src_files = 
+ bench/verilator/ResetSC.cpp
+ bench/verilator/JtagServerSC.cpp
+# bench/verilator/Or1200MonitorSC.cpp
+ bench/verilator/UartSC.cpp
+# bench/verilator/OrpsocAccess.cpp
+# bench/verilator/MemoryLoad.cpp
+ bench/verilator/elf-loader.c
+
+include_files = 
+ bench/verilator/OrpsocMain.h
+ bench/verilator/coff.h
+ bench/verilator/ResetSC.h
+ bench/verilator/elf.h
+ bench/verilator/UartSC.h
+ bench/verilator/JtagServerSC.h
+ bench/verilator/UartSC.h
+# bench/verilator/OrpsocAccess.h
+# bench/verilator/Or1200MonitorSC.h
+# bench/verilator/MemoryLoad.h
+ bench/verilator/elf-loader.h
+
+define_files = de0_nano_sim/rtl/verilog/include/orpsoc-defines.v
+tb_toplevel = bench/verilator/OrpsocMain.cpp
+top_module  = orpsoc_top
+libs = -lelf
+
+[icarus]
+iverilog_options = -DICARUS_SIM -DSIM
+depend =  jtag_vpi
+
+[modelsim]
+vlog_options = +define+SIM +define+MODELSIM_SIM
+vsim_options = -L altera_mf_ver -L altera_mf
