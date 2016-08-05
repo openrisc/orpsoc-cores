@@ -30,6 +30,11 @@ bool VerilatorTbUtils::doJTAG(uint8_t *tms, uint8_t *tdi, uint8_t *tck, uint8_t 
   return true;
 }
 
+bool VerilatorTbUtils::doJTAG(uint8_t *tms, uint8_t *tdi, uint8_t *tck, uint8_t tdo) {
+  jtag->doJTAG(t, tms, tdi, tck, tdo);
+  return true;
+}
+
 bool VerilatorTbUtils::doCycle() {
   if (vcdDumpStop && t >= vcdDumpStop) {
     if (vcdDumping) {
