@@ -62,3 +62,6 @@ datatype    = file
 description = Initial SPI Flash contents (in Verilog hex format)
 paramtype   = vlogparam
 scope       = private
+
+[scripts]
+pre_build_scripts = legacy_symlink.sh

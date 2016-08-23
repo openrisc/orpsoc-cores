@@ -41,7 +41,7 @@
 `include "orpsoc-defines.v"
 
 module orpsoc_top #(
-	parameter       bootrom_file = "../src/de0_nano/sw/spi_uimage_loader.vh",
+	parameter       bootrom_file = "../src/de0_nano_0/sw/spi_uimage_loader.vh",
         parameter       i2c0_sadr = 8'h45,
         parameter       i2c1_sadr = 8'h45
 )(

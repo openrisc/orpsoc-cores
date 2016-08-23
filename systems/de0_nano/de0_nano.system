@@ -11,3 +11,5 @@ device = EP4CE22F17C6
 sdc_files = data/de0_nano.sdc
 tcl_files = data/pinmap.tcl
             data/options.tcl
+[scripts]
+pre_build_scripts = legacy_symlink.sh
