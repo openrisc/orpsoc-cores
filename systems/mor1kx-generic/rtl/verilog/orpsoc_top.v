@@ -43,7 +43,7 @@ tap_top jtag_tap0 (
 	.trst_pad_i			(wb_rst),
 	.tdi_pad_i			(tdi_pad_i),
 
-	.tdo_padoe_o			(tdo_padoe_o),
+	.tdo_padoe_o			(),
 
 	.tdo_o				(jtag_tap_tdo),
 
