@@ -7,7 +7,6 @@ src_files =
  rtl/verilog/mor1kx_branch_predictor_simple.v
  rtl/verilog/mor1kx_branch_predictor_saturation_counter.v
  rtl/verilog/mor1kx_branch_prediction.v
- rtl/verilog/mor1kx_bus_if_avalon.v
  rtl/verilog/mor1kx_bus_if_wb32.v
  rtl/verilog/mor1kx_cache_lru.v
  rtl/verilog/mor1kx_cfgrs.v
