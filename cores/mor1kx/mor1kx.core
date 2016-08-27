@@ -32,6 +32,7 @@ src_files =
  rtl/verilog/mor1kx_immu.v
  rtl/verilog/mor1kx_lsu_cappuccino.v
  rtl/verilog/mor1kx_lsu_espresso.v
+ rtl/verilog/mor1kx_pcu.v
  rtl/verilog/mor1kx_pic.v
  rtl/verilog/mor1kx_rf_cappuccino.v
  rtl/verilog/mor1kx_rf_espresso.v
