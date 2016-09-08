@@ -911,7 +911,7 @@ assign	wb_s2m_rom0_ack_o = 0;
 ////////////////////////////////////////////////////////////////////////
 
 ram_wb #(
-	.depth(65536)) // 64KB
+	.depth(65536) // 64KB
 ) ram_wb0 (
 	.wb_clk_i		(wb_clk),
 	.wb_rst_i		(wb_rst),
