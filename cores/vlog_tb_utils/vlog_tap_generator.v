@@ -74,7 +74,7 @@ module vlog_tap_generator
 
 	    if (!ok_i)
 	      $fwrite(f, "not ");
-	    $fwrite(f, "ok %0d %0s\n", cur_tc, description);
+	    $fwrite(f, "ok %0d - %0s\n", cur_tc, description);
 	 end
       end
    endtask
