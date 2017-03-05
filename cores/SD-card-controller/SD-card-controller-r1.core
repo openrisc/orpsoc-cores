@@ -1,0 +1,96 @@
+CAPI=1
+[main]
+
+name = SD-card-controller-r1
+simulators = modelsim
+
+[verilog]
+src_files =
+ rtl/verilog/sd_data_xfer_trig.v
+ rtl/verilog/sd_crc_16.v
+ rtl/verilog/generic_fifo_dc_gray.v
+ rtl/verilog/sd_clock_divider.v
+ rtl/verilog/sd_cmd_master.v
+ rtl/verilog/sd_crc_7.v
+ rtl/verilog/sd_cmd_serial_host.v
+ rtl/verilog/generic_dpram.v
+ rtl/verilog/sdc_controller.v
+ rtl/verilog/monostable_domain_cross.v
+ rtl/verilog/sd_wb_sel_ctrl.v
+ rtl/verilog/sd_data_serial_host.v
+ rtl/verilog/sd_controller_wb.v
+ rtl/verilog/sd_data_master.v
+ rtl/verilog/bistable_domain_cross.v
+ rtl/verilog/sd_fifo_filler.v
+ rtl/verilog/byte_en_reg.v
+ rtl/verilog/edge_detect.v
+include_files =
+ rtl/verilog/sd_defines.h
+tb_private_src_files =
+ bench/verilog/byte_en_reg_tb.sv
+ bench/verilog/sd_cmd_serial_host_tb.sv
+ bench/verilog/sdModel.v
+ bench/verilog/monostable_domain_cross_tb.sv
+ bench/verilog/sd_cmd_master_tb.sv
+ bench/verilog/sd_data_master_tb.sv
+ bench/verilog/wb_master32.v
+ bench/verilog/sd_fifo_filler_tb.sv
+ bench/verilog/bistable_domain_cross_tb.sv
+ bench/verilog/wb_master_behavioral.v
+ bench/verilog/sd_controller_wb_tb.sv
+ bench/verilog/wb_bus_mon.v
+ bench/verilog/sd_wb_sel_ctrl_tb.sv
+ bench/verilog/edge_detect_tb.sv
+ bench/verilog/wb_slave_behavioral.v
+ bench/verilog/sd_data_xfer_trig_tb.sv
+ bench/verilog/sd_data_serial_host_tb.sv
+ bench/verilog/sd_controller_top_tb.sv
+tb_include_files =
+ bench/verilog/wb_model_defines.h
+ sim/rtl_sim/bin/ramdisk2.hex
+ sim/rtl_sim/bin/wb_memory.txt
+
+[simulator]
+toplevel = sd_controller_top_tb
+
+
+[parameter ramdisk]
+datatype    = file
+default     = ../src/SD-card-controller_0-r1/sim/rtl_sim/bin/ramdisk2.hex
+description = Initial simulated SD card contents (in Verilog hex format)
+paramtype   = vlogparam
+scope       = private
+
+[parameter sd_model_log_file]
+datatype    = file
+default     = sd_model.log
+description = Log file for SD card model
+paramtype   = vlogparam
+scope       = private
+
+[parameter wb_m_mon_log_file]
+datatype    = file
+default     = wb_m_mon.log
+description = Master monitor log file
+paramtype   = vlogparam
+scope       = private
+
+[parameter wb_s_mon_log_file]
+datatype    = file
+default     = wb_s_mon.log
+description = Slave monitor log file
+paramtype   = vlogparam
+scope       = private
+
+[parameter wb_memory_file]
+datatype    = file
+default     = ../src/SD-card-controller_0-r1/sim/rtl_sim/bin/wb_memory.txt
+description = Initial simulated Wishbone memory contents (in Verilog hex format)
+paramtype   = vlogparam
+scope       = private
+
+[provider]
+name = github
+user = olofk
+repo = SD-card-controller
+version = c970795de0266865535542e31ff89ebacc609826
