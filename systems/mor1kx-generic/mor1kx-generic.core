@@ -28,6 +28,9 @@ iverilog_options = -DSIM
 [modelsim]
 depend = elf-loader jtag_vpi-r2 vlog_tb_utils-1.0
 
+[rivierapro]
+depend = elf-loader jtag_vpi-r2 vlog_tb_utils-1.0
+
 [verilator]
 depend = verilator_tb_utils
 verilator_options = -Wno-fatal --trace
