@@ -1,0 +1,6 @@
+SAPI=1
+[main]
+name = de0_nano_sim
+description = "Icarus/Verilator de0 nano board OpenRISC system"
+
+backend = quartus
