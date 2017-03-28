@@ -3,17 +3,17 @@ CAPI=1
 depend =
  adv_debug_sys
  altera_virtual_jtag
- simple_spi
- i2c
  gpio
- jtag_tap
- jtag_vpi
- mor1kx
- elf-loader
- uart16550
- vlog_tb_utils
- wb_intercon
- wb_sdram_ctrl
+ i2c-1.13
+ jtag_tap-1.13
+ mor1kx-3.1
+# or1200-r2
+ or1k_bootloaders-0.9
+ simple_spi-1.6
+ uart16550-1.5.4
+ wb_intercon-1.0
+ wb_ram-1.0
+ wb_sdram_ctrl-r2
  ompic
  timer
 
