@@ -244,8 +244,19 @@ wire [31:0] or1k_irq [0:1];
 wire        or1k_clk;
 wire        or1k_rst;
 
+wire	[31:0]	or1k_dbg_adr_i[0:1];
+wire	[31:0]	or1k_dbg_dat_i[0:1];
+wire		or1k_dbg_stb_i[0:1];
+wire		or1k_dbg_we_i[0:1];
+wire	[31:0]	or1k_dbg_dat_o[0:1];
+wire		or1k_dbg_ack_o[0:1];
+wire		or1k_dbg_stall_i[0:1];
+wire		or1k_dbg_bp_o[0:1];
+
+wire		or1k_dbg_rst[0:1];
+
 assign or1k_clk = wb_clk;
-assign or1k_rst = wb_rst | or1k_dbg_rst;
+assign or1k_rst = wb_rst | or1k_dbg_rst[0] | or1k_dbg_rst[1];
 
 mor1kx #(
 	.FEATURE_DEBUGUNIT              ("ENABLED"),
@@ -263,6 +274,7 @@ mor1kx #(
 	.OPTION_DCACHE_SET_WIDTH        (7),
 	.OPTION_DCACHE_WAYS             (1),
 	.OPTION_DCACHE_LIMIT_WIDTH      (31),
+	.OPTION_RF_NUM_SHADOW_GPR	(15),
 	.FEATURE_DMMU                   ("ENABLED"),
 
 	.IBUS_WB_TYPE                   ("B3_REGISTERED_FEEDBACK"),
@@ -303,27 +315,29 @@ mor1kx #(
 
 	.irq_i				(or1k_irq[0]),
 
-	.du_addr_i                      (16'b0),
-	.du_stb_i                       (1'b0),
-	.du_dat_i                       (32'b0),
-	.du_we_i                        (1'b0),
-	.du_dat_o                       (),
-	.du_ack_o                       (),
-	.du_stall_i                     (1'b0),
-	.du_stall_o                     (),
-
 	.multicore_coreid_i             (0),
 	.multicore_numcores_i           (2),
 
 	.snoop_adr_i             (snoop_adr),
 	.snoop_en_i              (snoop_en),
 
+	/* Verilator debug interface */
 	.traceport_exec_valid_o  (traceport_exec_valid[0]),
 	.traceport_exec_pc_o     (traceport_exec_pc[0]),
 	.traceport_exec_insn_o   (traceport_exec_insn[0]),
 	.traceport_exec_wbdata_o (traceport_exec_wbdata[0]),
 	.traceport_exec_wbreg_o  (traceport_exec_wbreg[0]),
-	.traceport_exec_wben_o   (traceport_exec_wben[0])
+	.traceport_exec_wben_o   (traceport_exec_wben[0]),
+
+	/* advanced debug interface */
+	.du_addr_i(or1k_dbg_adr_i[0][15:0]),
+	.du_dat_i(or1k_dbg_dat_i[0]),
+	.du_stb_i(or1k_dbg_stb_i[0]),
+	.du_we_i(or1k_dbg_we_i[0]),
+	.du_dat_o(or1k_dbg_dat_o[0]),
+	.du_ack_o(or1k_dbg_ack_o[0]),
+	.du_stall_i(or1k_dbg_stall_i[0]),
+	.du_stall_o(or1k_dbg_bp_o[0])
 );
 
 mor1kx #(
@@ -342,6 +356,7 @@ mor1kx #(
 	.OPTION_DCACHE_SET_WIDTH        (7),
 	.OPTION_DCACHE_WAYS             (1),
 	.OPTION_DCACHE_LIMIT_WIDTH      (31),
+	.OPTION_RF_NUM_SHADOW_GPR	(15),
 	.FEATURE_DMMU                   ("ENABLED"),
 
 	.IBUS_WB_TYPE                   ("B3_REGISTERED_FEEDBACK"),
@@ -382,33 +397,30 @@ mor1kx #(
 
 	.irq_i				(or1k_irq[1]),
 
-	.du_addr_i                      (16'b0),
-	.du_stb_i                       (1'b0),
-	.du_dat_i                       (32'b0),
-	.du_we_i                        (1'b0),
-	.du_dat_o                       (),
-	.du_ack_o                       (),
-	.du_stall_i                     (1'b0),
-	.du_stall_o                     (),
-
 	.multicore_coreid_i             (1),
 	.multicore_numcores_i           (2),
 
 	.snoop_adr_i             (snoop_adr),
 	.snoop_en_i              (snoop_en),
 
+	/* Verilator traceport wires */
 	.traceport_exec_valid_o  (traceport_exec_valid[1]),
 	.traceport_exec_pc_o     (traceport_exec_pc[1]),
 	.traceport_exec_insn_o   (traceport_exec_insn[1]),
 	.traceport_exec_wbdata_o (traceport_exec_wbdata[1]),
 	.traceport_exec_wbreg_o  (traceport_exec_wbreg[1]),
-	.traceport_exec_wben_o   (traceport_exec_wben[1])
-);
+	.traceport_exec_wben_o   (traceport_exec_wben[1]),
 
-// TODOD: connect
-assign or1k_dbg_dat_o = 0;
-assign or1k_dbg_ack_o = 1;
-assign or1k_dbg_bp_o = 0;
+	/* advanced debug interface */
+	.du_addr_i(or1k_dbg_adr_i[1][15:0]),
+	.du_dat_i(or1k_dbg_dat_i[1]),
+	.du_stb_i(or1k_dbg_stb_i[1]),
+	.du_we_i(or1k_dbg_we_i[1]),
+	.du_dat_o(or1k_dbg_dat_o[1]),
+	.du_ack_o(or1k_dbg_ack_o[1]),
+	.du_stall_i(or1k_dbg_stall_i[1]),
+	.du_stall_o(or1k_dbg_bp_o[1])
+);
 
 ////////////////////////////////////////////////////////////////////////
 //
@@ -418,18 +430,32 @@ assign or1k_dbg_bp_o = 0;
 
 wire uart1_irq;
 
-adbg_top dbg_if0 (
+adbg_top #(
+	.DBG_CPU1_SUPPORTED	("ENABLED"),
+	.DBG_JSP_SUPPORTED	("ENABLED")
+) dbg_if0 (
 	// OR1K interface
 	.cpu0_clk_i	(wb_clk),
-	.cpu0_rst_o	(or1k_dbg_rst),
-	.cpu0_addr_o	(or1k_dbg_adr_i),
-	.cpu0_data_o	(or1k_dbg_dat_i),
-	.cpu0_stb_o	(or1k_dbg_stb_i),
-	.cpu0_we_o	(or1k_dbg_we_i),
-	.cpu0_data_i	(or1k_dbg_dat_o),
-	.cpu0_ack_i	(or1k_dbg_ack_o),
-	.cpu0_stall_o	(or1k_dbg_stall_i),
-	.cpu0_bp_i	(or1k_dbg_bp_o),
+	.cpu0_rst_o	(or1k_dbg_rst[0]),
+	.cpu0_addr_o	(or1k_dbg_adr_i[0]),
+	.cpu0_data_o	(or1k_dbg_dat_i[0]),
+	.cpu0_stb_o	(or1k_dbg_stb_i[0]),
+	.cpu0_we_o	(or1k_dbg_we_i[0]),
+	.cpu0_data_i	(or1k_dbg_dat_o[0]),
+	.cpu0_ack_i	(or1k_dbg_ack_o[0]),
+	.cpu0_stall_o	(or1k_dbg_stall_i[0]),
+	.cpu0_bp_i	(or1k_dbg_bp_o[0]),
+
+	.cpu1_clk_i	(wb_clk),
+	.cpu1_rst_o	(or1k_dbg_rst[1]),
+	.cpu1_addr_o	(or1k_dbg_adr_i[1]),
+	.cpu1_data_o	(or1k_dbg_dat_i[1]),
+	.cpu1_stb_o	(or1k_dbg_stb_i[1]),
+	.cpu1_we_o	(or1k_dbg_we_i[1]),
+	.cpu1_data_i	(or1k_dbg_dat_o[1]),
+	.cpu1_ack_i	(or1k_dbg_ack_o[1]),
+	.cpu1_stall_o	(or1k_dbg_stall_i[1]),
+	.cpu1_bp_i	(or1k_dbg_bp_o[1]),
 
 	// TAP interface
 	.tck_i		(dbg_tck),
@@ -458,20 +484,19 @@ adbg_top dbg_if0 (
 	.wb_bte_o	(wb_m2s_dbg_bte),
 
 	// JTAG Serial Port
-	.wb_jsp_adr_i	(wb_m2s_uart1_adr[4:0]),
-	.wb_jsp_dat_o	(wb_s2m_uart1_dat),
-	.wb_jsp_dat_i	(wb_m2s_uart1_dat),
-	.wb_jsp_cyc_i	(wb_m2s_uart1_cyc),
-	.wb_jsp_stb_i	(wb_m2s_uart1_stb),
-	.wb_jsp_sel_i	(wb_m2s_uart1_sel),
-	.wb_jsp_we_i	(wb_m2s_uart1_we),
-	.wb_jsp_ack_o	(wb_s2m_uart1_ack),
-	.wb_jsp_cab_i	(),
-	.wb_jsp_err_o	(wb_s2m_uart1_err),
-	.wb_jsp_cti_i	(wb_m2s_uart1_cti),
-	.wb_jsp_bte_i	(wb_m2s_uart1_bte),
-	.int_o		(uart1_irq)
-
+	.wb_jsp_adr_i   (wb_m2s_uart1_adr[4:0]),
+	.wb_jsp_dat_o   (wb_s2m_uart1_dat),
+	.wb_jsp_dat_i   (wb_m2s_uart1_dat),
+	.wb_jsp_cyc_i   (wb_m2s_uart1_cyc),
+	.wb_jsp_stb_i   (wb_m2s_uart1_stb),
+	.wb_jsp_sel_i   (wb_m2s_uart1_sel),
+	.wb_jsp_we_i    (wb_m2s_uart1_we),
+	.wb_jsp_ack_o   (wb_s2m_uart1_ack),
+	.wb_jsp_cab_i   (),
+	.wb_jsp_err_o   (wb_s2m_uart1_err),
+	.wb_jsp_cti_i   (wb_m2s_uart1_cti),
+	.wb_jsp_bte_i   (wb_m2s_uart1_bte),
+	.int_o          (uart1_irq)
 );
 
 ////////////////////////////////////////////////////////////////////////
