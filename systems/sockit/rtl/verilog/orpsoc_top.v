@@ -925,9 +925,7 @@ wb_ram #(
 	.wb_bte_i		(wb_m2s_sram0_bte),
 	.wb_dat_o		(wb_s2m_sram0_dat),
 	.wb_ack_o		(wb_s2m_sram0_ack),
-	.wb_err_o		(wb_s2m_sram0_err),
-	.wb_rty_o		(wb_s2m_sram0_rty)
-);
+	.wb_err_o		(wb_s2m_sram0_err));
 
 ////////////////////////////////////////////////////////////////////////
 //
