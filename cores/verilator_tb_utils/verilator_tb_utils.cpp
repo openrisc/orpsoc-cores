@@ -3,7 +3,7 @@
 #include <stdint.h>
 #include <string.h>
 #include <argp.h>
-#include <elf-loader/elf-loader.h>
+#include <elf-loader.h>
 #include "verilator_tb_utils.h"
 #include "jtagServer.h"
 

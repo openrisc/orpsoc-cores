@@ -25,6 +25,7 @@
 #include <unistd.h>
 #include <gelf.h>
 #include <fcntl.h>
+#include "elf-loader.h"
 
 uint8_t big_endian;
 
@@ -58,7 +59,7 @@ uint8_t *dump_program_data(Elf *elf_object, int *size)
 
 		if (phdr.p_paddr + phdr.p_filesz >= max_paddr) {
 			max_paddr = phdr.p_paddr + phdr.p_filesz;
-			buffer = realloc(buffer, max_paddr);
+			buffer = (uint8_t *) realloc(buffer, max_paddr);
 		}
 
 		data = elf_getdata_rawchunk(elf_object, phdr.p_offset, phdr.p_filesz, ELF_T_BYTE);
@@ -114,7 +115,7 @@ uint8_t *dump_section_data(Elf *elf_object, int *size)
 
 			if (shdr.sh_addr + shdr.sh_size >= max_saddr) {
 				max_saddr = shdr.sh_addr + shdr.sh_size;
-				buffer = realloc(buffer, max_saddr);
+				buffer = (uint8_t *) realloc(buffer, max_saddr);
 			}
 
 			data = elf_getdata(cur_section, data);
