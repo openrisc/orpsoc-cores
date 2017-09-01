@@ -3,7 +3,7 @@
 #include <stdint.h>
 #include <string.h>
 #include <argp.h>
-#include <elf-loader/elf-loader.h>
+#include <elf-loader.h>
 #include "verilator_tb_utils.h"
 #include "jtagServer.h"
 
@@ -17,6 +17,7 @@ VerilatorTbUtils::VerilatorTbUtils(uint32_t *mem)
   jtag = new VerilatorJtagServer(10); /* Jtag clock is 10 period */
 
   Verilated::traceEverOn(true);
+  printf("Tracing on\n");
 }
 
 VerilatorTbUtils::~VerilatorTbUtils() {
