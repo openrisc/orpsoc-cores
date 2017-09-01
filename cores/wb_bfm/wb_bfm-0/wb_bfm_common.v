@@ -22,7 +22,9 @@ endfunction //
 	   3'b111 : begin
 	      is_last = 1'b1;
 	   end
+`ifndef ISIM_SIM
 	   default : $error("%d : Illegal Wishbone B3 cycle type (%b)", $time, cti);
+`endif
 	 endcase // case (wb_cti_i)
       end
    endfunction
@@ -37,7 +39,9 @@ function [aw-1:0] next_addr;
 	WRAP_8_BURST   : next_addr = {addr_i[aw-1:5], addr_i[4:0]+5'd4};
 	WRAP_16_BURST  : next_addr = {addr_i[aw-1:6], addr_i[5:0]+6'd4};
 	CONSTANT_BURST : next_addr = addr_i;
+`ifndef ISIM_SIM
 	default : $error("%d : Illegal burst type (%b)", $time, burst_type_i);
+`endif
       endcase // case (burst_type_i)
    end
 endfunction

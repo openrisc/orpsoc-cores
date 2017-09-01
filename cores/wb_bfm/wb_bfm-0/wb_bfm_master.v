@@ -43,7 +43,37 @@ module wb_bfm_master
 	 wb_bte_o = 2'b00;
       end
    endtask
-   
+
+   task write_byte;
+      input [aw-1:0] addr_i;
+      input [7:0]    data_i;
+      output         err_o;
+      integer        offs;
+
+      begin
+         offs = addr_i[1:0];
+	 data = data_i;
+         data = data << (8 * (3 - offs));
+	 mask = 4'b0001 << (3 - offs);
+         write({addr_i[aw-1:2], 2'b00}, data, mask, err_o);
+      end
+   endtask // write_byte
+
+   task write_half_word;
+      input [aw-1:0] addr_i;
+      input [15:0]   data_i;
+      output         err_o;
+      integer        offs;
+
+      begin
+         offs = addr_i[1];
+	 data = data_i;
+         data = data << (16 * (1 - offs));
+	 mask = 4'b0011 << (2 * (1 - offs));
+         write({addr_i[aw-1:2], 2'b00}, data, mask, err_o);
+      end
+   endtask // write_half_word
+
    task write;
       input [aw-1:0] addr_i;
       input [dw-1:0] data_i;
@@ -63,8 +93,10 @@ module wb_bfm_master
 	 @(posedge wb_clk_i);
 	 next;
 	 err_o = wb_err_i;
-	 wb_cyc_o = 1'b0;
-	 wb_we_o  = 1'b0;
+	 wb_cyc_o <= #Tp 1'b0;
+	 wb_stb_o <= #Tp 1'b0;
+	 wb_we_o  <= #Tp 1'b0;
+	 wb_cti_o <= #Tp 3'b000;
       end
    endtask //
 
@@ -105,6 +137,68 @@ module wb_bfm_master
 	 wb_stb_o <= #Tp 1'b0;
 	 wb_we_o  <= #Tp 1'b0;
 	 wb_cti_o <= #Tp 3'b000;
+	 //last;
+	 
+      end
+   endtask
+
+   task read_byte;
+      input [aw-1:0] addr_i;
+      output [7:0]   data_o;
+      output         err_o;
+      integer        offs;
+      integer        tmp;
+
+      begin
+	 addr = {addr_i[aw-1:2], 2'b00};
+         offs = addr_i[1:0];
+	 mask = 4'b0001 << (3 - offs);
+         read({addr_i[aw-1:2], 2'b00}, tmp, mask, err_o);
+	 data_o = tmp >> (8 * (3 - offs));
+      end
+   endtask // read_byte
+
+   task read_half_word;
+      input [aw-1:0] addr_i;
+      output [15:0]  data_o;
+      output         err_o;
+      integer        offs;
+      integer        tmp;
+
+      begin
+	 addr = {addr_i[aw-1:2], 2'b00};
+         offs = addr_i[1];
+	 mask = 4'b0011 << (2 * (1 - offs));
+         read({addr_i[aw-1:2], 2'b00}, tmp, mask, err_o);
+	 data_o = tmp >> (16 * (1 - offs));
+      end
+   endtask // read_half_word
+
+   task read;
+      input [aw-1:0] addr_i;
+      output [dw-1:0] data_o;
+      input [3:0] 		      mask_i;
+      
+      output 			      err_o;
+      
+      integer 			      idx;
+      
+      begin
+	 
+	 addr = addr_i;
+	 mask = mask_i;
+
+	 cycle_type = CLASSIC_CYCLE;
+	 op = READ;
+	 
+	 init;
+	 
+         next;
+	 data_o = data;
+	 wb_cyc_o <= #Tp 1'b0;
+	 wb_stb_o <= #Tp 1'b0;
+	 wb_cti_o <= #Tp 3'b000;
+	 
 	 //last;
 	 
       end
