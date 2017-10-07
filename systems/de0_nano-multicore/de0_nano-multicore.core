@@ -1,12 +1,12 @@
 CAPI=1
 [main]
 depend =
- adv_debug_sys
+ ::adv_debug_sys:3.1.0
  altera_virtual_jtag
  gpio
  i2c-1.13
  jtag_tap-1.13
- mor1kx-3.1
+ ::mor1kx:5.0
 # or1200-r2
  or1k_bootloaders-0.9
  simple_spi-1.6
@@ -31,6 +31,7 @@ src_files =
 tb_private_src_files =
  bench/orpsoc_tb.v
  bench/uart_decoder.v
+
 include_files =
  rtl/verilog/include/orpsoc-defines.v
  rtl/verilog/include/timescale.v
