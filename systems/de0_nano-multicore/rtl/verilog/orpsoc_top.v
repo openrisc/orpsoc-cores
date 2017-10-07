@@ -274,6 +274,7 @@ mor1kx #(
 	.OPTION_DCACHE_SET_WIDTH        (7),
 	.OPTION_DCACHE_WAYS             (1),
 	.OPTION_DCACHE_LIMIT_WIDTH      (31),
+	.OPTION_DCACHE_SNOOP            ("ENABLED"),
 	.OPTION_RF_NUM_SHADOW_GPR	(15),
 	.FEATURE_DMMU                   ("ENABLED"),
 
@@ -356,6 +357,7 @@ mor1kx #(
 	.OPTION_DCACHE_SET_WIDTH        (7),
 	.OPTION_DCACHE_WAYS             (1),
 	.OPTION_DCACHE_LIMIT_WIDTH      (31),
+	.OPTION_DCACHE_SNOOP            ("ENABLED"),
 	.OPTION_RF_NUM_SHADOW_GPR	(15),
 	.FEATURE_DMMU                   ("ENABLED"),
 
