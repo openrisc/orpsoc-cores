@@ -1,0 +1,7 @@
+CAPI=1
+[main]
+description = Open Multi-Processor Interrupt Controller core
+
+[verilog]
+src_files =
+ rtl/verilog/timer.v

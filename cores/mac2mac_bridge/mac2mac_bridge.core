@@ -1,0 +1,8 @@
+CAPI=1
+[main]
+description = MAC to MAC bridge with PHY emulation
+
+[verilog]
+src_files =
+ rtl/verilog/mac2mac_bridge.v
+ rtl/verilog/mac2mac_mdio.v

@@ -46,6 +46,8 @@ module ram_wb_b3
    // Combinatorial next address calculation for bust accesses
    reg [(mem_adr_width-adr_width_for_num_word_bytes)-1:0] adr;
 
+   reg 				   random_ack_negate;
+
    // Logic to detect if there's a burst access going on
    wire wb_b3_trans_start = ((wb_cti_i == 3'b001)|(wb_cti_i == 3'b010)) & 
 	wb_stb_i & !wb_b3_trans & wb_cyc_i;
@@ -125,8 +127,19 @@ module ram_wb_b3
    
    wire ram_we = wb_we_i & wb_ack_o;
 
-   assign wb_dat_o = mem[addr_reg];
-    
+//SJK
+reg [31:0] wr_count;
+always @(posedge wb_clk_i)
+	if (ram_we  & (wb_adr_i == 32'h00488028)) begin
+/*
+		if (wr_count == 1)
+			$finish();
+*/
+		wr_count <= wr_count + 1;
+	end
+
+   assign wb_dat_o = mem[adr];
+
    // Write logic
    always @ (posedge wb_clk_i)
      if (ram_we)
@@ -146,16 +159,67 @@ module ram_wb_b3
      if (wb_rst_i)
        wb_ack_o_r <= 1'b0;
      else if (wb_cyc_i) begin // We have bus
-	if (wb_cti_i == 3'b000) // Classic cycle acks
-	  wb_ack_o_r <= wb_stb_i ^ wb_ack_o_r;
+	if (addr_err & wb_stb_i)
+	  wb_ack_o_r <= 1;
+	else if (wb_cti_i == 3'b000) // Classic cycle acks
+	    begin
+	       // Classic cycle acks
+	       if (wb_stb_i & !random_ack_negate)
+		 begin
+		    if (!wb_ack_o_r)
+		      wb_ack_o_r <= 1;
+		    else
+		      wb_ack_o_r <= 0;
+		 end
+	       else
+		 wb_ack_o_r <= 0;
+	    end // if (wb_cti_i == 3'b000)
 	else if ((wb_cti_i == 3'b001) | (wb_cti_i == 3'b010)) // Increment/constant address bursts
-	  wb_ack_o_r <= wb_stb_i;
+	    begin
+	       // Increment/constant address bursts
+	       if (wb_stb_i & !random_ack_negate)
+		 wb_ack_o_r <= 1;
+	       else
+		 wb_ack_o_r <= 0;
+	    end
 	else if (wb_cti_i == 3'b111) // End of cycle
-	  wb_ack_o_r <= wb_stb_i & !wb_ack_o_r;
+	    begin
+	       // End of burst
+	       if (wb_ack_o_r)
+		 // ALWAYS de-assert ack after burst end
+		 wb_ack_o_r <= 0;
+	       else if (wb_stb_i & !random_ack_negate)
+		 wb_ack_o_r <= 1;
+	       else
+		 wb_ack_o_r <= 0;
+	    end
      end // if (wb_cyc_i)
      else
        wb_ack_o_r <= 0;
+   // Random ACK negation logic
+   reg [31:0] lfsr;
+   always @(posedge wb_clk_i)
+     if (wb_rst_i)
+       lfsr <= 32'h273e2d4a;
+     else lfsr <= {lfsr[30:0], ~(lfsr[30]^lfsr[6]^lfsr[4]^lfsr[1]^lfsr[0])};
 
+reg [31:0] cnt;
+always @(posedge wb_clk_i) begin
+	cnt <= cnt + 1;
+	if (!wb_stb_i)
+		cnt <= 0;
+
+//	random_ack_negate <= 1;
+	random_ack_negate <= 0;
+	if (cnt == 10) begin
+		random_ack_negate <= 0;
+		cnt <= 0;
+	end
+end
+/*
+always @(posedge wb_clk_i)
+	random_ack_negate <= lfsr[26];
+*/
    //
    // Error signal generation
    //
