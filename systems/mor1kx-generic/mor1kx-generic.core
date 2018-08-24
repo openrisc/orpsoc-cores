@@ -3,11 +3,11 @@ CAPI=1
 description = "Minimal mor1kx simulation environment"
 depend =
  adv_debug_sys
- jtag_tap-1.13
+ >=jtag_tap-1.13
  mor1kx
- uart16550-1.5.4
- wb_intercon-1.0
- wb_ram-1.0
+ >=uart16550-1.5.4
+ >=wb_intercon-1.0
+ >=wb_ram-1.0
 
 simulators = icarus modelsim
 
@@ -22,14 +22,14 @@ include_files =
  bench/verilog/include/test-defines.v
 
 [icarus]
-depend = elf-loader jtag_vpi-r2 vlog_tb_utils-1.0
+depend = elf-loader >=jtag_vpi-r2 >=vlog_tb_utils-1.0
 iverilog_options = -DSIM
 
 [modelsim]
-depend = elf-loader jtag_vpi-r2 vlog_tb_utils-1.0
+depend = elf-loader >=jtag_vpi-r2 >=vlog_tb_utils-1.0
 
 [rivierapro]
-depend = elf-loader jtag_vpi-r2 vlog_tb_utils-1.0
+depend = elf-loader >=jtag_vpi-r2 >=vlog_tb_utils-1.0
 
 [verilator]
 depend = verilator_tb_utils
