@@ -350,7 +350,7 @@ TIMESPEC TS_tck_to_wb_clk = FROM "tck_pad_i" TO "wb_clk" TIG;
 TIMESPEC TS_wb_to_tck_clk = FROM "wb_clk" TO "tck_pad_i" TIG;
 
 # HDMI constraints
-NET "dvi_gen0/clk50m_bufg" TNM_NET = "TNM_CLK50M";
+NET "dvi_clk" TNM_NET = "TNM_CLK50M";
 TIMESPEC "TS_CLK50M" = PERIOD "TNM_CLK50M" 50 MHz HIGH 50 % PRIORITY 0 ;
 
 NET "pclk" TNM_NET = "TNM_PCLK";
