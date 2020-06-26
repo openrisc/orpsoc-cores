@@ -177,7 +177,6 @@ int VerilatorJtagServer::do_tms_seq(uint64_t t, int length, int nb_bits,
 		return IN_PROGRESS;
 	}
 
-	*tms = 0;
 	i = 0;
 	j = 0;
 	start = 1;
