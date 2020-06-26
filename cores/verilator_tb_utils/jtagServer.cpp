@@ -311,6 +311,7 @@ int VerilatorJtagServer::doJTAG(uint64_t t, uint8_t *tms, uint8_t *tdi, uint8_t 
 		default:
 			break;
 		}
+		break;
 
 	case TAP_RESET:
 		if (reset_tap(t, tms, tck) == DONE) {
